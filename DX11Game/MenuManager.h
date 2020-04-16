@@ -4,9 +4,6 @@
 #include "MenuNode.h"
 #include "NodeTypes.h"
 
-class MenuPage;
-
-
 /*
 Manager for all UI screens
 */

@@ -1,8 +1,5 @@
-#include "MenuNode.h"
-#include "SpriteBatch.h"
 #include "MenuManager.h"
-#include "Input.h"
-#include "NodeTypes.h"
+#include "MenuNode.h"
 
 const float MenuNode::ZDEPTH_UILAYER = 0.01f;
 
@@ -31,8 +28,10 @@ MenuNode & MenuNode::CreateNode(Type _type) {
 		ptrNode = new MenuImage();
 		break;
 	case MenuNode::Type::BUTTON:
+		ptrNode = new MenuButton();
 		break;
 	case MenuNode::Type::TEXT:
+		ptrNode = new MenuText();
 		break;
 	default:
 		break;

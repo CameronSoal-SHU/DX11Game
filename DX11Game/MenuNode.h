@@ -1,11 +1,10 @@
 #pragma once
+#include "Input.h"
 #include "TextureCache.h"
 
 namespace DirectX { class SpriteBatch; }
 
 class MenuManager;
-class NodeTypes;
-class Input;
 
 // General info that Menu nodes need access to
 struct ExtraData {

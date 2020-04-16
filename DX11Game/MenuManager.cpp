@@ -1,10 +1,10 @@
 #include <algorithm>
-#include "NodeTypes.h"
+
 #include "MenuManager.h"
+#include "MenuNode.h"
 
 // Static variable definition
 int MenuManager::Handler::m_uniqueID = 0;
-
 
 MenuManager::~MenuManager() {
 	Reset();
@@ -39,6 +39,30 @@ void MenuManager::ShowMenu(const std::string& _menuName) {
 	assert(it != m_menus.end() && (*it)->m_nodeType == MenuNode::Type::ROOT);
 
 	m_ptrActiveMenu = dynamic_cast<MenuPage*>(*it);
+}
+
+MenuNode & MenuManager::CreateNode(MenuNode::Type _type) {
+	MenuNode& node = MenuNode::CreateNode(_type);
+
+	node.m_nodeID = m_nodes.size();
+	m_nodes.push_back(&node);
+
+	return node;
+}
+
+MenuNode & MenuManager::FindNode(const std::string & _menuName, const std::string & _nodeName) {
+	std::vector<MenuNode*>::iterator it = std::find_if(m_nodes.begin(), m_nodes.end(),
+		[&_menuName](MenuNode* ptrNode) { 
+		return ptrNode->m_nodeType == MenuNode::Type::ROOT && ptrNode->m_nodeName == _menuName; 
+	});
+
+	assert(it != m_nodes.end());
+
+	MenuNode* ptrNode = (*it)->FindNode(_nodeName);
+
+	assert(ptrNode);
+
+	return *ptrNode;
 }
 
 void MenuManager::TriggerEvent(MenuNode & _node, MenuNode::Event _type)
