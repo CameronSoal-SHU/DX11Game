@@ -41,6 +41,15 @@ void MenuManager::ShowMenu(const std::string& _menuName) {
 	m_ptrActiveMenu = dynamic_cast<MenuPage*>(*it);
 }
 
+void MenuManager::HideMenu() {
+	m_ptrActiveMenu = nullptr;
+}
+
+MenuPage & MenuManager::GetActiveMenuPage() {
+	assert(m_ptrActiveMenu);
+	return *m_ptrActiveMenu;
+}
+
 MenuNode & MenuManager::CreateNode(MenuNode::Type _type) {
 	MenuNode& node = MenuNode::CreateNode(_type);
 
@@ -65,8 +74,35 @@ MenuNode & MenuManager::FindNode(const std::string & _menuName, const std::strin
 	return *ptrNode;
 }
 
-void MenuManager::TriggerEvent(MenuNode & _node, MenuNode::Event _type)
-{}
+void MenuManager::Render(float _dTime, DirectX::SpriteBatch & _sprBatch, 
+	TextureCache & _txtrCache, Input & _input) {
+	// Is there an active menu to display?
+	if (!m_ptrActiveMenu)
+		return;
+
+	DirectX::SimpleMath::Vector2 offset(0, 0);
+	int screenWidth, screenHeight;
+
+	// Get screen dimensions for scaling
+	WindowUtil::Get().GetClientExtends(screenWidth, screenHeight);
+	DirectX::SimpleMath::Vector2 scale((float)screenWidth / m_ptrActiveMenu->m_width, 
+		(float)screenHeight / m_ptrActiveMenu->m_height);
+
+	ExtraData renData(_dTime, _sprBatch, _txtrCache, _input, *this);
+	m_ptrActiveMenu->Render(renData, offset, scale);
+}
+
+void MenuManager::TriggerEvent(MenuNode & _node, MenuNode::Event _type) {
+	std::vector<Event>::iterator it = std::find_if(m_eventHandlers.begin(), m_eventHandlers.end(),
+		[&_node, &_type](Event& _event) {
+		return _event.eventType == _type && _event.ptrNode == &_node;
+	});
+
+	if (it != m_eventHandlers.end()) {
+		for (Handler& handler : (*it).funcs)
+			handler.func(_node, _type);
+	}
+}
 
 MenuManager::Handler::Handler() {
 	m_id = m_uniqueID++;
