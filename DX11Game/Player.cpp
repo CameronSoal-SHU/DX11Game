@@ -4,13 +4,15 @@
 #include "GameConstants.h"
 #include "GameSettings.h"
 
-Player::Player(PlayMode& _mainGame)
-	: GameObject(_mainGame.GetMainGame()), m_playMode(_mainGame) {
+Player::Player()
+	: GameObject(MainGame::Get().GetD3D()) {
 
 	std::string shipPath = "Ship/ship_test.dds";
 	std::string shipTextureName = "player_ship";
 
-	m_sprite.SetTexture(shipTextureName, *m_d3d.GetTextureCache().LoadTexture(&m_d3d.GetDevice(),
+	D3D& d3d = MainGame::Get().GetD3D();
+
+	m_sprite.SetTexture(shipTextureName, *d3d.GetTextureCache().LoadTexture(&d3d.GetDevice(),
 		shipPath, shipTextureName, true));
 
 	m_sprite.SetScale({ 0.15f, 0.15f });
@@ -23,22 +25,22 @@ Player::Player(PlayMode& _mainGame)
 }
 
 void Player::Update(float _deltaTime) {
-	GameObject::Update(_deltaTime);	// Call base class method
 	PlayerInput(_deltaTime);
+	m_sprite.Update();
 
-	Hit hit = m_collider.IntersectAABB(m_playMode.GetBox().GetCollider());
-	if (hit.Collided()) {	// Was there a collision?
-		// Move player back outside of collider hitbox
-		m_sprite.SetVelocity(m_sprite.GetVelocity() += { 
-			(hit.delta.x * hit.normal.x) * (hit.normal.x == 1.f ? -1.f : 1.f), 
-			(hit.delta.y * hit.normal.y) * (hit.normal.y == 1.f ? -1.f : 1.f)
-		});
-	}
+	//Hit hit = m_collider.IntersectAABB(m_ptrPlayMode->GetBox().GetCollider());
+	//if (hit.Collided()) {	// Was there a collision?
+	//	// Move player back outside of collider hitbox
+	//	m_sprite.SetVelocity(m_sprite.GetVelocity() += { 
+	//		(hit.delta.x * hit.normal.x) * (hit.normal.x == 1.f ? -1.f : 1.f), 
+	//		(hit.delta.y * hit.normal.y) * (hit.normal.y == 1.f ? -1.f : 1.f)
+	//	});
+	//}
 	//DBOUT("Player Pos: (" << m_sprite.GetTransform().position.x << ", " << m_sprite.GetTransform().position.y << ")");
 }
 
-void Player::Render(DirectX::SpriteBatch& _sprBatch) {
-	GameObject::Render(_sprBatch);	// Call base class method
+void Player::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
+	GameObject::Render(_deltaTime, _sprBatch);	// Call base class method
 }
 
 void Player::PlayerInput(float _deltaTime) {

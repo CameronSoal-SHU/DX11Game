@@ -9,29 +9,22 @@ GamePadInput MainGame::gamePad;
 
 
 MainGame::MainGame(D3D& _d3d) 
-	: m_playMode(*this), m_d3d(_d3d), m_ptrSprBatch(nullptr) {
+	: m_d3d(_d3d), m_ptrSprBatch(nullptr) {
 	m_ptrSprBatch = new DirectX::SpriteBatch(&m_d3d.GetDeviceCtx());
 	// Set up main window for KB+M inputs
 	mouseKeyboardInput.Init(WindowUtil::Get().GetMainWindow(), MOUSE_VISIBLE, MOUSE_CONFINED);
 	gamePad.Init();
-}
+	m_ptrSprBatch = new DirectX::SpriteBatch(&m_d3d.GetDeviceCtx());
 
-D3D& MainGame::GetD3D() {
-	return m_d3d;
+	m_modeManager.AddMode(new PlayMode());
+	m_modeManager.ChangeMode(PlayMode::MODE_NAME);
 }
 
 void MainGame::Update(float _deltaTime) {
 	gamePad.Update();
 	gamePad.IsEnabled(0);
 
-	switch (m_gameState)
-	{ 
-	case GameState::PLAY:
-		m_playMode.Update(_deltaTime);
-		break;
-	default:
-		break;
-	}
+	m_modeManager.Update(_deltaTime);
 }
 
 void MainGame::Render(float _deltaTime) {
@@ -40,14 +33,8 @@ void MainGame::Render(float _deltaTime) {
 	DirectX::CommonStates dxState(&m_d3d.GetDevice());
 	m_ptrSprBatch->Begin(DirectX::SpriteSortMode_Deferred, dxState.NonPremultiplied(), &m_d3d.GetWrapSampler(true));
 
-	switch (m_gameState)
-	{
-	case GameState::PLAY:
-		m_playMode.Render(_deltaTime, *m_ptrSprBatch);
-		break;
-	default:
-		break;
-	}
+	m_modeManager.Render(_deltaTime, *m_ptrSprBatch);
+	m_menuManager.Render(_deltaTime, *m_ptrSprBatch, m_d3d.GetTextureCache(), mouseKeyboardInput);
 
 	m_ptrSprBatch->End();
 

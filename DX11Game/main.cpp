@@ -27,6 +27,7 @@ LRESULT CALLBACK MainWndProc(HWND _windowHandle, UINT _msg, WPARAM _wParam, LPAR
 // Code Entry point
 int WINAPI WinMain(HINSTANCE _currInstance, HINSTANCE _prevInstance,
 	PSTR _cmdLine, int _showCmd) {
+	new WindowUtil();
 
 	assert(WindowUtil::Get().InitMainWindow((int)Settings::SCREEN_DIM.x, (int)Settings::SCREEN_DIM.y, _currInstance, "DX11 Game Test", MainWndProc, true));
 
@@ -36,22 +37,24 @@ int WINAPI WinMain(HINSTANCE _currInstance, HINSTANCE _prevInstance,
 	WindowUtil::Get().SetD3D(d3d);
 	d3d.GetTextureCache().SetAssetPath("../bin/data/");
 
-	MainGame mainGame(d3d);
+	new MainGame(d3d);
 
 	bool canUpdateRender;
 	float deltaTime(0.f);
 
 	while (WindowUtil::Get().BeginLoop(canUpdateRender)) {
 		if (canUpdateRender && deltaTime > 0.f) {
-			mainGame.Update(deltaTime);
-			mainGame.Render(deltaTime);
+			MainGame::Get().Update(deltaTime);
+			MainGame::Get().Render(deltaTime);
 		}
 
 		deltaTime = WindowUtil::Get().EndLoop(canUpdateRender);
 	}
 
-	mainGame.Release();
+	MainGame::Get().Release();
+	delete &MainGame::Get();
 	d3d.ReleaseD3D(true);
+	delete &WindowUtil::Get();
 
 	return 0;
 }

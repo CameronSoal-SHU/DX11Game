@@ -31,36 +31,36 @@
     <Filter Include="Menu and UI\Source Files">
       <UniqueIdentifier>{fbebb67f-1c4c-443a-bbd3-b36f41926465}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input Devices">
+      <UniqueIdentifier>{0aacb008-a516-4065-b40f-edb7d65cd2bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input Devices\Header Files">
+      <UniqueIdentifier>{60eb7a02-c660-474d-b3a0-6b89de00c581}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input Devices\Source Files">
+      <UniqueIdentifier>{8ad01356-bb6c-4993-885e-f354dbeecfb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game States">
+      <UniqueIdentifier>{86ed6e6e-5da6-4fe9-a12f-75e72f8a74da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game States\Header Files">
+      <UniqueIdentifier>{dcfdb0d7-848a-4533-b6b4-4e8a2cba5170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game States\Source Files">
+      <UniqueIdentifier>{965d1785-88e9-44b0-ae75-5947b7021614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects">
+      <UniqueIdentifier>{3256c620-a6a4-4aad-bd5d-e42441569d13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Header Files">
+      <UniqueIdentifier>{41e0523e-263b-48ca-8a7d-768878c0bfbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Source Files">
+      <UniqueIdentifier>{54e2d5b3-73c5-471b-86f0-11b9d577fefb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayMode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Animator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GamePadInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="D3D.cpp">
@@ -87,36 +87,39 @@
     <ClCompile Include="Font.cpp">
       <Filter>Menu and UI\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Game Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision2D.cpp">
+      <Filter>Game Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Game Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Game Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game Objects\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Input Devices\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePadInput.cpp">
+      <Filter>Input Devices\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayMode.cpp">
+      <Filter>Game States\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>Game States\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModeManager.cpp">
+      <Filter>Menu and UI\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MainGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameConstants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Animator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GamePadInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameSettings.h">
@@ -145,6 +148,42 @@
     </ClInclude>
     <ClInclude Include="Font.h">
       <Filter>Menu and UI\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision2D.h">
+      <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Game Objects\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Input Devices\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePadInput.h">
+      <Filter>Input Devices\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGame.h">
+      <Filter>Game States\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayMode.h">
+      <Filter>Game States\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

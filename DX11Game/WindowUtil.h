@@ -5,17 +5,13 @@
 #include <sstream>
 #include <assert.h>
 
+#include "Singleton.h"
+
 class D3D;
 
-class WindowUtil
+class WindowUtil : public Singleton<WindowUtil>
 {
 public:
-	static WindowUtil& Get() {
-		static WindowUtil instance;
-
-		return instance;
-	}
-
 	static LRESULT DefaultMsgHandler(HWND _winHandle, UINT _msg, WPARAM _wParam, LPARAM _lParam) {
 		return WindowUtil::Get().InstancedDefaultMsgHandler(_winHandle, _msg, _wParam, _lParam);
 	}
@@ -55,11 +51,5 @@ private:
 	D3D* m_ptrD3D = nullptr;
 
 	LRESULT InstancedDefaultMsgHandler(HWND _winHandle, UINT _msg, WPARAM _wParam, LPARAM _lParam);
-
-	// Singleton methods to prevent additional instances
-	WindowUtil()							 = default;
-	~WindowUtil()							 = default;
-	WindowUtil(const WindowUtil&)			 = delete;
-	WindowUtil& operator=(const WindowUtil&) = delete;
 };
 

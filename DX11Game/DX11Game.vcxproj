@@ -141,6 +141,7 @@
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="MenuNode.cpp" />
     <ClCompile Include="MenuManager.cpp" />
+    <ClCompile Include="ModeManager.cpp" />
     <ClCompile Include="NodeTypes.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayMode.cpp" />
@@ -162,9 +163,12 @@
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MenuNode.h" />
     <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="ModeBase.h" />
+    <ClInclude Include="ModeManager.h" />
     <ClInclude Include="NodeTypes.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayMode.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureCache.h" />
     <ClInclude Include="WindowUtil.h" />

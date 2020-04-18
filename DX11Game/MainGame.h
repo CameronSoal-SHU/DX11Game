@@ -1,8 +1,12 @@
 #pragma once
 #include "PlayMode.h"
 #include "GamePadInput.h"
+#include "Singleton.h"
+#include "ModeManager.h"
+#include "MenuManager.h"
 
-class MainGame
+// Main game wrapper
+class MainGame : public Singleton<MainGame>
 {
 public:
 	enum class GameState { PLAY };
@@ -10,7 +14,9 @@ public:
 
 	MainGame(D3D& _d3d);
 
-	D3D& GetD3D();
+	D3D& GetD3D() { return m_d3d; };
+	ModeManager& GetModeManager() { return m_modeManager; };
+	MenuManager& GetMenuManager() { return m_menuManager; }
 	
 	// Called every frame
 	void Update(float _deltaTime);
@@ -28,6 +34,6 @@ private:
 	D3D& m_d3d;
 	// Sprite batch for sprite data
 	DirectX::SpriteBatch* m_ptrSprBatch = nullptr;
-
-	PlayMode m_playMode;
+	ModeManager m_modeManager;
+	MenuManager m_menuManager;
 };
