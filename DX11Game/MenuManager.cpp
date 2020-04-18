@@ -28,7 +28,7 @@ void MenuManager::Reset() {
 	m_fontCache.clear();
 }
 
-MenuNode & MenuManager::AddMenu(const char * _name, int _width, int _height) {
+MenuNode& MenuManager::AddMenu(const char * _name, int _width, int _height) {
 	MenuNode& node = CreateNode(MenuNode::Type::ROOT);
 
 	node.m_nodeName = _name;

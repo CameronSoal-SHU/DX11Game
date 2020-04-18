@@ -24,8 +24,8 @@ bool D3D::InitDirect3D(void(*_ptrOnResize)(int, int, D3D &))
 	m_ptrOnResize(width, height, *this);
 
 	// Create wrap and clamp samplers
-	CreateSampler(m_ptrWrapSampler, true);
-	CreateSampler(m_ptrClampSampler, false);
+	CreateSampler(m_ptrWrapSampler);
+	//CreateSampler(m_ptrClampSampler, false);
 
 	return true;
 }
@@ -68,14 +68,15 @@ void D3D::ReleaseD3D(bool _extraInfo) {
 	ReleaseCOM(m_ptrDepthStencilView);
 	ReleaseCOM(m_ptrSwapChain);
 	ReleaseCOM(m_ptrDepthStencilBuffer);
-	ReleaseCOM(m_ptrClampSampler);
-	ReleaseCOM(m_ptrWrapSampler);
+	//ReleaseCOM(m_ptrClampSampler);
+	//ReleaseCOM(m_ptrWrapSampler);
 
 	// Restore default settings then release
 	if (m_ptrD3DImmediateCtx) {
 		m_ptrD3DImmediateCtx->ClearState();
 		m_ptrD3DImmediateCtx->Flush();
 	}
+
 	ReleaseCOM(m_ptrD3DImmediateCtx);
 
 	if (_extraInfo) {
@@ -131,10 +132,10 @@ TextureCache& D3D::GetTextureCache() {
 	return m_textureCache;
 }
 
-ID3D11SamplerState& D3D::GetWrapSampler(bool _isWrapped) {
-	assert(m_ptrWrapSampler && m_ptrClampSampler);
+ID3D11SamplerState& D3D::GetWrapSampler() {
+	assert(m_ptrWrapSampler);
 
-	return _isWrapped ? *m_ptrWrapSampler : *m_ptrClampSampler;
+	return *m_ptrWrapSampler;
 }
 
 void D3D::CreateD3D(D3D_FEATURE_LEVEL _desiredFeatLvl) {
@@ -302,15 +303,15 @@ void D3D::CreateSwapChain(DXGI_SWAP_CHAIN_DESC& _swapChainDesc) {
 	ReleaseCOM(dxgiFactory);
 }
 
-void D3D::CreateSampler(ID3D11SamplerState*& _ptrSampler, bool _isWrapped) {
+void D3D::CreateSampler(ID3D11SamplerState*& _ptrSampler) {
 	D3D11_SAMPLER_DESC samplerDesc;
 
 	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
 
 	samplerDesc.Filter		   = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU	   = _isWrapped ? D3D11_TEXTURE_ADDRESS_WRAP : D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressV	   = _isWrapped ? D3D11_TEXTURE_ADDRESS_WRAP : D3D11_TEXTURE_ADDRESS_CLAMP;
-	samplerDesc.AddressW	   = _isWrapped ? D3D11_TEXTURE_ADDRESS_WRAP : D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressU	   = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV	   = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW	   = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	samplerDesc.MinLOD		   = 0;
 	samplerDesc.MaxLOD		   = D3D11_FLOAT32_MAX;

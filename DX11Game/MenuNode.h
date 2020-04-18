@@ -43,7 +43,7 @@ public:
 	int m_x, m_y, m_width, m_height;	// Original dimensions in screen co-ords at default res
 
 	MenuNode(Type _type);
-	virtual ~MenuNode();
+	virtual ~MenuNode() {};
 
 	virtual void Render(const ExtraData& _renData, 
 		const DirectX::SimpleMath::Vector2& _offset, const DirectX::SimpleMath::Vector2& _scale) = 0;

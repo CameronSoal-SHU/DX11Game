@@ -10,7 +10,6 @@ GamePadInput MainGame::gamePad;
 
 MainGame::MainGame(D3D& _d3d) 
 	: m_d3d(_d3d), m_ptrSprBatch(nullptr) {
-	m_ptrSprBatch = new DirectX::SpriteBatch(&m_d3d.GetDeviceCtx());
 	// Set up main window for KB+M inputs
 	mouseKeyboardInput.Init(WindowUtil::Get().GetMainWindow(), MOUSE_VISIBLE, MOUSE_CONFINED);
 	gamePad.Init();
@@ -31,7 +30,7 @@ void MainGame::Render(float _deltaTime) {
 	m_d3d.BeginRender(Colours::Black);
 
 	DirectX::CommonStates dxState(&m_d3d.GetDevice());
-	m_ptrSprBatch->Begin(DirectX::SpriteSortMode_Deferred, dxState.NonPremultiplied(), &m_d3d.GetWrapSampler(true));
+	m_ptrSprBatch->Begin(DirectX::SpriteSortMode_Deferred, dxState.NonPremultiplied(), &m_d3d.GetWrapSampler());
 
 	m_modeManager.Render(_deltaTime, *m_ptrSprBatch);
 	m_menuManager.Render(_deltaTime, *m_ptrSprBatch, m_d3d.GetTextureCache(), mouseKeyboardInput);
@@ -44,7 +43,6 @@ void MainGame::Render(float _deltaTime) {
 
 void MainGame::Release() {
 	m_modeManager.Release();
-	m_menuManager.Reset();
 	delete m_ptrSprBatch;
 	m_ptrSprBatch = nullptr;
 }

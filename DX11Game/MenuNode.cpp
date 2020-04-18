@@ -7,9 +7,6 @@ MenuNode::MenuNode(Type _type)
 	: m_nodeType(_type)
 {}
 
-MenuNode::~MenuNode()
-{}
-
 void MenuNode::Render(const ExtraData & _renData, const DirectX::SimpleMath::Vector2 & _offset, 
 	const DirectX::SimpleMath::Vector2 & _scale) {
 	for (MenuNode* node : m_childNodes)

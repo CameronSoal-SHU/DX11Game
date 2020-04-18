@@ -41,7 +41,7 @@ public:
 
 	TextureCache& GetTextureCache();
 
-	ID3D11SamplerState& GetWrapSampler(bool _isWrapped);
+	ID3D11SamplerState& GetWrapSampler();
 private:
 	TextureCache m_textureCache;
 	// Type of GPU owned
@@ -71,7 +71,7 @@ private:
 	void(*m_ptrOnResize)(int, int, D3D&) = nullptr;
 
 	ID3D11SamplerState* m_ptrWrapSampler = nullptr;		// Wrapping sprites
-	ID3D11SamplerState* m_ptrClampSampler = nullptr;	// Clamping sprites
+	//ID3D11SamplerState* m_ptrClampSampler = nullptr;	// Clamping sprites
 
 	// Heavy lifting to start D3D11
 	void CreateD3D(D3D_FEATURE_LEVEL _desiredFeatLvl = D3D_FEATURE_LEVEL_11_0);
@@ -94,7 +94,7 @@ private:
 	// Create swap chain once description is determined
 	void CreateSwapChain(DXGI_SWAP_CHAIN_DESC& _swapChainDesc);
 
-	void CreateSampler(ID3D11SamplerState*& _ptrSampler, bool _isWrapped);
+	void CreateSampler(ID3D11SamplerState*& _ptrSampler);
 };
 
 
