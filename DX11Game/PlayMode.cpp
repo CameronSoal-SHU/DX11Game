@@ -26,6 +26,7 @@ PlayMode::~PlayMode() {
 		delete m_gameObjs.at(i);
 	}
 
+	m_parallaxBGLayers.clear();
 	m_gameObjs.clear();
 }
 
@@ -46,14 +47,6 @@ void PlayMode::Start() {
 
 		++i;
 	}
-
-	// Set sprite and collider for test object
-	/*m_boxCollisionTest.GetSprite().SetTexture("box", *m_d3d.GetTextureCache().LoadTexture(&m_d3d.GetDevice(),
-		"Boss/test.dds", "box", true));
-	m_boxCollisionTest.GetSprite().SetPos({ 400, 100 });
-	m_boxCollisionTest.GetSprite().SetOrigin(m_boxCollisionTest.GetSprite().GetTextureData().dimensions / 2.f);
-	m_boxCollisionTest.GetCollider() = Collider(m_boxCollisionTest.GetSprite().GetPos() + m_boxCollisionTest.GetSprite().GetOrigin(), 
-		m_boxCollisionTest.GetSprite().GetScreenDimRadius() * 0.9f);*/
 }
 
 void PlayMode::Update(float _deltaTime) {

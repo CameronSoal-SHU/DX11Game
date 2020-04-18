@@ -12,7 +12,7 @@ class MenuManager
 public:
 	~MenuManager();
 
-	// Clean all screens and reset everything
+	// Clean all screens, reset and release everything
 	void Reset();
 
 	/*

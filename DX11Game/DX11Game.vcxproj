@@ -134,7 +134,6 @@
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="D3DUtil.cpp" />
     <ClCompile Include="Font.cpp" />
-    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GamePadInput.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />

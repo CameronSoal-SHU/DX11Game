@@ -93,9 +93,6 @@
     <ClCompile Include="Collision2D.cpp">
       <Filter>Game Objects\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Game Objects\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Game Objects\Source Files</Filter>
     </ClCompile>

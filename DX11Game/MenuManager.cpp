@@ -18,6 +18,14 @@ void MenuManager::Reset() {
 	m_menus.clear();
 
 	m_ptrActiveMenu = nullptr;
+
+	m_eventHandlers.clear();
+
+	for (Font& font : m_fontCache) {
+		font.Release();
+	}
+
+	m_fontCache.clear();
 }
 
 MenuNode & MenuManager::AddMenu(const char * _name, int _width, int _height) {

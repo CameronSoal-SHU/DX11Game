@@ -43,6 +43,8 @@ void MainGame::Render(float _deltaTime) {
 }
 
 void MainGame::Release() {
+	m_modeManager.Release();
+	m_menuManager.Reset();
 	delete m_ptrSprBatch;
 	m_ptrSprBatch = nullptr;
 }
