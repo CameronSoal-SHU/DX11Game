@@ -138,6 +138,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MenuNode.cpp" />
     <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="ModeManager.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MainGame.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MenuNode.h" />
     <ClInclude Include="MenuManager.h" />
     <ClInclude Include="ModeBase.h" />

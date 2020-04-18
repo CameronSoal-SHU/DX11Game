@@ -2,6 +2,7 @@
 #include "ModeBase.h"
 #include "Input.h"
 #include "Player.h"
+#include "GameSettings.h"
 
 #include <vector>
 
@@ -30,13 +31,15 @@ public:
 	*/
 	GameObject* Find(const std::type_info& _type, bool _isActive);
 
-	/*GameObject GetBox() {
-		return m_boxCollisionTest;
-	}*/
+	void SetupBackground();
+	void SetupHealthbar();
 private:
 	// Parallax background layers
 	std::vector<Sprite> m_parallaxBGLayers;
 	std::vector<GameObject*> m_gameObjs;
+	std::vector<Sprite> m_playerHealthBar;	// Indices: 0 = Healthbar Background | 1 = Healthbar Foreground
+
+	DirectX::SimpleMath::Vector2 m_healthBarPos = { Settings::GAME_RES.x / 2.f, Settings::GAME_RES.y - 50.f };
 	//Player m_player;
 	//GameObject m_boxCollisionTest;
 };

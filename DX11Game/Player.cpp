@@ -24,6 +24,12 @@ Player::Player()
 	MainGame::gamePad.SetDeadZone(0, { 0.15f, 0.15f });
 }
 
+Player::Player(float _maxHealth, float _curHealth)
+	: Player() {
+	m_playerHealth.push_back(_maxHealth);
+	m_playerHealth.push_back(_curHealth);
+}
+
 void Player::Update(float _deltaTime) {
 	PlayerInput(_deltaTime);
 	m_sprite.Update();
@@ -53,7 +59,7 @@ void Player::PlayerInput(float _deltaTime) {
 		m_sprite.SetVelocity(DirectX::SimpleMath::Vector2 { 
 			ctrlData.leftStick.x,	// X-axis movement
 			-ctrlData.leftStick.y	// Y-axis movement
-		} * m_shipSpeed * _deltaTime);
+		} * m_movementSpeed * _deltaTime);
 
 		float rightStickRotation = atan2f(ctrlData.rightStick.x,
 			ctrlData.rightStick.y);
@@ -63,8 +69,8 @@ void Player::PlayerInput(float _deltaTime) {
 		}
 	}
 	else {
-		const float shipSpeedXFixed = m_shipSpeed.x * _deltaTime;
-		const float shipSpeedYFixed = m_shipSpeed.y * _deltaTime;
+		const float shipSpeedXFixed = m_movementSpeed.x * _deltaTime;
+		const float shipSpeedYFixed = m_movementSpeed.y * _deltaTime;
 
 		if (MainGame::mouseKeyboardInput.IsPressed(GameConsts::KEY_W)) {
 			m_sprite.SetVelocity(m_sprite.GetVelocity() -= { 0.f, shipSpeedYFixed });

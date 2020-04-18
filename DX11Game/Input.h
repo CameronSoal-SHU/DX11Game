@@ -38,6 +38,7 @@ public:
 	void OnLost();
 	void OnReset();
 	void MessageEvent(HRAWINPUT _rawInput);
+	void RestrictMouse();
 private:
 	enum {
 		RAWBUFF_SIZE = 512, KEYBUFF_SIZE = 255, MAX_MBUTTONS = 3

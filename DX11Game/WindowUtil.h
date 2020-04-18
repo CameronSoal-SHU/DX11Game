@@ -15,7 +15,8 @@ public:
 	static LRESULT DefaultMsgHandler(HWND _winHandle, UINT _msg, WPARAM _wParam, LPARAM _lParam) {
 		return WindowUtil::Get().InstancedDefaultMsgHandler(_winHandle, _msg, _wParam, _lParam);
 	}
-	bool InitMainWindow(int _width, int _height, HINSTANCE _instanceHandle, const std::string& _appName, WNDPROC _msgHandler, bool _centred = true);
+	bool InitMainWindow(int _width, int _height, HINSTANCE _instanceHandle, 
+		const std::string& _appName, WNDPROC _msgHandler, bool _centred = true);
 	D3D& GetD3D();
 	void SetD3D(D3D& _d3d);
 	// Wrap game in 1 function call if using basic functions

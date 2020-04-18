@@ -15,8 +15,6 @@ public:
 	}
 
 	static T& Get() {
-		assert(m_ptrSingleton != nullptr);
-		
 		return *m_ptrSingleton;
 	}
 private:

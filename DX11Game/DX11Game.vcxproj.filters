@@ -40,15 +40,6 @@
     <Filter Include="Input Devices\Source Files">
       <UniqueIdentifier>{8ad01356-bb6c-4993-885e-f354dbeecfb0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game States">
-      <UniqueIdentifier>{86ed6e6e-5da6-4fe9-a12f-75e72f8a74da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game States\Header Files">
-      <UniqueIdentifier>{dcfdb0d7-848a-4533-b6b4-4e8a2cba5170}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game States\Source Files">
-      <UniqueIdentifier>{965d1785-88e9-44b0-ae75-5947b7021614}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game Objects">
       <UniqueIdentifier>{3256c620-a6a4-4aad-bd5d-e42441569d13}</UniqueIdentifier>
     </Filter>
@@ -57,6 +48,15 @@
     </Filter>
     <Filter Include="Game Objects\Source Files">
       <UniqueIdentifier>{54e2d5b3-73c5-471b-86f0-11b9d577fefb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Modes">
+      <UniqueIdentifier>{86ed6e6e-5da6-4fe9-a12f-75e72f8a74da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Modes\Header Files">
+      <UniqueIdentifier>{dcfdb0d7-848a-4533-b6b4-4e8a2cba5170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Modes\Source Files">
+      <UniqueIdentifier>{965d1785-88e9-44b0-ae75-5947b7021614}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -106,13 +106,16 @@
       <Filter>Input Devices\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PlayMode.cpp">
-      <Filter>Game States\Source Files</Filter>
+      <Filter>Game Modes\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainGame.cpp">
-      <Filter>Game States\Source Files</Filter>
+      <Filter>Game Modes\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModeManager.cpp">
-      <Filter>Menu and UI\Source Files</Filter>
+      <Filter>Game Modes\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>Game Modes\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,19 +171,22 @@
       <Filter>Input Devices\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainGame.h">
-      <Filter>Game States\Header Files</Filter>
+      <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayMode.h">
-      <Filter>Game States\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModeManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ModeBase.h">
-      <Filter>Header Files</Filter>
+      <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Singleton.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeBase.h">
+      <Filter>Game Modes\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModeManager.h">
+      <Filter>Game Modes\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

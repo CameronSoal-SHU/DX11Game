@@ -5,6 +5,9 @@
 // On resize default uses the rendering dimensions declared in GameSettings as opposed to window dimensions.
 void OnResize(int _screenWidth, int _screenHeight, D3D& _d3d) {
 	_d3d.OnResize_Default();
+	if (&MainGame::Get()) {
+		MainGame::Get().mouseKeyboardInput.RestrictMouse();
+	}
 }
 
 LRESULT CALLBACK MainWndProc(HWND _windowHandle, UINT _msg, WPARAM _wParam, LPARAM _lParam) {
@@ -25,11 +28,15 @@ LRESULT CALLBACK MainWndProc(HWND _windowHandle, UINT _msg, WPARAM _wParam, LPAR
 }
 
 // Code Entry point
-int WINAPI WinMain(HINSTANCE _currInstance, HINSTANCE _prevInstance,
+int WINAPI WinMain(HINSTANCE _curInstance, HINSTANCE _prevInstance,
 	PSTR _cmdLine, int _showCmd) {
 	new WindowUtil();
 
-	assert(WindowUtil::Get().InitMainWindow((int)Settings::SCREEN_DIM.x, (int)Settings::SCREEN_DIM.y, _currInstance, "DX11 Game Test", MainWndProc, true));
+	/*HICON hIcon = static_cast<HICON>(LoadImage(_curInstance, "../bin/data/Ship/ship_test.ico", IMAGE_ICON, GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), LR_LOADFROMFILE));
+	HICON hIconSmall = static_cast<HICON>(LoadImage(_curInstance, "../bin/data/Ship/ship_test.ico", IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_LOADFROMFILE));*/
+
+	assert(WindowUtil::Get().InitMainWindow((int)Settings::SCREEN_DIM.x, (int)Settings::SCREEN_DIM.y, 
+		_curInstance, "DX11 Game Test", MainWndProc, true));
 
 	D3D d3d;
 	assert(d3d.InitDirect3D(OnResize));
@@ -55,6 +62,5 @@ int WINAPI WinMain(HINSTANCE _currInstance, HINSTANCE _prevInstance,
 	delete &MainGame::Get();
 	d3d.ReleaseD3D(true);
 	delete &WindowUtil::Get();
-
 	return 0;
 }

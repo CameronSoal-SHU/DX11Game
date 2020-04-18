@@ -169,6 +169,13 @@ void Input::MessageEvent(HRAWINPUT _rawInput) {
 	}
 }
 
+void Input::RestrictMouse() {
+	if (m_confineMouse) {
+		GetWindowRect(m_windowHandle, &m_newCursorClip);
+		ClipCursor(&m_newCursorClip);
+	}
+}
+
 void Input::RegisterForRawInput() {
 	/*
 	0 | Mouse device

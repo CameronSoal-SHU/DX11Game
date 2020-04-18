@@ -32,6 +32,14 @@ ID3D11ShaderResourceView& Sprite::GetTexture() {
 	return *m_ptrTexture;
 }
 
+DirectX::SimpleMath::Vector2 Sprite::GetDimensions() const {
+	return m_ptrTextureData->dimensions;
+}
+
+DirectX::SimpleMath::Vector2 Sprite::GetDimRadius() const {
+	return m_ptrTextureData->dimensions / 2.f;
+}
+
 DirectX::SimpleMath::Vector2 Sprite::GetScreenDimensions() const {
 	assert(m_ptrTextureData);
 	return (m_scale * m_ptrTextureData->dimensions);

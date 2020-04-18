@@ -17,6 +17,9 @@ public:
 	RECTF GetTextureRect();
 	const TextureCache::Data& GetTextureData() const;
 	ID3D11ShaderResourceView& GetTexture();
+
+	DirectX::SimpleMath::Vector2 GetDimensions() const;
+	DirectX::SimpleMath::Vector2 GetDimRadius() const;
 	// Returns the dimensions of a sprite scaled to screen size
 	DirectX::SimpleMath::Vector2 GetScreenDimensions() const;
 	DirectX::SimpleMath::Vector2 GetScreenDimRadius() const;
