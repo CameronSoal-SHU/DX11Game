@@ -5,6 +5,12 @@
 #include "SimpleMath.h"
 #include "TextureCache.h"
 
+#define EXTRA_INFO true
+#define WINDOWED true
+#define ENABLE_MSAA true
+#define NO_EXTRA_INFO false
+#define FULLSCREEN false
+#define DISABLE_MSAA false
 
 class D3D
 {
@@ -22,7 +28,7 @@ public:
 	Main Release function to be called on Shutdown
 	<param "extraInfo"> Provides more information about any objects that haven't been released properly </param>
 	*/
-	void ReleaseD3D(bool _extraInfo = true);
+	void ReleaseD3D(bool _extraInfo = EXTRA_INFO);
 
 	// Get the Windows current aspect ratio (letterbox, square, etc.)
 	float GetAspectRatio();

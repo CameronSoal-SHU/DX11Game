@@ -21,6 +21,7 @@ public:
 	_width, _height - Resolution of the menu screen
 	*/
 	MenuNode& AddMenu(const char* _name, int _width, int _height);
+	MenuNode& AddMenu(const char* _name, const DirectX::SimpleMath::Vector2& _dim);
 
 	// Display a menu by name
 	void ShowMenu(const std::string& _menuName);
@@ -80,7 +81,7 @@ public:
 	const DirectX::SpriteFont& GetFont(const std::string& _name, int _pitch) const;
 
 	// Load font into font cache 
-	bool LoadFont(const std::wstring& _filePath, const std::string& _name, int _pitch);
+	bool LoadFont(const std::wstring& _filePath, const std::string& _name, int _pitch, bool _appendPath = APPEND_PATH);
 private:
 	std::vector<MenuNode*> m_nodes;			// Menu nodes such as Buttons, Text, etc.
 	std::vector<MenuNode*> m_menus;			// Root menu nodes that represent individual pages of UI Screens

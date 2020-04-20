@@ -3,6 +3,8 @@
 #include "Input.h"
 #include "Player.h"
 #include "GameSettings.h"
+#include "MenuNode.h"
+#include "GameClock.h"
 
 #include <vector>
 
@@ -15,6 +17,8 @@ public:
 
 	PlayMode();
 	~PlayMode();
+	void Enter() override;
+	bool Exit() override;
 	// Called once at the very start
 	void Start();
 	// Called every frame
@@ -26,20 +30,33 @@ public:
 
 	void AddObj(GameObject* _ptrObj);
 	void RemoveObj(GameObject* _ptrObj);
-	/*
-	Find the first object in container that matches the type and active status
-	*/
-	GameObject* Find(const std::type_info& _type, bool _isActive);
 
-	void SetupBackground();
-	void SetupHealthbar();
+	// Find the first object in container that matches the typeid and active status
+	GameObject* FindObj(const std::type_info& _type, bool _isActive);
 private:
 	// Parallax background layers
 	std::vector<Sprite> m_parallaxBGLayers;
-	std::vector<GameObject*> m_gameObjs;
-	std::vector<Sprite> m_playerHealthBar;	// Indices: 0 = Healthbar Background | 1 = Healthbar Foreground
+	float m_scrollSpeed = 50.f;
 
-	DirectX::SimpleMath::Vector2 m_healthBarPos = { Settings::GAME_RES.x / 2.f, Settings::GAME_RES.y - 50.f };
-	//Player m_player;
-	//GameObject m_boxCollisionTest;
+	std::vector<GameObject*> m_gameObjs;
+	MenuManager& m_menuManager;				// Holds menu manager reference
+
+	GameClock m_inGameClock;				// Track current play time for scaling difficulty
+
+	float screenDimScaleX;
+	float screenDimScaleY;
+	void UpdateScreenDimScale();
+
+	void SetupBackground();
+	void ScrollBackground(float _deltaTime);
+
+	// Create a menu root node for the player UI
+	// And setup UI elements
+	void SetupPlayerUI();
+	void SetupGameClock();
+	void SetupHealthbar(D3D& _d3d);
+
+	void UpdatePlayerUI();
+	void UpdateHealthBar();
+	void UpdateGameClock();
 };

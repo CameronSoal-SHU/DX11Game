@@ -2,6 +2,9 @@
 #include "SpriteBatch.h"
 #include "D3D.h"
 
+#define LOOP true
+#define NO_LOOP false
+
 class Sprite;
 
 class Animator

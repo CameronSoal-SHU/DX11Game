@@ -7,6 +7,9 @@
 
 #include "Singleton.h"
 
+#define CENTRED true
+#define NOT_CENTRED false
+
 class D3D;
 
 class WindowUtil : public Singleton<WindowUtil>
@@ -16,7 +19,7 @@ public:
 		return WindowUtil::Get().InstancedDefaultMsgHandler(_winHandle, _msg, _wParam, _lParam);
 	}
 	bool InitMainWindow(int _width, int _height, HINSTANCE _instanceHandle, 
-		const std::string& _appName, WNDPROC _msgHandler, bool _centred = true);
+		const std::string& _appName, WNDPROC _msgHandler, bool _centred = CENTRED);
 	D3D& GetD3D();
 	void SetD3D(D3D& _d3d);
 	// Wrap game in 1 function call if using basic functions

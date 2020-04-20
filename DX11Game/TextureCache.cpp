@@ -3,6 +3,8 @@
 
 #include "TextureCache.h"
 
+std::string TextureCache::m_assetPath;
+
 void TextureCache::Release() {
 	// Go through each resource and release
 	for (auto& pair : m_textureCache) {
@@ -50,7 +52,7 @@ ID3D11ShaderResourceView* TextureCache::LoadTexture(ID3D11Device* _ptrDevice, co
 	// Saving
 	assert(ptrTexture);
 
-	m_textureCache.insert(TextureDataMap::value_type(textureName, Data(_filePath, ptrTexture, GetDimensions(ptrTexture))));
+	m_textureCache.insert(TextureDataMap::value_type(textureName, Data(_filePath, ptrTexture, GetDimensions(ptrTexture), _frames)));
 
 	return ptrTexture;
 }

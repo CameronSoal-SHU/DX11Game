@@ -40,6 +40,10 @@ MenuNode& MenuManager::AddMenu(const char * _name, int _width, int _height) {
 	return node;
 }
 
+MenuNode & MenuManager::AddMenu(const char * _name, const DirectX::SimpleMath::Vector2 & _dim) {
+	return AddMenu(_name, _dim.x, _dim.y);
+}
+
 void MenuManager::ShowMenu(const std::string& _menuName) {
 	std::vector<MenuNode*>::iterator it = std::find_if(m_menus.begin(), m_menus.end(),
 		[&_menuName](MenuNode* ptrNode) { return ptrNode->m_nodeName == _menuName; });
@@ -167,8 +171,19 @@ const DirectX::SpriteFont& MenuManager::GetFont(const std::string & _name, int _
 }
 
 bool MenuManager::LoadFont(const std::wstring & _filePath, 
-	const std::string & _name, int _pitch) {
-	m_fontCache.push_back(Font{ _name, _filePath, nullptr, _pitch });
+	const std::string & _name, int _pitch, bool _appendPath) {
+	std::wstring filePath;
+
+	if (_appendPath) {
+		const std::string defPath = TextureCache::GetAssetPath();
+		const std::wstring wDefPath(defPath.begin(), defPath.end());
+
+		filePath += wDefPath;
+	}
+
+	filePath += _filePath;
+
+	m_fontCache.push_back(Font{ _name, filePath, nullptr, _pitch });
 
 	return m_fontCache.back().Load();
 }

@@ -150,6 +150,10 @@ void Sprite::SetFrame(int _idx) {
 	SetTextureRect(data.GetSprite(_idx).dimensions);
 }
 
+bool Sprite::IsMoving() const {
+	return (m_velocity.x != 0 || m_velocity.y != 0);
+}
+
 Sprite& Sprite::operator=(const Sprite& _sprite) {
 	m_origin   = _sprite.m_origin;
 	m_position = _sprite.m_position;

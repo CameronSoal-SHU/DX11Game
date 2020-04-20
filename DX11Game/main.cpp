@@ -32,11 +32,12 @@ int WINAPI WinMain(HINSTANCE _curInstance, HINSTANCE _prevInstance,
 	PSTR _cmdLine, int _showCmd) {
 	new WindowUtil();
 
+	// Works but causes memory leaks
 	/*HICON hIcon = static_cast<HICON>(LoadImage(_curInstance, "../bin/data/Ship/ship_test.ico", IMAGE_ICON, GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), LR_LOADFROMFILE));
 	HICON hIconSmall = static_cast<HICON>(LoadImage(_curInstance, "../bin/data/Ship/ship_test.ico", IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), LR_LOADFROMFILE));*/
 
 	assert(WindowUtil::Get().InitMainWindow((int)Settings::SCREEN_DIM.x, (int)Settings::SCREEN_DIM.y, 
-		_curInstance, "DX11 Game Test", MainWndProc, true));
+		_curInstance, "DX11 Game Test", MainWndProc, CENTRED));
 
 	D3D d3d;
 	assert(d3d.InitDirect3D(OnResize));
@@ -60,7 +61,7 @@ int WINAPI WinMain(HINSTANCE _curInstance, HINSTANCE _prevInstance,
 
 	MainGame::Get().Release();
 	delete &MainGame::Get();
-	d3d.ReleaseD3D(true);
+	d3d.ReleaseD3D(EXTRA_INFO);
 	delete &WindowUtil::Get();
 	return 0;
 }

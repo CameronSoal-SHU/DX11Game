@@ -24,7 +24,7 @@ public:
 	void Render(const ExtraData& _renData,
 		const DirectX::SimpleMath::Vector2& _offset, const DirectX::SimpleMath::Vector2& _scale) override;
 
-	int m_spriteID;
+	int m_frameID;
 	std::string m_textureName;
 };
 

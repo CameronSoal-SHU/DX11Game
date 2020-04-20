@@ -14,7 +14,7 @@ class Input
 {
 public:
 	Input();
-	void Init(HWND _winHandle, bool _showMouse = true, bool _confineMouse = false);
+	void Init(HWND _winHandle, bool _showMouse = MOUSE_VISIBLE, bool _confineMouse = MOUSE_FREE);
 
 	// Zero everything and reset
 	void Reset();

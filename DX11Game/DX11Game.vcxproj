@@ -133,8 +133,11 @@
     <ClCompile Include="Collision2D.cpp" />
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="D3DUtil.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="GameClock.cpp" />
     <ClCompile Include="GamePadInput.cpp" />
+    <ClCompile Include="HealthHandler.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
@@ -154,11 +157,14 @@
     <ClInclude Include="Collision2D.h" />
     <ClInclude Include="D3D.h" />
     <ClInclude Include="D3DUtil.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="GameClock.h" />
     <ClInclude Include="GameConstants.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GamePadInput.h" />
     <ClInclude Include="GameSettings.h" />
+    <ClInclude Include="HealthHandler.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MainMenu.h" />

@@ -15,6 +15,11 @@ MainGame::MainGame(D3D& _d3d)
 	gamePad.Init();
 	m_ptrSprBatch = new DirectX::SpriteBatch(&m_d3d.GetDeviceCtx());
 
+	// Load up fonts to be used in game
+	m_menuManager.LoadFont(L"fonts/comicSansMS.spritefont", "comicsans", 12, APPEND_PATH);
+	m_menuManager.LoadFont(L"fonts/bauhaus93Regular.spritefont", "bauhaus", 12, APPEND_PATH);
+	m_menuManager.LoadFont(L"fonts/algerian.spritefont", "algerian", 12, APPEND_PATH);
+
 	m_modeManager.AddMode(new PlayMode());
 	m_modeManager.ChangeMode(PlayMode::MODE_NAME);
 }

@@ -55,6 +55,8 @@ public:
 	void SetTextureRect(const RECTF& _textureRect);
 
 	void SetFrame(int _idx);
+	// Are any of the velocity components not 0?
+	bool IsMoving() const;
 private:
 	ID3D11ShaderResourceView* m_ptrTexture;
 	D3D& m_d3d;

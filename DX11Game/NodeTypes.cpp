@@ -23,12 +23,12 @@ void MenuImage::Render(const ExtraData & _renData,
 	const DirectX::SimpleMath::Vector2 & _offset, const DirectX::SimpleMath::Vector2 & _scale) {
 	// Get sprite and data
 	const TextureCache::Data& txtrData = _renData.textureCache.GetData(m_textureName);
-	const TextureCache::Data::Sprite* sprite = &txtrData.GetSprite(m_spriteID);
+	const TextureCache::Data::Sprite* sprite = &txtrData.GetSprite(m_frameID);
 
 	RECT dst;	// Destination of render
 	GetImageDest(dst, sprite, _offset, _scale);
 
-	_renData.textureCache.Render(_renData.spriteBatch, m_textureName, dst, m_spriteID);
+	_renData.textureCache.Render(_renData.spriteBatch, m_textureName, dst, m_frameID);
 	MenuNode::Render(_renData, DirectX::SimpleMath::Vector2((float)dst.left, (float)dst.top), _scale);
 }
 

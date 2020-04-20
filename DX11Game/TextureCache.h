@@ -7,6 +7,13 @@
 #include "D3DUtil.h"
 #include "SpriteBatch.h"
 
+// Explicit naming for append path argument
+// in loading textures
+#define APPEND_PATH true
+#define STRETCHED true
+#define NO_APPEND_PATH false
+#define NOT_STRETCHED false
+
 struct RECTF {
 	float left, top, right, bottom;
 
@@ -47,7 +54,7 @@ public:
 	struct Data {
 		struct Sprite {
 			DirectX::SimpleMath::Vector2 corner;
-			bool stretched = false;
+			bool stretched = NOT_STRETCHED;
 			RECT dimensions;
 		};
 
@@ -64,8 +71,9 @@ public:
 		<param "_frames"> Frames of the sprite for animation </param>
 		*/
 		Data(const std::string& _filePath, ID3D11ShaderResourceView* _ptrTxtr, const DirectX::SimpleMath::Vector2& _dim)
-			: filePath(_filePath), ptrTexture(_ptrTxtr), dimensions(_dim) 
-		{}
+			: filePath(_filePath), ptrTexture(_ptrTxtr), dimensions(_dim) {
+			frames.clear();
+		}
 		Data(const std::string& _filePath, ID3D11ShaderResourceView* _ptrTxtr, const DirectX::SimpleMath::Vector2& _dim, const std::vector<Sprite>* _frames)
 			: filePath(_filePath), ptrTexture(_ptrTxtr), dimensions(_dim)
 		{
@@ -85,9 +93,10 @@ public:
 
 	// If this texture is new load it in, otherwise find it and return a handle
 	ID3D11ShaderResourceView* LoadTexture(ID3D11Device* _ptrDevice, const std::string& _filePath,
-		const std::string& _textureName = "", bool _appendPath = true, const std::vector<Data::Sprite>* _frames = nullptr);
+		const std::string& _textureName = "", bool _appendPath = APPEND_PATH, const std::vector<Data::Sprite>* _frames = nullptr);
 
-	void SetAssetPath(const std::string& _newPath);
+	static void SetAssetPath(const std::string& _newPath);
+	static std::string GetAssetPath() { return m_assetPath; }
 
 	// Retrieve texture via name (FAST)
 	Data& GetData(const std::string& _textureName);
@@ -104,6 +113,6 @@ private:
 	TextureDataMap m_textureCache;
 
 	// Some data sub folder with all the textures in
-	std::string m_assetPath;
+	static std::string m_assetPath;
 };
 

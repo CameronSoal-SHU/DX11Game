@@ -40,7 +40,7 @@ public:
 	int m_nodeID = -1;					// Unique node ID to distinguish nodes
 	std::string m_nodeName;				// Unique node name, possibly duplicated on another page
 
-	int m_x, m_y, m_width, m_height;	// Original dimensions in screen co-ords at default res
+	float m_x, m_y, m_width, m_height;	// Original dimensions in screen co-ords at default res
 
 	MenuNode(Type _type);
 	virtual ~MenuNode() {};

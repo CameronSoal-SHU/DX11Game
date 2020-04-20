@@ -18,7 +18,7 @@ bool D3D::InitDirect3D(void(*_ptrOnResize)(int, int, D3D &))
 	WindowUtil::Get().GetClientExtends(width, height);
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
-	CreateSwapChainDescription(swapChainDesc, WindowUtil::Get().GetMainWindow(), true, width, height);
+	CreateSwapChainDescription(swapChainDesc, WindowUtil::Get().GetMainWindow(), WINDOWED, width, height);
 	CreateSwapChain(swapChainDesc);
 
 	m_ptrOnResize(width, height, *this);
