@@ -11,7 +11,7 @@ public:
 	Sprite(const Sprite& _sprite);
 	Sprite& operator=(const Sprite& _sprite);
 
-	void Update();
+	void Update(float _deltaTime);
 	void Draw(DirectX::SpriteBatch& _sprBatch);
 
 	RECTF GetTextureRect();
@@ -49,6 +49,8 @@ public:
 
 	float GetRotation() const;
 	void SetRotation(float _depth);
+
+	std::string GetTextureName() const { return m_txtrCacheName; }
 
 	Animator& GetAnim();
 	void SetTextureRect(const RECT& _textureRect);

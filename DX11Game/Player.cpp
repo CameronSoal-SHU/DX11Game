@@ -3,18 +3,20 @@
 #include "MainGame.h"
 #include "GameConstants.h"
 #include "GameSettings.h"
+#include <math.h>
 
-Player::Player(float _maxHealth, float _curHealth)
-	: GameObject(MainGame::Get().GetD3D()), m_healthHandler(_maxHealth, _curHealth),
+
+Player::Player()
+	: CharacterBase(),
 	m_thrust(MainGame::Get().GetD3D()) {
 	D3D& d3d = MainGame::Get().GetD3D();
 
-	m_thrustFrames = {
-		{{0, 0}, NOT_STRETCHED, { 0,  0, 15, 16} },
-		{{0, 0}, NOT_STRETCHED, { 16, 0, 31, 16} },
-		{{0, 0}, NOT_STRETCHED, { 32, 0, 47, 16} },
-		{{0, 0}, NOT_STRETCHED, { 48, 0, 64, 16} },
-	};
+	/// TEMP ///
+	m_characterStats.damage = 10.f;
+	m_characterStats.fireRate = 1.f;
+	m_characterStats.projSpeed = 1000.f;
+	m_characterStats.lifeTime = 1.f;
+	m_moveSpeed = DirectX::SimpleMath::Vector2(300.f, 300.f);
 
 	LoadShipTexture(d3d);
 	LoadThrustTexture(d3d);
@@ -25,13 +27,27 @@ Player::Player(float _maxHealth, float _curHealth)
 	MainGame::gamePad.SetDeadZone(0, { 0.15f, 0.15f });
 }
 
+Player::~Player() {
+	for (size_t i(0); i < m_weapons.size(); ++i)
+		delete m_weapons.at(i);
+
+	m_weapons.clear();
+}
+
 void Player::Update(float _deltaTime) {
+	CharacterBase::Update(_deltaTime);
+
 	PlayerInput(_deltaTime);
-	m_sprite.Update();
 	m_thrust.GetAnim().Update(_deltaTime);
 
 	m_thrust.SetPos(m_sprite.GetPos());
 	m_thrust.SetRotation(m_sprite.GetRotation());
+
+	if (m_weapons.size() != 0) {
+		for (Weapon* item : m_weapons) {
+			item->Update(_deltaTime);
+		}
+	}
 
 	//Hit hit = m_collider.IntersectAABB(m_ptrPlayMode->GetBox().GetCollider());
 	//if (hit.Collided()) {	// Was there a collision?
@@ -51,12 +67,16 @@ void Player::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
 	GameObject::Render(_deltaTime, _sprBatch);	// Call base class method
 }
 
-HealthHandler& Player::GetHealthHandler() {
-	return m_healthHandler;
+void Player::SetupWeapons() {
+	EnergyBall* energyBallWeap = new EnergyBall(*this);
+	energyBallWeap->SetModeOwner(*m_ptrPlayMode);
+	energyBallWeap->SetProjectileScale({ 0.05f, 0.05f });
+	m_weapons.push_back(energyBallWeap);
 }
 
 void Player::PlayerInput(float _deltaTime) {
 	m_sprite.SetVelocity({ 0.f, 0.f });
+	DirectX::SimpleMath::Vector2& spriteVel = m_sprite.GetVelocity();
 
 	const GamePadInput::ControllerData ctrlData = MainGame::gamePad.GetGamePadData(0);
 
@@ -65,7 +85,7 @@ void Player::PlayerInput(float _deltaTime) {
 		m_sprite.SetVelocity(DirectX::SimpleMath::Vector2 { 
 			ctrlData.leftStick.x,	// X-axis movement
 			-ctrlData.leftStick.y	// Y-axis movement
-		} * m_moveSpeed * _deltaTime);
+		} * m_moveSpeed);
 
 		const float rightStickRotation = atan2f(ctrlData.rightStick.x,
 			ctrlData.rightStick.y);
@@ -75,55 +95,49 @@ void Player::PlayerInput(float _deltaTime) {
 		}
 	}
 	else {
-		const float shipSpeedXFixed = m_moveSpeed.x * _deltaTime;
-		const float shipSpeedYFixed = m_moveSpeed.y * _deltaTime;
-
 		if (MainGame::mouseKeyboardInput.IsPressed(GameConsts::KEY_W)) {
-			m_sprite.SetVelocity(m_sprite.GetVelocity() -= { 0.f, shipSpeedYFixed });
+			m_sprite.SetVelocity(spriteVel -= { 0.f, m_moveSpeed.y });
 		}
 		if (MainGame::mouseKeyboardInput.IsPressed(GameConsts::KEY_S)) {
-			m_sprite.SetVelocity(m_sprite.GetVelocity() += { 0.f, shipSpeedYFixed });
+			m_sprite.SetVelocity(spriteVel += { 0.f, m_moveSpeed.y });
 		}
 		if (MainGame::mouseKeyboardInput.IsPressed(GameConsts::KEY_A)) {
-			m_sprite.SetVelocity(m_sprite.GetVelocity() -= { shipSpeedXFixed, 0.f });
+			m_sprite.SetVelocity(spriteVel -= { m_moveSpeed.x, 0.f });
 		}
 		if (MainGame::mouseKeyboardInput.IsPressed(GameConsts::KEY_D)) {
-			m_sprite.SetVelocity(m_sprite.GetVelocity() += { shipSpeedXFixed, 0.f });
+			m_sprite.SetVelocity(spriteVel += { m_moveSpeed.x, 0.f });
+		}
+		if (MainGame::mouseKeyboardInput.GetMouseDown(Input::MouseButton::LMB)) {
+			FirePrimary();
 		}
 
 		// Angle in radians between the sprites position and the mouse position
-		DirectX::SimpleMath::Vector2 mousePos = MainGame::mouseKeyboardInput.GetMousePosScaled(true);
+		const DirectX::SimpleMath::Vector2 mousePos = MainGame::mouseKeyboardInput.GetMousePosScaled(true);
+		const DirectX::SimpleMath::Vector2 spritePos = m_sprite.GetPos();
+		const float deltaY = mousePos.y - spritePos.y;
+		const float deltaX = mousePos.x - spritePos.x;
 		// Get the angle the player has to rotate to face the mouse, (adjusted 90 degrees)
-		const float playerToMouseAngle = atan2f(mousePos.y - m_sprite.GetPos().y, mousePos.x - m_sprite.GetPos().x) + 1.570796f;
+		const float playerToMouseAngle = atan2f(deltaY, deltaX) + 1.57f;
 		m_sprite.SetRotation(playerToMouseAngle);
 	}
 }
 
 void Player::LoadShipTexture(D3D& _d3d) {
-	// File path and texture name for ship
-	const std::string shipPath = "Ship/ship_test.dds";
+	// Texture name for ship
 	const std::string shipTextureName = "player_ship";
 
-	// Load up the texture
-	ID3D11ShaderResourceView* ptrShipSpr = _d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(),
-		shipPath, shipTextureName, APPEND_PATH);
-
 	// Set player texture to ship
-	m_sprite.SetTexture(shipTextureName, *ptrShipSpr);
+	m_sprite.SetTexture(shipTextureName, *_d3d.GetTextureCache().GetData(shipTextureName).ptrTexture);
 
 	m_sprite.SetScale({ 0.15f, 0.15f });
 	m_sprite.SetOrigin(m_sprite.GetDimRadius());	// Set origin to centre of texture
 }
 
 void Player::LoadThrustTexture(D3D & _d3d) {
-	// File path and texture name for ship thrust
-	const std::string thrustPath = "Ship/thrust.dds";
+	// Texture name for ship thrust
 	const std::string thrustTextureName = "ship_thrust";
 
-	ID3D11ShaderResourceView* ptrShipThrust = _d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(),
-		thrustPath, thrustTextureName, APPEND_PATH, &m_thrustFrames);
-
-	m_thrust.SetTexture(thrustTextureName, *ptrShipThrust);
+	m_thrust.SetTexture(thrustTextureName, *_d3d.GetTextureCache().GetData(thrustTextureName).ptrTexture);
 	m_thrust.GetAnim().Init(0, 3, 15, LOOP);
 	m_thrust.SetScale({ 4.f,4.f });
 
@@ -133,3 +147,31 @@ void Player::LoadThrustTexture(D3D & _d3d) {
 	m_thrust.SetRotation(m_sprite.GetRotation());
 	m_thrust.GetAnim().Play(true);
 }
+
+void Player::FirePrimary() {
+	Weapon& primaryWeap = *m_weapons.at(0);
+
+	if (primaryWeap.CanUse()) {
+		primaryWeap.FireProjectile(m_sprite.GetPos());
+	}
+}
+
+//void Player::FirePrimary() {
+//	// Make a copy of the primary item
+//	std::shared_ptr<> primaryProj = std::make_shared<ProjectileTEMP>(*m_weaponsTEMP.at(0));
+//	const float playerRot = m_sprite.GetRotation();
+//
+//	primaryProj->SetParentMode(*m_ptrPlayMode);
+//
+//	primaryProj->GetSprite().SetPos(m_sprite.GetPos());
+//	primaryProj->SetSpeed({ 1000, 1000 });
+//
+//	const DirectX::SimpleMath::Vector2 rotVel(primaryProj->GetSpeed().x * sin(playerRot),
+//		primaryProj->GetSpeed().y * -cos(playerRot));
+//
+//	primaryProj->SetActive(true);
+//	primaryProj->GetSprite().SetVelocity(rotVel);
+//
+//	// Push new object onto GameObject Stack
+//	m_ptrPlayMode->AddObj(primaryProj);
+//}

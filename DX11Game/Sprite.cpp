@@ -169,8 +169,8 @@ Sprite& Sprite::operator=(const Sprite& _sprite) {
 	return *this;
 }
 
-void Sprite::Update() {
-	m_position += m_velocity;
+void Sprite::Update(float _deltaTime) {
+	m_position += { m_velocity.x * _deltaTime, m_velocity.y * _deltaTime };
 }
 
 void Sprite::Draw(DirectX::SpriteBatch & _sprBatch) {

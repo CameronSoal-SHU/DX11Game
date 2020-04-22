@@ -1,30 +1,31 @@
 #pragma once
-#include "GameObject.h"
-#include "HealthHandler.h"
+#include "CharacterBase.h"
+#include "EnergyBall.h"
 
 class PlayMode;
 
-class Player : public GameObject
+class Player : public CharacterBase
 {
 public:
-	Player(float _maxHealth = 0.f, float _curHealth = 0.f);
+	Player();
+	~Player();
+
 	void Update(float _deltaTime) override;
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 	// Link object to owning mode
-	void SetParentMode(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; };
+	void SetParentMode(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
 
-	HealthHandler& GetHealthHandler();
+	// std::vector <std::shared_ptr<ProjectileTEMP>> GetWeapons() const { return m_weaponsTEMP; }
+	void SetupWeapons();
 private:
-	PlayMode* m_ptrPlayMode = nullptr;		// Mode owner of object
+	std::vector<Weapon*> m_weapons;
 
 	Sprite m_thrust;
-	std::vector<TextureCache::Data::Sprite> m_thrustFrames;
 
-	HealthHandler m_healthHandler;
-
-	DirectX::SimpleMath::Vector2 m_moveSpeed{ 250.f, 250.f };
 	void PlayerInput(float _deltaTime);
 
 	void LoadShipTexture(D3D& _d3d);
 	void LoadThrustTexture(D3D& _d3d);
+
+	void FirePrimary();
 };

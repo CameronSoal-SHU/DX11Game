@@ -58,6 +58,24 @@
     <Filter Include="Game Modes\Source Files">
       <UniqueIdentifier>{965d1785-88e9-44b0-ae75-5947b7021614}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Objects\Items">
+      <UniqueIdentifier>{4332bffd-d73d-49a2-bf7b-0198be0cd6bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Items\Header Files">
+      <UniqueIdentifier>{29462fca-5cfd-4c21-9639-665a940c4d09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Items\Source Files">
+      <UniqueIdentifier>{80ad8e76-cd11-4cef-9e7e-8481c76a22b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Characters">
+      <UniqueIdentifier>{90c702d1-7ab9-4022-9e40-ba50595a009b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Characters\Header Files">
+      <UniqueIdentifier>{a156d76f-f24b-4da0-91bc-b7078783e554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Characters\Source Files">
+      <UniqueIdentifier>{c2b58c06-cc83-4b2e-b5a3-afa5cbbdf9b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -96,9 +114,6 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Game Objects\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Game Objects\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Input Devices\Source Files</Filter>
     </ClCompile>
@@ -117,14 +132,29 @@
     <ClCompile Include="MainMenu.cpp">
       <Filter>Game Modes\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Game Objects\Source Files</Filter>
+    <ClCompile Include="EnergyBall.cpp">
+      <Filter>Game Objects\Items\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HealthHandler.cpp">
-      <Filter>Game Objects\Source Files</Filter>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Game Objects\Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Game Objects\Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Game Objects\Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterBase.cpp">
+      <Filter>Game Objects\Characters\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game Objects\Characters\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Game Objects\Characters\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameClock.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Menu and UI\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,12 +197,6 @@
     <ClInclude Include="GameObject.h">
       <Filter>Game Objects\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Game Objects\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>Game Objects\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Input Devices\Header Files</Filter>
     </ClInclude>
@@ -197,14 +221,35 @@
     <ClInclude Include="MainMenu.h">
       <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnergyBall.h">
+      <Filter>Game Objects\Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Game Objects\Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Game Objects\Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Game Objects\Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterBase.h">
+      <Filter>Game Objects\Characters\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game Objects\Characters\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>Game Objects\Characters\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
       <Filter>Game Objects\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HealthHandler.h">
-      <Filter>Game Objects\Header Files</Filter>
+      <Filter>Game Objects\Characters\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameClock.h">
-      <Filter>Header Files</Filter>
+      <Filter>Menu and UI\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@
 #include "GameClock.h"
 
 #include <vector>
+#include <memory>
 
 class MainGame;
 
@@ -40,6 +41,7 @@ private:
 
 	std::vector<GameObject*> m_gameObjs;
 	MenuManager& m_menuManager;				// Holds menu manager reference
+	MenuNode* m_uiRoot;						// Holds the menu page for the UI root
 
 	GameClock m_inGameClock;				// Track current play time for scaling difficulty
 
@@ -55,8 +57,10 @@ private:
 	void SetupPlayerUI();
 	void SetupGameClock();
 	void SetupHealthbar(D3D& _d3d);
+	void SetupHotBar(D3D& _d3d);
 
-	void UpdatePlayerUI();
+	void UpdatePlayerUI(float _deltaTime);
+	void UpdateItemHotbar();
 	void UpdateHealthBar();
-	void UpdateGameClock();
+	void UpdateGameClock(float _deltaTime);
 };

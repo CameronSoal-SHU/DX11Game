@@ -20,7 +20,7 @@ public:
 	_name - Unique name for menu
 	_width, _height - Resolution of the menu screen
 	*/
-	MenuNode& AddMenu(const char* _name, int _width, int _height);
+	MenuNode& AddMenu(const char* _name, float _width, float _height);
 	MenuNode& AddMenu(const char* _name, const DirectX::SimpleMath::Vector2& _dim);
 
 	// Display a menu by name

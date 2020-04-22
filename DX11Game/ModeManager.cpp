@@ -48,17 +48,13 @@ void ModeManager::ProcessKey(char _key) {
 	}
 }
 
-void ModeManager::AddMode(ModeBase * _modePtr) {
+void ModeManager::AddMode(std::shared_ptr<ModeBase> _modePtr) {
 	// Ensure passed arg is valid
 	assert(_modePtr);
 	m_modes.push_back(_modePtr);
 }
 
 void ModeManager::Release() {
-	for (size_t i(0); i < m_modes.size(); ++i) {
-		delete m_modes.at(i);
-	}
-
 	m_modes.clear();
 }
 

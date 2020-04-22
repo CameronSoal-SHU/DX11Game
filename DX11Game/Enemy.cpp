@@ -8,7 +8,7 @@ Enemy::Enemy(float _maxHealth, float _curHealth)
 {}
 
 void Enemy::Update(float _deltaTime) {
-	m_sprite.Update();
+	m_sprite.Update(_deltaTime);
 }
 
 void Enemy::Render(float _deltaTime, DirectX::SpriteBatch & _sprBatch) {

@@ -13,19 +13,20 @@ PlayMode::PlayMode()
 	screenDimScaleY((Settings::GAME_RES.y * Settings::GAME_RES.y) / WindowUtil::Get().GetClientHeight()) {
 	m_gameObjs.reserve(1000);
 
-	Player* player = new Player(150.f, 150.f);
+	Player* player = new Player();
 	player->SetParentMode(*this);
 	player->SetActive(true);
+	player->SetupWeapons();
 	AddObj(player);
 	Start();
 }
 
 PlayMode::~PlayMode() {
-	for (size_t i(0); i < m_gameObjs.size(); ++i) {
-		delete m_gameObjs.at(i);
-	}
-
 	m_parallaxBGLayers.clear();
+
+	for (size_t i(0); i < m_gameObjs.size(); ++i)
+		delete m_gameObjs.at(i);
+
 	m_gameObjs.clear();
 }
 
@@ -46,13 +47,16 @@ void PlayMode::Start() {
 
 void PlayMode::Update(float _deltaTime) {
 	m_inGameClock.Update(_deltaTime);
-	UpdatePlayerUI();
 
 	ScrollBackground(_deltaTime);
 
 	for (size_t i(0); i < m_gameObjs.size(); ++i) {
 		m_gameObjs.at(i)->Update(_deltaTime);
 	}
+
+	UpdatePlayerUI(_deltaTime);
+
+	DBOUT(m_gameObjs.at(0)->GetSprite().GetRotation());
 }
 
 void PlayMode::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
@@ -66,20 +70,18 @@ void PlayMode::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
 	}
 }
 
-void PlayMode::AddObj(GameObject * _ptrObj) {
+void PlayMode::AddObj(GameObject* _ptrObj) {
 	assert(_ptrObj);
 
 	m_gameObjs.push_back(_ptrObj);
 }
 
-void PlayMode::RemoveObj(GameObject * _ptrObj) {
+void PlayMode::RemoveObj(GameObject* _ptrObj) {
 	size_t objSize = m_gameObjs.size();
 	assert(objSize > 0);					// Make sure there's object that can be deleted
 
 	m_gameObjs.erase(std::remove(m_gameObjs.begin(), m_gameObjs.end(), _ptrObj));
 	assert(objSize != m_gameObjs.size());	// Check if the object has been deleted
-
-	delete _ptrObj;
 }
 
 GameObject* PlayMode::FindObj(const std::type_info & _type, bool _isActive) {
@@ -126,7 +128,7 @@ void PlayMode::SetupBackground() {
 
 void PlayMode::ScrollBackground(float _deltaTime) {
 	// Scroll each background at different rates(closer = faster) to add a parallax effect
-	for (unsigned i(0); i < m_parallaxBGLayers.size(); ++i) {
+	for (size_t i(0); i < m_parallaxBGLayers.size(); ++i) {
 		Sprite& bgElement = m_parallaxBGLayers.at(i);
 		const float paraScrollRate = _deltaTime * m_scrollSpeed * (i + 1);
 
@@ -138,7 +140,9 @@ void PlayMode::ScrollBackground(float _deltaTime) {
 
 void PlayMode::SetupPlayerUI() {
 	D3D& d3d = MainGame::Get().GetD3D();
+
 	SetupHealthbar(d3d);
+	SetupHotBar(d3d);
 	SetupGameClock();
 }
 
@@ -147,15 +151,26 @@ void PlayMode::SetupGameClock() {
 	MenuText* ptrClockDisplay = dynamic_cast<MenuText*>(&m_menuManager.CreateNode(MenuNode::Type::TEXT));
 	ptrClockDisplay->m_nodeName = "ui_clock_display";
 	// Set parent to root node
-	ptrClockDisplay->SetParent(m_menuManager.FindNode("menu_player_UI", "menu_player_UI"));
+	ptrClockDisplay->SetParent(*m_uiRoot);
 	ptrClockDisplay->m_text = m_inGameClock.GetMinutesFormatted() + ':' + m_inGameClock.GetSecondsFormatted(2);
 	ptrClockDisplay->m_width = 512;
 	ptrClockDisplay->m_height = 64;
 	ptrClockDisplay->m_x = screenDimScaleX * .01f;
 	ptrClockDisplay->m_y = screenDimScaleY * 0.01f;
-	ptrClockDisplay->m_nodeID = 1;
-	ptrClockDisplay->m_font = "algerian";
-	ptrClockDisplay->m_pitch = 12;
+	ptrClockDisplay->m_font = "bauhaus";
+	ptrClockDisplay->m_pitch = 43;
+
+	MenuText* ptrFPSCounter = dynamic_cast<MenuText*>(&m_menuManager.CreateNode(MenuNode::Type::TEXT));
+	ptrFPSCounter->m_nodeName = "ui_fps_counter";
+
+	// Set parent to root node
+	ptrFPSCounter->SetParent(*m_uiRoot);
+	ptrFPSCounter->m_width = 512;
+	ptrFPSCounter->m_height = 64;
+	ptrFPSCounter->m_x = screenDimScaleX * .9f;
+	ptrFPSCounter->m_y = screenDimScaleY * 0.01f;
+	ptrFPSCounter->m_font = "bauhaus";
+	ptrFPSCounter->m_pitch = 43;
 }
 
 void PlayMode::SetupHealthbar(D3D& _d3d) {
@@ -165,20 +180,18 @@ void PlayMode::SetupHealthbar(D3D& _d3d) {
 
 	// Create Root Menu for player UI
 	MenuNode& playerUIRoot = m_menuManager.AddMenu("menu_player_UI", Settings::GAME_RES);
+	m_uiRoot = &playerUIRoot;	// Store root reference
 
-	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/health_bar_bg.dds", "ui_healthbar_bg", APPEND_PATH, &frames);
-	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/health_bar_fg.dds", "ui_healthbar_fg", APPEND_PATH, &frames);
+	/*_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/health_bar_bg.dds", "ui_healthbar_bg", APPEND_PATH, &frames);
+	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/health_bar_fg.dds", "ui_healthbar_fg", APPEND_PATH, &frames);*/
 
 	// Health bar background
 	MenuImage* ptrHPBarBG = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
 
 	ptrHPBarBG->m_nodeName = "ui_healthbar_background";
-	ptrHPBarBG->m_textureName = "ui_healthbar_bg";
+	ptrHPBarBG->m_textureName = "ui_health_bar_bg";
 	ptrHPBarBG->m_width = 540;
 	ptrHPBarBG->m_height = 32;
-	ptrHPBarBG->m_x = ((Settings::GAME_RES.x - ptrHPBarBG->m_width) * .5f);
-	ptrHPBarBG->m_y = Settings::GAME_RES.y * .5f;
-	ptrHPBarBG->m_nodeID = 0;
 	ptrHPBarBG->m_frameID = 0;
 	ptrHPBarBG->SetParent(playerUIRoot);
 
@@ -186,12 +199,11 @@ void PlayMode::SetupHealthbar(D3D& _d3d) {
 	MenuImage* ptrHPBarFG = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
 
 	ptrHPBarFG->m_nodeName = "ui_healthbar_foreground";
-	ptrHPBarFG->m_textureName = "ui_healthbar_fg";
+	ptrHPBarFG->m_textureName = "ui_health_bar_fg";
 	ptrHPBarFG->m_x = 5;
 	ptrHPBarFG->m_y = 5;
 	ptrHPBarFG->m_width = 530;
 	ptrHPBarFG->m_height = 22;
-	ptrHPBarFG->m_nodeID = 0;
 	ptrHPBarFG->m_frameID = 0;
 	ptrHPBarFG->SetParent(*ptrHPBarBG);
 
@@ -199,44 +211,85 @@ void PlayMode::SetupHealthbar(D3D& _d3d) {
 	MenuText* ptrHPDisplay = dynamic_cast<MenuText*>(&m_menuManager.CreateNode(MenuNode::Type::TEXT));
 
 	ptrHPDisplay->m_nodeName = "ui_healthbar_text";
-	Player* ptrPlayer = dynamic_cast<Player*>(FindObj(typeid(Player), true));
-	ptrHPDisplay->m_text = "HP: " + std::to_string((int)ptrPlayer->GetHealthHandler().GetCurHealth()) +
-		'/' + std::to_string((int)ptrPlayer->GetHealthHandler().GetMaxHealth());
+	ptrHPDisplay->m_text = "HP: NOT UPDATING";
 	ptrHPDisplay->m_x = 0;
 	ptrHPDisplay->m_y = -64;
 	ptrHPDisplay->m_width = 512;
 	ptrHPDisplay->m_height = 64;
-	ptrHPDisplay->m_font = "algerian";
-	ptrHPDisplay->m_pitch = 12;
-	ptrHPDisplay->m_nodeID = 1;
+	ptrHPDisplay->m_font = "bauhaus";
+	ptrHPDisplay->m_pitch = 43;
 	ptrHPDisplay->SetParent(*ptrHPBarBG);
 }
 
-void PlayMode::UpdatePlayerUI() {
+void PlayMode::SetupHotBar(D3D & _d3d) {
+	std::vector<TextureCache::Data::Sprite> frames{
+		{{0,0}, STRETCHED, {0,0,64,64}}
+	};
+	std::vector<TextureCache::Data::Sprite> energyBallFrames{
+		{{0,0}, STRETCHED, {0,0,783,775}}
+	};
+	// Create Root Menu for player UI
+	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/item_hotbar.dds", "ui_item_hotbar", APPEND_PATH, &frames);
+	MenuImage* ptrItemHotBar = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
+
+	ptrItemHotBar->m_nodeName = "ui_primary_hotbar";
+	ptrItemHotBar->m_textureName = "ui_item_hotbar";
+	ptrItemHotBar->SetParent(*m_uiRoot);
+	ptrItemHotBar->m_frameID = 0;
+	ptrItemHotBar->m_width = 96;
+	ptrItemHotBar->m_height = 96;
+
+	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "Projectiles/energy_ball.dds", "ui_energy_ball", APPEND_PATH, &energyBallFrames);
+	MenuImage* ptrPrimaryItem = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
+
+	ptrPrimaryItem->m_nodeName = "ui_primary_item";
+	ptrPrimaryItem->m_textureName = "ui_energy_ball";
+	ptrPrimaryItem->SetParent(*ptrItemHotBar);
+	ptrPrimaryItem->m_frameID = 0;
+	ptrPrimaryItem->m_width = 64;
+	ptrPrimaryItem->m_height = 64;
+}
+
+void PlayMode::UpdatePlayerUI(float _deltaTime) {
 	UpdateScreenDimScale();
+	UpdateItemHotbar();
 	UpdateHealthBar();
-	UpdateGameClock();
+	UpdateGameClock(_deltaTime);
+}
+
+void PlayMode::UpdateItemHotbar() {
+	MenuNode& itemHotBar = MainGame::Get().GetMenuManager().FindNode("menu_player_UI", "ui_primary_hotbar");
+
+	itemHotBar.m_x = (screenDimScaleX * .9f);
+	itemHotBar.m_y = screenDimScaleY - (itemHotBar.m_height / 2.f) - 66.f;
 }
 
 void PlayMode::UpdateHealthBar() {
 	Player* ptrPlayer = dynamic_cast<Player*>(m_gameObjs.at(0));
-
 	// Health bar element references
 	MenuNode& hpBarBGNode = MainGame::Get().GetMenuManager().FindNode("menu_player_UI", "ui_healthbar_background");
 	MenuNode& hpBarFGNode = *hpBarBGNode.FindNode("ui_healthbar_foreground");
 	MenuText& hpBarDisplay = dynamic_cast<MenuText&>(*hpBarBGNode.FindNode("ui_healthbar_text"));
+	HealthHandler playerHealth = dynamic_cast<Player*>(FindObj(typeid(Player), true))->GetHealthHandler();
 
 	hpBarBGNode.m_x = ((screenDimScaleX - hpBarBGNode.m_width) * .02f);
 	hpBarBGNode.m_y = screenDimScaleY - 50.f;
 	// Length of foreground HP bar should scale with player health
-	hpBarFGNode.m_width = (530 * (ptrPlayer->GetHealthHandler().GetHealthRatio()));
-	hpBarDisplay.m_text = "HP: " + std::to_string((int)ptrPlayer->GetHealthHandler().GetCurHealth()) +
-		'/' + std::to_string((int)ptrPlayer->GetHealthHandler().GetMaxHealth());
+	hpBarFGNode.m_width = (530 * (playerHealth.GetHealthRatio()));
+	hpBarDisplay.m_text = "HP: " + std::to_string((int)playerHealth.GetCurHealth()) +
+		'/' + std::to_string((int)playerHealth.GetMaxHealth());
 }
 
-void PlayMode::UpdateGameClock() {
+void PlayMode::UpdateGameClock(float _deltaTime) {
 	MenuText& clockDisplay = dynamic_cast<MenuText&>(MainGame::Get().GetMenuManager().FindNode("menu_player_UI", "ui_clock_display"));
+
 	clockDisplay.m_text = m_inGameClock.GetMinutesFormatted() + ':' + m_inGameClock.GetSecondsFormatted(2);
 	clockDisplay.m_x = screenDimScaleX * .01f;
 	clockDisplay.m_y = screenDimScaleY * 0.01f;
+
+	MenuText& fpsCounter = dynamic_cast<MenuText&>(MainGame::Get().GetMenuManager().FindNode("menu_player_UI", "ui_fps_counter"));
+
+	fpsCounter.m_text = "FPS: " + std::to_string((int)(1 / _deltaTime));
+	fpsCounter.m_x = screenDimScaleX * .88f;
+	fpsCounter.m_y = screenDimScaleY * 0.01f;
 }

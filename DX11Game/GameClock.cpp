@@ -31,7 +31,10 @@ std::string GameClock::GetMinutesFormatted() const {
 std::string GameClock::GetSecondsFormatted(int _precision) const {
 	std::string seconds;
 	std::stringstream stream;
+
+	// Truncate precision of seconds to _precision decimal places
 	stream << std::fixed << std::setprecision(_precision) << m_seconds;
+
 	if (m_seconds < 10) {
 		seconds += '0';
 	}
