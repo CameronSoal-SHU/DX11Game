@@ -2,6 +2,7 @@
 #include "D3DUtil.h"
 #include "CommonStates.h"
 #include "WindowUtil.h"
+#include "GameConstants.h"
 
 // Static member variable instances
 Input MainGame::mouseKeyboardInput;
@@ -64,35 +65,26 @@ void MainGame::LoadFontAssets() {
 
 void MainGame::LoadUIAssets() {
 	TextureCache& txtrCache = m_d3d.GetTextureCache();
-	const std::vector<TextureCache::Data::Sprite> hpBarFrames{
-		{{0,0}, STRETCHED, {0,0,32,32}}
-	};
 
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), "UI/health_bar_bg.dds", "ui_health_bar_bg", APPEND_PATH, &hpBarFrames);
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), "UI/health_bar_fg.dds", "ui_health_bar_fg", APPEND_PATH, &hpBarFrames);
+	// UI Health bar
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_BG_PATH, TxtrNames::HEALTH_BAR_BG_TXTR_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_FG_PATH, TxtrNames::HEALTH_BAR_FG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
+
+	// UI Item Hotbar
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_PATH, TxtrNames::ITEM_HOTBAR_TXTR_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
 }
 
 void MainGame::LoadPlayerAssets() {
 	TextureCache& txtrCache = m_d3d.GetTextureCache();
-	const std::string playerShipPath = "Ship/ship_test.dds";
-	const std::string playerTxtrName = "player_ship";
-	const std::string thrustPath = "Ship/thrust.dds";
-	const std::string thrustTxtrName = "ship_thrust";
-	const std::vector<TextureCache::Data::Sprite> thrustFrames {
-		{{0, 0}, NOT_STRETCHED, { 0,  0, 15, 16} },
-		{{0, 0}, NOT_STRETCHED, { 16, 0, 31, 16} },
-		{{0, 0}, NOT_STRETCHED, { 32, 0, 47, 16} },
-		{{0, 0}, NOT_STRETCHED, { 48, 0, 64, 16} },
-	};
 
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), playerShipPath, playerTxtrName, APPEND_PATH);
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), thrustPath, thrustTxtrName, APPEND_PATH, &thrustFrames);
+	// Player sprites
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::PLAYER_TXTR_PATH, TxtrNames::PLAYER_TXTR_NAME, APPEND_PATH);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::THRUST_TXTR_PATH, TxtrNames::THRUST_TXTR_NAME, APPEND_PATH, &TxtrFrames::THRUST_TXTR_FRAMES);
 }
 
 void MainGame::LoadItemAssets() {
 	TextureCache& txtrCache = m_d3d.GetTextureCache();
-	const std::string energyBallPath = "Projectiles/energy_ball.dds";
-	const std::string energyBallTxtrName = "proj_energy_ball";
 
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), energyBallPath, energyBallTxtrName, APPEND_PATH);
+	// Energy ball item
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENERGY_BALL_PATH, TxtrNames::ENERGY_BALL_NAME, APPEND_PATH, &TxtrFrames::ENERGY_BALL_FRAMES);
 }

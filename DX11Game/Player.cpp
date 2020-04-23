@@ -122,11 +122,8 @@ void Player::PlayerInput(float _deltaTime) {
 }
 
 void Player::LoadShipTexture(D3D& _d3d) {
-	// Texture name for ship
-	const std::string shipTextureName = "player_ship";
-
 	// Set player texture to ship
-	m_sprite.SetTexture(shipTextureName, *_d3d.GetTextureCache().GetData(shipTextureName).ptrTexture);
+	m_sprite.SetTexture(TxtrNames::PLAYER_TXTR_NAME, *_d3d.GetTextureCache().GetData(TxtrNames::PLAYER_TXTR_NAME).ptrTexture);
 
 	m_sprite.SetScale({ 0.15f, 0.15f });
 	m_sprite.SetOrigin(m_sprite.GetDimRadius());	// Set origin to centre of texture

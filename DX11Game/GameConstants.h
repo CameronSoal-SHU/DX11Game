@@ -1,3 +1,8 @@
+#include <string>
+#include <vector>
+#include "TextureCache.h"
+
+
 namespace GameConsts {
 	const unsigned char KEY_NUMPAD_ENTER { 0xf0 };
 	const unsigned char KEY_LALT { 0xf1 };
@@ -42,4 +47,43 @@ namespace GameConsts {
 	const unsigned char KEY_Z { 0x5a };
 
 	const float EPSILON { .00000001f };
+}
+
+// Collection of all texture directories for use across entire project
+namespace TxtrDirs {
+	const std::string PLAYER_TXTR_PATH	 = "Ship/ship_test.dds";			// Player ship sprite
+	const std::string THRUST_TXTR_PATH	 = "Ship/thrust.dds";				// Ship thrust animated sprite
+	const std::string ITEM_HOTBAR_PATH	 = "UI/item_hotbar.dds";			// Player UI item hotbar
+	const std::string HEALTH_BAR_BG_PATH = "UI/health_bar_bg.dds";			// Player UI healthbar background
+	const std::string HEALTH_BAR_FG_PATH = "UI/health_bar_fg.dds";			// Player UI healthbar foreground
+	const std::string ENERGY_BALL_PATH	 = "Projectiles/energy_ball.dds";	// Energy ball Projectile
+}
+
+// Collection of all texture nicknames in TextureCache for use across entire project
+namespace TxtrNames {
+	const std::string PLAYER_TXTR_NAME		  = "player_ship";
+	const std::string THRUST_TXTR_NAME		  = "ship_thrust";
+	const std::string ITEM_HOTBAR_TXTR_NAME	  = "ui_item_hotbar";
+	const std::string HEALTH_BAR_BG_TXTR_NAME = "ui_health_bar_bg";
+	const std::string HEALTH_BAR_FG_TXTR_NAME = "ui_health_bar_fg";
+	const std::string ENERGY_BALL_TXTR_NAME	  = "proj_energy_ball";
+}
+
+// Collection of all texture frames in TextureCache for use across entire project
+namespace TxtrFrames {
+	const std::vector<TextureCache::Data::Sprite> THRUST_TXTR_FRAMES{
+		{{0, 0}, NOT_STRETCHED, { 0,  0, 15, 16} },
+		{{0, 0}, NOT_STRETCHED, { 16, 0, 31, 16} },
+		{{0, 0}, NOT_STRETCHED, { 32, 0, 47, 16} },
+		{{0, 0}, NOT_STRETCHED, { 48, 0, 64, 16} },
+	};
+	const std::vector<TextureCache::Data::Sprite> HEALTH_BAR_FRAMES {
+		{{0,0}, STRETCHED, {0,0,32,32}}
+	};
+	const std::vector<TextureCache::Data::Sprite> ITEM_HOTBAR_FRAMES {
+		{{0,0}, STRETCHED, {0,0,64,64}},
+	};
+	const std::vector<TextureCache::Data::Sprite> ENERGY_BALL_FRAMES {
+		{{0,0}, STRETCHED, {0,0,783,775}}
+	};
 }

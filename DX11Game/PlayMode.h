@@ -39,6 +39,9 @@ private:
 	std::vector<Sprite> m_parallaxBGLayers;
 	float m_scrollSpeed = 50.f;
 
+	float m_fpsUpdateDelay = 0.5f;
+	float m_fpsUpdateDelayRemaining = 0.5f;
+
 	std::vector<GameObject*> m_gameObjs;
 	MenuManager& m_menuManager;				// Holds menu manager reference
 	MenuNode* m_uiRoot;						// Holds the menu page for the UI root

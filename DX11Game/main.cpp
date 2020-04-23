@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE _curInstance, HINSTANCE _prevInstance,
 
 		deltaTime = WindowUtil::Get().EndLoop(canUpdateRender);
 		// If a bad deltaTime value occurs (generally in abnomally high Frame Rates exceeding 10000)
-		// Set the deltaTime to the last good deltaTime recorded to avoid slow movement
+		// Set the deltaTime to the last good deltaTime recorded to avoid slow motion
 		if (deltaTime < VERY_SMALL) deltaTime = goodDeltaTime;
 	}
 

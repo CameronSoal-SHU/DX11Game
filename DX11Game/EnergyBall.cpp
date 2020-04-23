@@ -1,5 +1,5 @@
 #include "EnergyBall.h"
-
+#include "GameConstants.h"
 
 
 EnergyBall::EnergyBall(CharacterBase& _owner)
@@ -7,7 +7,7 @@ EnergyBall::EnergyBall(CharacterBase& _owner)
 {
 	UpdateWeaponStats();
 
-	m_projTxtrName = "proj_energy_ball";
+	m_projTxtrName = TxtrNames::ENERGY_BALL_NAME;
 	m_itemName = "Plasma Cannon";
 
 	ptrProjectile = new EnergyBallProj(m_projTxtrName, m_weapStats);

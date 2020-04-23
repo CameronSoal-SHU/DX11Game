@@ -182,14 +182,11 @@ void PlayMode::SetupHealthbar(D3D& _d3d) {
 	MenuNode& playerUIRoot = m_menuManager.AddMenu("menu_player_UI", Settings::GAME_RES);
 	m_uiRoot = &playerUIRoot;	// Store root reference
 
-	/*_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/health_bar_bg.dds", "ui_healthbar_bg", APPEND_PATH, &frames);
-	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/health_bar_fg.dds", "ui_healthbar_fg", APPEND_PATH, &frames);*/
-
 	// Health bar background
 	MenuImage* ptrHPBarBG = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
 
 	ptrHPBarBG->m_nodeName = "ui_healthbar_background";
-	ptrHPBarBG->m_textureName = "ui_health_bar_bg";
+	ptrHPBarBG->m_textureName = TxtrNames::HEALTH_BAR_BG_NAME;
 	ptrHPBarBG->m_width = 540;
 	ptrHPBarBG->m_height = 32;
 	ptrHPBarBG->m_frameID = 0;
@@ -199,7 +196,7 @@ void PlayMode::SetupHealthbar(D3D& _d3d) {
 	MenuImage* ptrHPBarFG = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
 
 	ptrHPBarFG->m_nodeName = "ui_healthbar_foreground";
-	ptrHPBarFG->m_textureName = "ui_health_bar_fg";
+	ptrHPBarFG->m_textureName = TxtrNames::HEALTH_BAR_FG_NAME;
 	ptrHPBarFG->m_x = 5;
 	ptrHPBarFG->m_y = 5;
 	ptrHPBarFG->m_width = 530;
@@ -222,28 +219,20 @@ void PlayMode::SetupHealthbar(D3D& _d3d) {
 }
 
 void PlayMode::SetupHotBar(D3D & _d3d) {
-	std::vector<TextureCache::Data::Sprite> frames{
-		{{0,0}, STRETCHED, {0,0,64,64}}
-	};
-	std::vector<TextureCache::Data::Sprite> energyBallFrames{
-		{{0,0}, STRETCHED, {0,0,783,775}}
-	};
 	// Create Root Menu for player UI
-	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "UI/item_hotbar.dds", "ui_item_hotbar", APPEND_PATH, &frames);
 	MenuImage* ptrItemHotBar = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
 
 	ptrItemHotBar->m_nodeName = "ui_primary_hotbar";
-	ptrItemHotBar->m_textureName = "ui_item_hotbar";
+	ptrItemHotBar->m_textureName = TxtrNames::ITEM_HOTBAR_NAME;
 	ptrItemHotBar->SetParent(*m_uiRoot);
 	ptrItemHotBar->m_frameID = 0;
 	ptrItemHotBar->m_width = 96;
 	ptrItemHotBar->m_height = 96;
 
-	_d3d.GetTextureCache().LoadTexture(&_d3d.GetDevice(), "Projectiles/energy_ball.dds", "ui_energy_ball", APPEND_PATH, &energyBallFrames);
 	MenuImage* ptrPrimaryItem = dynamic_cast<MenuImage*>(&m_menuManager.CreateNode(MenuNode::Type::IMAGE));
 
 	ptrPrimaryItem->m_nodeName = "ui_primary_item";
-	ptrPrimaryItem->m_textureName = "ui_energy_ball";
+	ptrPrimaryItem->m_textureName = TxtrNames::ENERGY_BALL_NAME;
 	ptrPrimaryItem->SetParent(*ptrItemHotBar);
 	ptrPrimaryItem->m_frameID = 0;
 	ptrPrimaryItem->m_width = 64;
@@ -281,6 +270,8 @@ void PlayMode::UpdateHealthBar() {
 }
 
 void PlayMode::UpdateGameClock(float _deltaTime) {
+	m_fpsUpdateDelayRemaining -= _deltaTime;
+
 	MenuText& clockDisplay = dynamic_cast<MenuText&>(MainGame::Get().GetMenuManager().FindNode("menu_player_UI", "ui_clock_display"));
 
 	clockDisplay.m_text = m_inGameClock.GetMinutesFormatted() + ':' + m_inGameClock.GetSecondsFormatted(2);
@@ -289,9 +280,14 @@ void PlayMode::UpdateGameClock(float _deltaTime) {
 
 	MenuText& fpsCounter = dynamic_cast<MenuText&>(MainGame::Get().GetMenuManager().FindNode("menu_player_UI", "ui_fps_counter"));
 
-	std::string fpsCount = "FPS: " + std::to_string((int)(1 / _deltaTime));
-	fpsCounter.m_text = fpsCount;
-	DBOUT(fpsCount);
+	if (m_fpsUpdateDelayRemaining <= 0.f) {
+		m_fpsUpdateDelayRemaining = m_fpsUpdateDelay;
+
+		std::string fpsCount = "FPS: " + std::to_string((int)(1 / _deltaTime));
+		fpsCounter.m_text = fpsCount;
+		DBOUT(fpsCount);
+	}
+	
 	fpsCounter.m_x = screenDimScaleX * .88f;
 	fpsCounter.m_y = screenDimScaleY * 0.01f;
 }
