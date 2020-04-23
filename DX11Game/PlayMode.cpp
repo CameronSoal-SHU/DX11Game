@@ -56,7 +56,7 @@ void PlayMode::Update(float _deltaTime) {
 
 	UpdatePlayerUI(_deltaTime);
 
-	DBOUT(m_gameObjs.at(0)->GetSprite().GetRotation());
+	//DBOUT(m_gameObjs.at(0)->GetSprite().GetRotation());
 }
 
 void PlayMode::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
@@ -289,7 +289,9 @@ void PlayMode::UpdateGameClock(float _deltaTime) {
 
 	MenuText& fpsCounter = dynamic_cast<MenuText&>(MainGame::Get().GetMenuManager().FindNode("menu_player_UI", "ui_fps_counter"));
 
-	fpsCounter.m_text = "FPS: " + std::to_string((int)(1 / _deltaTime));
+	std::string fpsCount = "FPS: " + std::to_string((int)(1 / _deltaTime));
+	fpsCounter.m_text = fpsCount;
+	DBOUT(fpsCount);
 	fpsCounter.m_x = screenDimScaleX * .88f;
 	fpsCounter.m_y = screenDimScaleY * 0.01f;
 }

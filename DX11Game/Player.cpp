@@ -36,8 +36,6 @@ Player::~Player() {
 
 void Player::Update(float _deltaTime) {
 	CharacterBase::Update(_deltaTime);
-
-	PlayerInput(_deltaTime);
 	m_thrust.GetAnim().Update(_deltaTime);
 
 	m_thrust.SetPos(m_sprite.GetPos());
@@ -48,6 +46,8 @@ void Player::Update(float _deltaTime) {
 			item->Update(_deltaTime);
 		}
 	}
+
+	PlayerInput(_deltaTime);
 
 	//Hit hit = m_collider.IntersectAABB(m_ptrPlayMode->GetBox().GetCollider());
 	//if (hit.Collided()) {	// Was there a collision?
@@ -77,15 +77,14 @@ void Player::SetupWeapons() {
 void Player::PlayerInput(float _deltaTime) {
 	m_sprite.SetVelocity({ 0.f, 0.f });
 	DirectX::SimpleMath::Vector2& spriteVel = m_sprite.GetVelocity();
-
 	const GamePadInput::ControllerData ctrlData = MainGame::gamePad.GetGamePadData(0);
 
 	if (MainGame::gamePad.IsEnabled(0)) {
 		// Set velocity to stick direction (invert Y-axis)
-		m_sprite.SetVelocity(DirectX::SimpleMath::Vector2 { 
+		m_sprite.SetVelocity(DirectX::SimpleMath::Vector2(
 			ctrlData.leftStick.x,	// X-axis movement
 			-ctrlData.leftStick.y	// Y-axis movement
-		} * m_moveSpeed);
+		) * m_moveSpeed);
 
 		const float rightStickRotation = atan2f(ctrlData.rightStick.x,
 			ctrlData.rightStick.y);
@@ -112,7 +111,7 @@ void Player::PlayerInput(float _deltaTime) {
 		}
 
 		// Angle in radians between the sprites position and the mouse position
-		const DirectX::SimpleMath::Vector2 mousePos = MainGame::mouseKeyboardInput.GetMousePosScaled(true);
+		const DirectX::SimpleMath::Vector2 mousePos = MainGame::mouseKeyboardInput.GetMousePosScaled(ABSOLUTE);
 		const DirectX::SimpleMath::Vector2 spritePos = m_sprite.GetPos();
 		const float deltaY = mousePos.y - spritePos.y;
 		const float deltaX = mousePos.x - spritePos.x;

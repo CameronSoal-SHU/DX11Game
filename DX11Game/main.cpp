@@ -48,15 +48,19 @@ int WINAPI WinMain(HINSTANCE _curInstance, HINSTANCE _prevInstance,
 	new MainGame(d3d);
 
 	bool canUpdateRender;
-	float deltaTime(0.f);
+	float deltaTime(0.f), goodDeltaTime(0.f);
 
 	while (WindowUtil::Get().BeginLoop(canUpdateRender)) {
 		if (canUpdateRender && deltaTime > 0.f) {
+			goodDeltaTime = deltaTime;	// Record previous deltaTime
 			MainGame::Get().Update(deltaTime);
 			MainGame::Get().Render(deltaTime);
 		}
 
 		deltaTime = WindowUtil::Get().EndLoop(canUpdateRender);
+		// If a bad deltaTime value occurs (generally in abnomally high Frame Rates exceeding 10000)
+		// Set the deltaTime to the last good deltaTime recorded to avoid slow movement
+		if (deltaTime < VERY_SMALL) deltaTime = goodDeltaTime;
 	}
 
 	MainGame::Get().Release();

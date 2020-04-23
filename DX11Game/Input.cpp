@@ -117,8 +117,8 @@ DirectX::SimpleMath::Vector2 Input::GetMousePosScaled(bool _absolute) const
 
 	// Get ratio for (resolution : window size) scale to correct mouse position reading
 	WindowUtil::Get().GetClientExtends(screenWidth, screenHeight);
-	DirectX::SimpleMath::Vector2 screenScale = Settings::GAME_RES / 
-		DirectX::SimpleMath::Vector2((float)screenWidth, (float)screenHeight);
+	const DirectX::SimpleMath::Vector2 screenScale(Settings::GAME_RES.x / (float)screenWidth, 
+		Settings::GAME_RES.y / (float)screenHeight);
 
 	return GetMousePos(_absolute) * screenScale;
 }

@@ -4,6 +4,8 @@
 #define MOUSE_VISIBLE true
 #define MOUSE_FREE false
 #define MOUSE_INVISIBLE false
+#define ABSOLUTE true
+#define RELATIVE false
 
 #include "D3DUtil.h"
 
