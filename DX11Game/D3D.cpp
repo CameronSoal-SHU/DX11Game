@@ -79,13 +79,16 @@ void D3D::ReleaseD3D(bool _extraInfo) {
 
 	ReleaseCOM(m_ptrD3DImmediateCtx);
 
+	// DO NOT DEBUG LOG OUT INFORMATION IF BUILD IS NOT IN DEBUG
+#ifdef DEBUG
 	if (_extraInfo) {
 		ID3D11Debug* ptrD3DDebug;
 		HR(m_ptrD3DDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&ptrD3DDebug)));
 		HR(ptrD3DDebug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY));
 
 		ReleaseCOM(ptrD3DDebug);
-	}
+}
+#endif // DEBUG
 
 	ReleaseCOM(m_ptrD3DDevice);
 }

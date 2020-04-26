@@ -5,11 +5,13 @@
 #include "GameSettings.h"
 #include "MenuNode.h"
 #include "GameClock.h"
+#include "PlayerUI.h"
 
 #include <vector>
 #include <memory>
 
 class MainGame;
+class ItemShopMode;
 
 class PlayMode : public ModeBase
 {
@@ -29,12 +31,15 @@ public:
 
 	std::string GetModeName() const override { return MODE_NAME; }
 
-	void AddObj(GameObject* _ptrObj);
-	void RemoveObj(GameObject* _ptrObj);
+	void AddObj(std::shared_ptr<GameObject> _ptrObj);
+	void RemoveObj(std::shared_ptr<GameObject> _ptrObj);
 
 	// Find the first object in container that matches the typeid and active status
-	GameObject* FindObj(const std::type_info& _type, bool _isActive);
+	// Shared pointer is used to more easily handle allocation/deallocation of memory
+	std::shared_ptr<GameObject> FindObj(const std::type_info& _type, bool _isActive);
 private:
+	void GetPlayerInput(float _deltaTime);
+
 	// Parallax background layers
 	std::vector<Sprite> m_parallaxBGLayers;
 	float m_scrollSpeed = 50.f;
@@ -42,11 +47,14 @@ private:
 	float m_fpsUpdateDelay = 0.5f;
 	float m_fpsUpdateDelayRemaining = 0.5f;
 
-	std::vector<GameObject*> m_gameObjs;
-	MenuManager& m_menuManager;				// Holds menu manager reference
-	MenuNode* m_uiRoot;						// Holds the menu page for the UI root
+	std::vector<std::shared_ptr<GameObject>> m_gameObjs;
+	MenuManager& m_menuManager;						// Holds menu manager reference
+	std::shared_ptr<ItemShopMode> m_ptrItemShop;	// Holds reference to in-game item shop
+	MenuNode* m_uiRoot;								// Holds the menu page for the UI root
 
-	GameClock m_inGameClock;				// Track current play time for scaling difficulty
+	GameClock m_inGameClock;						// Track current play time for scaling difficulty
+
+	PlayerUI m_playerUI;	// Players UI
 
 	float screenDimScaleX;
 	float screenDimScaleY;
@@ -59,11 +67,11 @@ private:
 	// And setup UI elements
 	void SetupPlayerUI();
 	void SetupGameClock();
-	void SetupHealthbar(D3D& _d3d);
+	//void SetupHealthbar(D3D& _d3d);
 	void SetupHotBar(D3D& _d3d);
 
 	void UpdatePlayerUI(float _deltaTime);
 	void UpdateItemHotbar();
-	void UpdateHealthBar();
+	//void UpdateHealthBar();
 	void UpdateGameClock(float _deltaTime);
 };

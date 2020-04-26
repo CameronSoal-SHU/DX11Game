@@ -156,6 +156,12 @@
     <ClCompile Include="GameClock.cpp">
       <Filter>Menu and UI\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ItemShopMode.cpp">
+      <Filter>Game Modes\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameConstants.h">
@@ -250,6 +256,12 @@
     </ClInclude>
     <ClInclude Include="GameClock.h">
       <Filter>Menu and UI\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemShopMode.h">
+      <Filter>Game Modes\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerUI.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

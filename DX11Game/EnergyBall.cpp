@@ -3,7 +3,7 @@
 
 
 EnergyBall::EnergyBall(CharacterBase& _owner)
-	: Weapon(1.1f, 1.4f, 1.f, 1.f, _owner)
+	: Weapon(1.1f, 7.5f, 1.f, 1.f, _owner)
 {
 	UpdateWeaponStats();
 

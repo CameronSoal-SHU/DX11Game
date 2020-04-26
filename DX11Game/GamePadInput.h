@@ -18,7 +18,7 @@ public:
 		DirectX::SimpleMath::Vector2 leftStick { 0, 0 };
 		DirectX::SimpleMath::Vector2 rightStick{ 0, 0 };
 		// Stick deadzones to prevent bad inputs from loose controllers
-		DirectX::SimpleMath::Vector2 stickDeadZone{ 0.1f, 0.1f };
+		DirectX::SimpleMath::Vector2 stickDeadZone{ 0.075f, 0.075f };
 
 		// Left and right trigger "pressed" amount
 		float leftTrigger = 0.f;

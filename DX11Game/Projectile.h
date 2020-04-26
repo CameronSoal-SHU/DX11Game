@@ -8,9 +8,10 @@ class PlayMode;
 // Projectile class to be created by a Weapon
 // On initialisation, a projectile should inherit the item stats
 // Passed from the Weapon class
-class Projectile : public GameObject
+class Projectile : public GameObject, public std::enable_shared_from_this<Projectile>
 {
 public:
+	std::shared_ptr<Projectile> to_shared_ptr() { return shared_from_this(); }
 	Projectile(const std::string& _txtrName);
 
 	void Update(float _deltaTime) override;

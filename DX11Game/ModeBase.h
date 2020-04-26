@@ -15,5 +15,7 @@ public:
 	virtual void Render(float _dTime, DirectX::SpriteBatch& _sprBatch) = 0;
 	virtual std::string GetModeName() const = 0;
 	virtual void ProcessKey(char _key) {};
+protected:
+	bool m_canSwitchMode = false;
 };
 

@@ -14,7 +14,7 @@ void Projectile::Update(float _deltaTime) {
 	m_projStats.lifeTime -= _deltaTime;
 
 	if (m_projStats.lifeTime <= 0.f) {
-		m_ptrPlayMode->RemoveObj(this);
+		m_ptrPlayMode->RemoveObj(this->to_shared_ptr());
 	}
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 #include "PlayMode.h"
+#include "ItemShopMode.h"
+
 #include "GamePadInput.h"
 #include "Singleton.h"
 #include "ModeManager.h"
@@ -26,19 +28,27 @@ public:
 	// Call all releaseCOMs to free up memory when not in use
 	void Release();
 
+	float GetScreenDimScaleX() const { return m_screenDimScaleX; }
+	float GetScreenDimScaleY() const { return m_screenDimScaleY; }
+
 	// Input devices
 	static Input mouseKeyboardInput;
 	static GamePadInput gamePad;
 private:
+	void UpdateScreenDimScale();
 	// D3D reference
 	D3D& m_d3d;
 	// Sprite batch for sprite data (deletes itself when out of scope)
 	std::unique_ptr<DirectX::SpriteBatch> m_ptrSprBatch = nullptr;
 	ModeManager m_modeManager;
 	MenuManager m_menuManager;
+
+	float m_screenDimScaleX;
+	float m_screenDimScaleY;
 	
 	// Pre load all assets into the texture cache for easy use in game/menus
 	void PreLoadAssets();
+	void LoadBackgroundAssets();
 	void LoadFontAssets();
 	void LoadUIAssets();
 	void LoadPlayerAssets();

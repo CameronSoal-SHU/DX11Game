@@ -1,5 +1,5 @@
 #include "ModeManager.h"
-
+#include "D3DUtil.h"
 
 ModeManager::~ModeManager() {
 	Release();
@@ -18,6 +18,7 @@ void ModeManager::ChangeMode(const std::string & _newMode) {
 
 	// Set the desired mode
 	m_desModeIdx = idx;
+	DBOUT("Current mode changed to: " << _newMode);
 }
 
 void ModeManager::Update(float _dTime) {

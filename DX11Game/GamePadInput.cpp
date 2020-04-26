@@ -82,10 +82,11 @@ bool GamePadInput::IsPressed(int _idx, unsigned short _buttonId) {
 
 bool GamePadInput::IsEnabled(int _idx) {
 	assert(_idx >= 0 && _idx < XUSER_MAX_COUNT);
+	const ControllerData& padData = GetGamePadData(_idx);
 
 	// Check if any of the analogue sticks are being used
-	m_controllerEnabled[_idx] = GetGamePadData(_idx).leftStick != DirectX::SimpleMath::Vector2::Zero ||
-		GetGamePadData(_idx).rightStick != DirectX::SimpleMath::Vector2::Zero;
+	m_controllerEnabled[_idx] = padData.leftStick != DirectX::SimpleMath::Vector2::Zero ||
+		padData.rightStick != DirectX::SimpleMath::Vector2::Zero || padData.leftTrigger || padData.rightTrigger;
 
 	//DBOUT("Controller Enabled: " << m_controllerEnabled[_idx]);
 	return m_controllerEnabled[_idx];

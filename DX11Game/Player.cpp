@@ -47,7 +47,7 @@ void Player::Update(float _deltaTime) {
 		}
 	}
 
-	PlayerInput(_deltaTime);
+	GetPlayerInput(_deltaTime);
 
 	//Hit hit = m_collider.IntersectAABB(m_ptrPlayMode->GetBox().GetCollider());
 	//if (hit.Collided()) {	// Was there a collision?
@@ -68,18 +68,25 @@ void Player::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
 }
 
 void Player::SetupWeapons() {
-	EnergyBall* energyBallWeap = new EnergyBall(*this);
-	energyBallWeap->SetModeOwner(*m_ptrPlayMode);
-	energyBallWeap->SetProjectileScale({ 0.05f, 0.05f });
-	m_weapons.push_back(energyBallWeap);
+	EnergyBall* energyBallWeapPrim = new EnergyBall(*this);
+	EnergyBall* energyBallWeapSec = new EnergyBall(*this);
+
+	energyBallWeapPrim->SetModeOwner(*m_ptrPlayMode);
+	energyBallWeapSec->SetModeOwner(*m_ptrPlayMode);
+
+	energyBallWeapPrim->SetProjectileScale({ 0.05f, 0.05f });
+	energyBallWeapSec->SetProjectileScale({ 0.05f, 0.05f });
+
+	m_weapons.push_back(energyBallWeapPrim);
+	m_weapons.push_back(energyBallWeapSec);
 }
 
-void Player::PlayerInput(float _deltaTime) {
+void Player::GetPlayerInput(float _deltaTime) {
 	m_sprite.SetVelocity({ 0.f, 0.f });
 	DirectX::SimpleMath::Vector2& spriteVel = m_sprite.GetVelocity();
 	const GamePadInput::ControllerData ctrlData = MainGame::gamePad.GetGamePadData(0);
 
-	if (MainGame::gamePad.IsEnabled(0)) {
+	if (MainGame::Get().gamePad.IsEnabled(ctrlData.port)) {
 		// Set velocity to stick direction (invert Y-axis)
 		m_sprite.SetVelocity(DirectX::SimpleMath::Vector2(
 			ctrlData.leftStick.x,	// X-axis movement
@@ -92,8 +99,16 @@ void Player::PlayerInput(float _deltaTime) {
 		if (ctrlData.rightStick.Length() >= ctrlData.stickDeadZone.Length()) {
 			m_sprite.SetRotation(rightStickRotation);
 		}
+
+		if (ctrlData.leftTrigger) {
+			FirePrimary();
+		}
+		if (ctrlData.rightTrigger) {
+			FireSecondary();
+		}
 	}
 	else {
+		// Player Movement
 		if (MainGame::mouseKeyboardInput.IsPressed(GameConsts::KEY_W)) {
 			m_sprite.SetVelocity(spriteVel -= { 0.f, m_moveSpeed.y });
 		}
@@ -106,8 +121,12 @@ void Player::PlayerInput(float _deltaTime) {
 		if (MainGame::mouseKeyboardInput.IsPressed(GameConsts::KEY_D)) {
 			m_sprite.SetVelocity(spriteVel += { m_moveSpeed.x, 0.f });
 		}
+
 		if (MainGame::mouseKeyboardInput.GetMouseDown(Input::MouseButton::LMB)) {
 			FirePrimary();
+		}
+		if (MainGame::mouseKeyboardInput.GetMouseDown(Input::MouseButton::RMB)) {
+			FireSecondary();
 		}
 
 		// Angle in radians between the sprites position and the mouse position
@@ -117,23 +136,22 @@ void Player::PlayerInput(float _deltaTime) {
 		const float deltaX = mousePos.x - spritePos.x;
 		// Get the angle the player has to rotate to face the mouse, (adjusted 90 degrees)
 		const float playerToMouseAngle = atan2f(deltaY, deltaX) + 1.57f;
+
 		m_sprite.SetRotation(playerToMouseAngle);
 	}
 }
 
 void Player::LoadShipTexture(D3D& _d3d) {
 	// Set player texture to ship
-	m_sprite.SetTexture(TxtrNames::PLAYER_TXTR_NAME, *_d3d.GetTextureCache().GetData(TxtrNames::PLAYER_TXTR_NAME).ptrTexture);
+	m_sprite.SetTexture(TxtrNames::PLAYER_NAME, *_d3d.GetTextureCache().GetData(TxtrNames::PLAYER_NAME).ptrTexture);
 
 	m_sprite.SetScale({ 0.15f, 0.15f });
 	m_sprite.SetOrigin(m_sprite.GetDimRadius());	// Set origin to centre of texture
 }
 
 void Player::LoadThrustTexture(D3D & _d3d) {
-	// Texture name for ship thrust
-	const std::string thrustTextureName = "ship_thrust";
-
-	m_thrust.SetTexture(thrustTextureName, *_d3d.GetTextureCache().GetData(thrustTextureName).ptrTexture);
+	// Texture for ship thrust
+	m_thrust.SetTexture(TxtrNames::THRUST_NAME, *_d3d.GetTextureCache().GetData(TxtrNames::THRUST_NAME).ptrTexture);
 	m_thrust.GetAnim().Init(0, 3, 15, LOOP);
 	m_thrust.SetScale({ 4.f,4.f });
 
@@ -148,7 +166,23 @@ void Player::FirePrimary() {
 	Weapon& primaryWeap = *m_weapons.at(0);
 
 	if (primaryWeap.CanUse()) {
-		primaryWeap.FireProjectile(m_sprite.GetPos());
+		const float playerRot = m_sprite.GetRotation();
+		const DirectX::SimpleMath::Vector2 offsetPos(m_sprite.GetScreenDimRadius().x * cosf(playerRot), 
+			m_sprite.GetScreenDimRadius().y * sinf(playerRot));
+
+		primaryWeap.FireProjectile(m_sprite.GetPos() - offsetPos);
+	}
+}
+
+void Player::FireSecondary() {
+	Weapon& primaryWeap = *m_weapons.at(1);
+
+	if (primaryWeap.CanUse()) {
+		const float playerRot = m_sprite.GetRotation();
+		const DirectX::SimpleMath::Vector2 offsetPos(m_sprite.GetScreenDimRadius().x * cosf(playerRot),
+			m_sprite.GetScreenDimRadius().y * sinf(playerRot));
+
+		primaryWeap.FireProjectile(m_sprite.GetPos() + offsetPos);
 	}
 }
 

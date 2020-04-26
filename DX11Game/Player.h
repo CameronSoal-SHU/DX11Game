@@ -22,10 +22,11 @@ private:
 
 	Sprite m_thrust;
 
-	void PlayerInput(float _deltaTime);
+	void GetPlayerInput(float _deltaTime);
 
 	void LoadShipTexture(D3D& _d3d);
 	void LoadThrustTexture(D3D& _d3d);
 
 	void FirePrimary();
+	void FireSecondary();
 };

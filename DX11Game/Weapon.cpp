@@ -34,13 +34,13 @@ void Weapon::Render(float _deltaTime, DirectX::SpriteBatch & _sprBatch) {
 
 void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	// Make a copy of the projectile to be used
-	Projectile* projectileCopy = new Projectile(*ptrProjectile);
+	std::shared_ptr<Projectile> projectileCopy = std::make_shared<Projectile>(*ptrProjectile);
 	const float ownerRot = m_owner->GetSprite().GetRotation();
 	const DirectX::SimpleMath::Vector2 projSpeed(m_weapStats.projSpeed, m_weapStats.projSpeed);
 
 	projectileCopy->SetModeOwner(*m_ptrPlayMode);
 	projectileCopy->SetMoveSpeed(projSpeed);
-	projectileCopy->GetSprite().SetPos(m_owner->GetSprite().GetPos());
+	projectileCopy->GetSprite().SetPos(_pos);
 
 	const DirectX::SimpleMath::Vector2 rotVel(projSpeed.x * sinf(ownerRot), projSpeed.y * -cosf(ownerRot));
 	projectileCopy->SetActive(true);
@@ -48,8 +48,9 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	projectileCopy->GetSprite().SetScale(m_projectileScale);
 
 	m_ptrPlayMode->AddObj(projectileCopy);
-
 	OnUse();
+
+	projectileCopy = nullptr;
 }
 
 void Weapon::UpdateWeaponStats() {

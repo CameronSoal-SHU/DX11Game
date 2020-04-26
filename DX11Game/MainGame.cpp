@@ -23,9 +23,9 @@ MainGame::MainGame(D3D& _d3d)
 }
 
 void MainGame::Update(float _deltaTime) {
-	gamePad.Update();
-	gamePad.IsEnabled(0);
+	UpdateScreenDimScale();
 
+	gamePad.Update();
 	m_modeManager.Update(_deltaTime);
 }
 
@@ -49,11 +49,28 @@ void MainGame::Release() {
 	m_ptrSprBatch = nullptr;
 }
 
+void MainGame::UpdateScreenDimScale() {
+	m_screenDimScaleX = (Settings::GAME_RES.x * Settings::GAME_RES.x) / WindowUtil::Get().GetClientWidth();
+	m_screenDimScaleY = (Settings::GAME_RES.y * Settings::GAME_RES.y) / WindowUtil::Get().GetClientHeight();
+}
+
 void MainGame::PreLoadAssets() {
 	LoadFontAssets();
+	LoadBackgroundAssets();
 	LoadUIAssets();
 	LoadPlayerAssets();
 	LoadItemAssets();
+}
+
+void MainGame::LoadBackgroundAssets() {
+	TextureCache& txtrCache = m_d3d.GetTextureCache();
+
+	// Scrolling space background and stars
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::SPACE_BG_PATH, TxtrNames::SPACE_BG_NAME, APPEND_PATH);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::SPACE_BG_STARS_PATH, TxtrNames::SPACE_BG_STARS_NAME, APPEND_PATH);
+
+	// Item Shop background
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::SHOP_BG_PATH, TxtrNames::SHOP_BG_NAME, APPEND_PATH);
 }
 
 void MainGame::LoadFontAssets() {
@@ -67,19 +84,21 @@ void MainGame::LoadUIAssets() {
 	TextureCache& txtrCache = m_d3d.GetTextureCache();
 
 	// UI Health bar
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_BG_PATH, TxtrNames::HEALTH_BAR_BG_TXTR_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_BG_PATH, TxtrNames::HEALTH_BAR_BG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
 	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_FG_PATH, TxtrNames::HEALTH_BAR_FG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
 
 	// UI Item Hotbar
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_PATH, TxtrNames::ITEM_HOTBAR_TXTR_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_PATH, TxtrNames::ITEM_HOTBAR_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_BG_PATH, TxtrNames::ITEM_HOTBAR_BG_MAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_SLOT_PATH, TxtrNames::ITEM_HOTBAR_SLOT_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
 }
 
 void MainGame::LoadPlayerAssets() {
 	TextureCache& txtrCache = m_d3d.GetTextureCache();
 
 	// Player sprites
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::PLAYER_TXTR_PATH, TxtrNames::PLAYER_TXTR_NAME, APPEND_PATH);
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::THRUST_TXTR_PATH, TxtrNames::THRUST_TXTR_NAME, APPEND_PATH, &TxtrFrames::THRUST_TXTR_FRAMES);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::PLAYER_PATH, TxtrNames::PLAYER_NAME, APPEND_PATH);
+	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::THRUST_PATH, TxtrNames::THRUST_NAME, APPEND_PATH, &TxtrFrames::THRUST_TXTR_FRAMES);
 }
 
 void MainGame::LoadItemAssets() {
