@@ -4,7 +4,6 @@
 #include "GameConstants.h"
 
 
-
 PlayerUI::PlayerUI(PlayMode& _playMode)
 	: m_menuManager(MainGame::Get().GetMenuManager()), 
 	m_d3d(MainGame::Get().GetD3D()), m_playMode(_playMode) {
@@ -12,32 +11,42 @@ PlayerUI::PlayerUI(PlayMode& _playMode)
 	m_rootUINode = &m_menuManager.AddMenu("menu_player_UI", Settings::GAME_RES);
 
 	m_healthBar = new HealthBar();
+	m_gameClock = new InGameClock();
 	m_fpsDisplay = new FPSDisplay();
+	m_itemHotBar = new HotBar();
 }
 
 void PlayerUI::Update(float _deltaTime) {
-#pragma omp parallel sections
+	// Update each UI element in parallel
+	#pragma omp parallel sections
 	{
 		#pragma omp section
-			m_healthBar->Update(_deltaTime);
+		{ m_healthBar->Update(_deltaTime); }
 		#pragma omp section
-			m_fpsDisplay->Update(_deltaTime);
+		{ m_fpsDisplay->Update(_deltaTime); }
+		#pragma omp section
+		{ m_gameClock->Update(_deltaTime); }
+		#pragma omp section
+		{ m_itemHotBar->Update(_deltaTime); }
 	}
-	
 }
 
 
 PlayerUI::~PlayerUI() {
 	delete m_healthBar;
+	delete m_gameClock;
 	delete m_fpsDisplay;
+	delete m_itemHotBar;
 
 	m_healthBar = nullptr;
+	m_gameClock = nullptr;
 	m_fpsDisplay = nullptr;
+	m_itemHotBar = nullptr;
 }
 
 PlayerUI::HealthBar::HealthBar()
 	: menuMgr(PlayerUI::Get().m_menuManager) {
-	// Initialise nodes before multi-threading to guarantee parallel referencing
+	// Initialise nodes
 	healthBarBG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
 	healthBarFG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
 	healthBarDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
@@ -90,10 +99,12 @@ PlayerUI::HealthBar::HealthBar()
 void PlayerUI::HealthBar::Update(float _deltaTime) {
 	// Retrieve the players Health Handler from PlayMode
 	HealthHandler& playerHealth = std::dynamic_pointer_cast<Player>(PlayerUI::Get().m_playMode.FindObj(typeid(Player), true))->GetHealthHandler();
+	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
+	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
 
 	// Scale health bar positioning with screen
-	healthBarBG->m_x = ((MainGame::Get().GetScreenDimScaleX() - healthBarBG->m_width) * .02f);
-	healthBarBG->m_y = MainGame::Get().GetScreenDimScaleY() - 50.f;
+	healthBarBG->m_x = 25 * screenScaleX;
+	healthBarBG->m_y = (Settings::GAME_RES.y - (healthBarBG->m_height / screenScaleX) - 25) * screenScaleY;
 
 	// Set health bar foreground width to match the players remaining health ratio
 	healthBarFG->m_width = (430 * (playerHealth.GetHealthRatio()));
@@ -106,11 +117,32 @@ PlayerUI::InGameClock::InGameClock()
 	clockDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
 	clockDisplay->m_nodeName = "ui_clock_display";
 
-	// Sizing
 	clockDisplay->m_width = 512;
 	clockDisplay->m_height = 64;
 
+	// Set up font used and debug message on failed updates
+	clockDisplay->m_text = "CLOCK NOT UPDATING";
+	clockDisplay->m_font = "bauhaus";
+	clockDisplay->m_pitch = 43;
+
 	clockDisplay->SetParent(*PlayerUI::Get().m_rootUINode);
+}
+
+void PlayerUI::InGameClock::Update(float _deltaTime) {
+	// Tick the clock
+	clock.Update(_deltaTime);
+
+	// Update the clock display text to show the clock time
+	clockDisplay->m_text = clock.GetMinutesFormatted() + ':' + clock.GetSecondsFormatted(2);
+
+	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
+	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
+
+	// Scale clocks position and size on screen to current screen dimensions
+	/*clockDisplay->m_width = 512 * screenScaleX;
+	clockDisplay->m_height = 64 * screenScaleY;*/
+	clockDisplay->m_x = screenScaleX * .01f;
+	clockDisplay->m_y = screenScaleY * .01f;
 }
 
 PlayerUI::FPSDisplay::FPSDisplay() 
@@ -119,10 +151,11 @@ PlayerUI::FPSDisplay::FPSDisplay()
 	frameCountDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
 	frameCountDisplay->m_nodeName = "ui_fps_display";
 
-	frameCountDisplay->m_width = 512;
+	frameCountDisplay->m_width = 200;
 	frameCountDisplay->m_height = 64;
 
-	frameCountDisplay->m_text = "FPS: 0";
+	// Set up font used and debug message on failed updates
+	frameCountDisplay->m_text = "FPS: FAILED UPDATE";
 	frameCountDisplay->m_font = "bauhaus";
 	frameCountDisplay->m_pitch = 43;
 
@@ -142,6 +175,54 @@ void PlayerUI::FPSDisplay::Update(float _deltaTime) {
 		frameCountDisplay->m_text = fpsCount;
 	}
 
-	frameCountDisplay->m_x = MainGame::Get().GetScreenDimScaleX() * .89f;
-	frameCountDisplay->m_y = MainGame::Get().GetScreenDimScaleY() * 0.01f;
+	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
+	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
+
+	// Sizing and positioning on screen
+	/*frameCountDisplay->m_width = 200 * screenScaleX;
+	frameCountDisplay->m_height = 64 * screenScaleY;*/
+	frameCountDisplay->m_x = 1700 * screenScaleX;
+	frameCountDisplay->m_y = .01f * screenScaleY;
+}
+
+PlayerUI::HotBar::HotBar() 
+	: menuMgr(PlayerUI::Get().m_menuManager) {
+	hotBarBG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
+	primaryItem = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
+	secondaryItem = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
+	equipmentItem = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
+
+	//***** HOT BAR BACKGROUND *****//
+	hotBarBG->m_nodeName = "ui_hot_bar_base";
+	hotBarBG->m_textureName = TxtrNames::ITEM_HOTBAR_BG_MAME;
+	hotBarBG->m_frameID = 0;
+
+	hotBarBG->m_width = 288;
+	hotBarBG->m_height = 96;
+	
+	hotBarBG->SetParent(*PlayerUI::Get().m_rootUINode);
+	//******************************//
+	//**** HOT BAR PRIMARY ITEM ****//
+	primaryItem->m_nodeName = "ui_primary_item";
+	primaryItem->m_textureName = TxtrNames::ITEM_HOTBAR_SLOT_NAME;
+	primaryItem->m_frameID = 1;
+
+	primaryItem->m_width = primaryItem->m_height = 96;
+
+	primaryItem->SetParent(*hotBarBG);
+	//******************************//
+}
+
+void PlayerUI::HotBar::Update(float _deltaTime) {
+	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
+	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
+
+	/*hotBarBG->m_width = 288 * screenScaleX;
+	hotBarBG->m_height = 96 * screenScaleY;*/
+
+	// Ensure UI element position remains the same on resize
+	hotBarBG->m_x = (Settings::GAME_RES.x - (hotBarBG->m_width / screenScaleX) - 25) * screenScaleX;
+	hotBarBG->m_y = (Settings::GAME_RES.y - (hotBarBG->m_height / screenScaleX) - 25) * screenScaleY;
+
+	DBOUT( 1 / screenScaleY << ": " << hotBarBG->m_width);
 }

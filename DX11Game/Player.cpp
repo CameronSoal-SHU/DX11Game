@@ -86,7 +86,7 @@ void Player::GetPlayerInput(float _deltaTime) {
 	DirectX::SimpleMath::Vector2& spriteVel = m_sprite.GetVelocity();
 	const GamePadInput::ControllerData ctrlData = MainGame::gamePad.GetGamePadData(0);
 
-	if (MainGame::Get().gamePad.IsEnabled(ctrlData.port)) {
+	if (MainGame::Get().gamePad.IsEnabled(ctrlData.port == -1 ? 0 : ctrlData.port)) {
 		// Set velocity to stick direction (invert Y-axis)
 		m_sprite.SetVelocity(DirectX::SimpleMath::Vector2(
 			ctrlData.leftStick.x,	// X-axis movement

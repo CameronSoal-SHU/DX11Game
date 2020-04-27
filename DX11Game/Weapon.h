@@ -34,6 +34,7 @@ public:
 	DirectX::SimpleMath::Vector2 GetProjectileScale() const { return m_projectileScale; }
 	void SetProjectileScale(const DirectX::SimpleMath::Vector2& _scale) { m_projectileScale = _scale; }
 
+	// Set the weapon stats based on the owners base stats
 	void UpdateWeaponStats();
 	void ResetFireRate() { m_fireDelayRemaining = 1 / m_weapStats.fireRate; }
 
@@ -41,7 +42,6 @@ public:
 	bool CanUse() { return m_fireDelayRemaining <= 0; }
 
 	Projectile* ptrProjectile;			// A link to the base Projectile class that this weapon will fire
-
 protected:
 	WeaponStats m_weapModifiers;		// Holds weapon's stat modifiers
 

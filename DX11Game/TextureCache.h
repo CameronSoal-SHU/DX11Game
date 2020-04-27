@@ -75,8 +75,7 @@ public:
 			frames.clear();
 		}
 		Data(const std::string& _filePath, ID3D11ShaderResourceView* _ptrTxtr, const DirectX::SimpleMath::Vector2& _dim, const std::vector<Sprite>* _frames)
-			: filePath(_filePath), ptrTexture(_ptrTxtr), dimensions(_dim)
-		{
+			: filePath(_filePath), ptrTexture(_ptrTxtr), dimensions(_dim) {
 			if (_frames != nullptr)
 				frames = *_frames;
 		}

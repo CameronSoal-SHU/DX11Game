@@ -38,18 +38,26 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	const float ownerRot = m_owner->GetSprite().GetRotation();
 	const DirectX::SimpleMath::Vector2 projSpeed(m_weapStats.projSpeed, m_weapStats.projSpeed);
 
+	// Set the owner mode of the projectile
 	projectileCopy->SetModeOwner(*m_ptrPlayMode);
+	// Set the projectiles movement speed
 	projectileCopy->SetMoveSpeed(projSpeed);
+	// Set the projectiles position to passed argument
 	projectileCopy->GetSprite().SetPos(_pos);
 
+	// The velocity of the projectile based on the owners rotation so it fires in a straight line
 	const DirectX::SimpleMath::Vector2 rotVel(projSpeed.x * sinf(ownerRot), projSpeed.y * -cosf(ownerRot));
 	projectileCopy->SetActive(true);
+	// Set the velocity
 	projectileCopy->GetSprite().SetVelocity(rotVel);
 	projectileCopy->GetSprite().SetScale(m_projectileScale);
 
+	// Store the object in the game object container
 	m_ptrPlayMode->AddObj(projectileCopy);
+	// Reset the delay
 	OnUse();
 
+	// destroy copy reference, it's no longer 
 	projectileCopy = nullptr;
 }
 
@@ -65,6 +73,7 @@ void Weapon::UpdateWeaponStats() {
 	}
 }
 
+// Resets the fire rate delay when called
 void Weapon::OnUse() {
 	ResetFireRate();
 }

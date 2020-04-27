@@ -23,8 +23,6 @@ MainGame::MainGame(D3D& _d3d)
 }
 
 void MainGame::Update(float _deltaTime) {
-	UpdateScreenDimScale();
-
 	gamePad.Update();
 	m_modeManager.Update(_deltaTime);
 }
@@ -49,17 +47,20 @@ void MainGame::Release() {
 	m_ptrSprBatch = nullptr;
 }
 
-void MainGame::UpdateScreenDimScale() {
-	m_screenDimScaleX = (Settings::GAME_RES.x * Settings::GAME_RES.x) / WindowUtil::Get().GetClientWidth();
-	m_screenDimScaleY = (Settings::GAME_RES.y * Settings::GAME_RES.y) / WindowUtil::Get().GetClientHeight();
-}
-
 void MainGame::PreLoadAssets() {
-	LoadFontAssets();
-	LoadBackgroundAssets();
-	LoadUIAssets();
-	LoadPlayerAssets();
-	LoadItemAssets();
+#pragma omp parallel sections
+	{
+#pragma omp section
+		{ LoadFontAssets(); }
+#pragma omp section
+		{ LoadBackgroundAssets(); }
+#pragma omp section
+		{ LoadUIAssets(); }
+#pragma omp section
+		{ LoadPlayerAssets(); }
+#pragma omp section
+		{ LoadItemAssets(); }
+	}
 }
 
 void MainGame::LoadBackgroundAssets() {
@@ -88,7 +89,7 @@ void MainGame::LoadUIAssets() {
 	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_FG_PATH, TxtrNames::HEALTH_BAR_FG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
 
 	// UI Item Hotbar
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_PATH, TxtrNames::ITEM_HOTBAR_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
+	//txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_PATH, TxtrNames::ITEM_HOTBAR_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
 	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_BG_PATH, TxtrNames::ITEM_HOTBAR_BG_MAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
 	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_SLOT_PATH, TxtrNames::ITEM_HOTBAR_SLOT_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
 }

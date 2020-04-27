@@ -52,26 +52,10 @@ private:
 	std::shared_ptr<ItemShopMode> m_ptrItemShop;	// Holds reference to in-game item shop
 	MenuNode* m_uiRoot;								// Holds the menu page for the UI root
 
-	GameClock m_inGameClock;						// Track current play time for scaling difficulty
+	//GameClock m_inGameClock;						// Track current play time for scaling difficulty
 
 	PlayerUI m_playerUI;	// Players UI
 
-	float screenDimScaleX;
-	float screenDimScaleY;
-	void UpdateScreenDimScale();
-
 	void SetupBackground();
 	void ScrollBackground(float _deltaTime);
-
-	// Create a menu root node for the player UI
-	// And setup UI elements
-	void SetupPlayerUI();
-	void SetupGameClock();
-	//void SetupHealthbar(D3D& _d3d);
-	void SetupHotBar(D3D& _d3d);
-
-	void UpdatePlayerUI(float _deltaTime);
-	void UpdateItemHotbar();
-	//void UpdateHealthBar();
-	void UpdateGameClock(float _deltaTime);
 };

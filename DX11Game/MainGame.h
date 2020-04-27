@@ -28,22 +28,23 @@ public:
 	// Call all releaseCOMs to free up memory when not in use
 	void Release();
 
-	float GetScreenDimScaleX() const { return m_screenDimScaleX; }
-	float GetScreenDimScaleY() const { return m_screenDimScaleY; }
+	// Ratio of screen dimensions to render dimensions to keep 
+	// positioning/scaling constant throughout resizing the window
+	float GetScreenDimScaleX() const { return Settings::GAME_RES.x / WindowUtil::Get().GetClientWidth(); }
+	float GetScreenDimScaleY() const { return Settings::GAME_RES.y / WindowUtil::Get().GetClientHeight(); }
 
 	// Input devices
 	static Input mouseKeyboardInput;
 	static GamePadInput gamePad;
 private:
-	void UpdateScreenDimScale();
 	// D3D reference
 	D3D& m_d3d;
 	// Sprite batch for sprite data (deletes itself when out of scope)
 	std::unique_ptr<DirectX::SpriteBatch> m_ptrSprBatch = nullptr;
+
 	ModeManager m_modeManager;
 	MenuManager m_menuManager;
 
-	float m_screenDimScaleX;
 	float m_screenDimScaleY;
 	
 	// Pre load all assets into the texture cache for easy use in game/menus

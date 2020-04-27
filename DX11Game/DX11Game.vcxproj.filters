@@ -160,7 +160,7 @@
       <Filter>Game Modes\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PlayerUI.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Menu and UI\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -261,7 +261,7 @@
       <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PlayerUI.h">
-      <Filter>Header Files</Filter>
+      <Filter>Menu and UI\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
