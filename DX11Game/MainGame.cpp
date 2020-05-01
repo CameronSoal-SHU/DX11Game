@@ -10,12 +10,12 @@ GamePadInput MainGame::gamePad;
 
 
 MainGame::MainGame(D3D& _d3d) 
-	: m_d3d(_d3d), m_ptrSprBatch(nullptr) {
+	: m_d3d(_d3d), m_ptrSprBatch(nullptr), m_txtrCache(_d3d.GetTextureCache()) {
 	// Set up main window for KB+M inputs
 	mouseKeyboardInput.Init(WindowUtil::Get().GetMainWindow(), MOUSE_VISIBLE, MOUSE_CONFINED);
 	gamePad.Init();
 	m_ptrSprBatch = std::make_unique<DirectX::SpriteBatch>(DirectX::SpriteBatch(&m_d3d.GetDeviceCtx()));
-
+	
 	PreLoadAssets();
 
 	m_modeManager.AddMode(std::make_shared<PlayMode>());
@@ -48,19 +48,12 @@ void MainGame::Release() {
 }
 
 void MainGame::PreLoadAssets() {
-#pragma omp parallel sections
-	{
-#pragma omp section
-		{ LoadFontAssets(); }
-#pragma omp section
-		{ LoadBackgroundAssets(); }
-#pragma omp section
-		{ LoadUIAssets(); }
-#pragma omp section
-		{ LoadPlayerAssets(); }
-#pragma omp section
-		{ LoadItemAssets(); }
-	}
+	LoadFontAssets();
+	LoadBackgroundAssets();
+	LoadUIAssets();
+	LoadPlayerAssets();
+	LoadEnemyAssets();
+	LoadItemAssets();
 }
 
 void MainGame::LoadBackgroundAssets() {
@@ -82,29 +75,31 @@ void MainGame::LoadFontAssets() {
 }
 
 void MainGame::LoadUIAssets() {
-	TextureCache& txtrCache = m_d3d.GetTextureCache();
-
 	// UI Health bar
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_BG_PATH, TxtrNames::HEALTH_BAR_BG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_FG_PATH, TxtrNames::HEALTH_BAR_FG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_BG_PATH, TxtrNames::HEALTH_BAR_BG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::HEALTH_BAR_FG_PATH, TxtrNames::HEALTH_BAR_FG_NAME, APPEND_PATH, &TxtrFrames::HEALTH_BAR_FRAMES);
 
 	// UI Item Hotbar
-	//txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_PATH, TxtrNames::ITEM_HOTBAR_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_BG_PATH, TxtrNames::ITEM_HOTBAR_BG_MAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_SLOT_PATH, TxtrNames::ITEM_HOTBAR_SLOT_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_BG_PATH, TxtrNames::ITEM_HOTBAR_BG_MAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_SLOT_PATH, TxtrNames::ITEM_HOTBAR_SLOT_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
 }
 
 void MainGame::LoadPlayerAssets() {
-	TextureCache& txtrCache = m_d3d.GetTextureCache();
-
 	// Player sprites
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::PLAYER_PATH, TxtrNames::PLAYER_NAME, APPEND_PATH);
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::THRUST_PATH, TxtrNames::THRUST_NAME, APPEND_PATH, &TxtrFrames::THRUST_TXTR_FRAMES);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::PLAYER_PATH, TxtrNames::PLAYER_NAME, APPEND_PATH);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::THRUST_PATH, TxtrNames::THRUST_NAME, APPEND_PATH, &TxtrFrames::THRUST_TXTR_FRAMES);
+}
+
+void MainGame::LoadEnemyAssets() {
+	// Red Enemy Ship
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENEMY_RED_SHIP_PATH, TxtrNames::ENEMY_RED_NAME, APPEND_PATH);
 }
 
 void MainGame::LoadItemAssets() {
-	TextureCache& txtrCache = m_d3d.GetTextureCache();
+	// NULL item texture
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::NULL_TXTR_PATH, TxtrNames::NULL_TXTR_NAME, APPEND_PATH, &TxtrFrames::NULL_FRAMES);
 
 	// Energy ball item
-	txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENERGY_BALL_PATH, TxtrNames::ENERGY_BALL_NAME, APPEND_PATH, &TxtrFrames::ENERGY_BALL_FRAMES);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENERGY_BALL_PATH, TxtrNames::ENERGY_BALL_NAME, APPEND_PATH, &TxtrFrames::ENERGY_BALL_FRAMES);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENERGY_BALL_RED_PATH, TxtrNames::ENERGY_BALL_RED_NAME, APPEND_PATH, &TxtrFrames::ENERGY_BALL_FRAMES);
 }

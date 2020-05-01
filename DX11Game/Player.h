@@ -1,6 +1,6 @@
 #pragma once
 #include "CharacterBase.h"
-#include "EnergyBall.h"
+#include "Unarmed.h"
 
 class PlayMode;
 
@@ -17,6 +17,7 @@ public:
 
 	// std::vector <std::shared_ptr<ProjectileTEMP>> GetWeapons() const { return m_weaponsTEMP; }
 	void SetupWeapons();
+	std::vector<Weapon*> GetWeapons() const { return m_weapons; }
 private:
 	std::vector<Weapon*> m_weapons;
 
@@ -27,6 +28,5 @@ private:
 	void LoadShipTexture(D3D& _d3d);
 	void LoadThrustTexture(D3D& _d3d);
 
-	void FirePrimary();
-	void FireSecondary();
+	void FireWeapon(const Weapon::item_type& _weaponType);
 };

@@ -2,6 +2,7 @@
 #include "ModeBase.h"
 #include "Input.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "GameSettings.h"
 #include "MenuNode.h"
 #include "GameClock.h"
@@ -51,8 +52,6 @@ private:
 	MenuManager& m_menuManager;						// Holds menu manager reference
 	std::shared_ptr<ItemShopMode> m_ptrItemShop;	// Holds reference to in-game item shop
 	MenuNode* m_uiRoot;								// Holds the menu page for the UI root
-
-	//GameClock m_inGameClock;						// Track current play time for scaling difficulty
 
 	PlayerUI m_playerUI;	// Players UI
 

@@ -159,7 +159,6 @@
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="D3DUtil.cpp" />
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnergyBall.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameClock.cpp" />
     <ClCompile Include="GamePadInput.cpp" />
@@ -179,6 +178,7 @@
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TextureCache.cpp" />
+    <ClCompile Include="Unarmed.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WindowUtil.cpp" />
   </ItemGroup>
@@ -189,7 +189,6 @@
     <ClInclude Include="D3D.h" />
     <ClInclude Include="D3DUtil.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnergyBall.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GameClock.h" />
     <ClInclude Include="GameConstants.h" />
@@ -214,6 +213,7 @@
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureCache.h" />
+    <ClInclude Include="Unarmed.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="WindowUtil.h" />
   </ItemGroup>

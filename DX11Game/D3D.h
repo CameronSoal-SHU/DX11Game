@@ -77,7 +77,6 @@ private:
 	void(*m_ptrOnResize)(int, int, D3D&) = nullptr;
 
 	ID3D11SamplerState* m_ptrWrapSampler = nullptr;		// Wrapping sprites
-	//ID3D11SamplerState* m_ptrClampSampler = nullptr;	// Clamping sprites
 
 	// Heavy lifting to start D3D11
 	void CreateD3D(D3D_FEATURE_LEVEL _desiredFeatLvl = D3D_FEATURE_LEVEL_11_0);

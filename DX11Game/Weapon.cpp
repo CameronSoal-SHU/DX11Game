@@ -5,16 +5,25 @@
 Weapon::Weapon(CharacterBase& _owner)
 	: Item(), m_weapModifiers() {
 	m_owner = &_owner;
+
+	UpdateWeaponStats();
+	m_fireDelayRemaining = 0.f;
 }
 
-Weapon::Weapon(const WeaponStats& _stats, CharacterBase& _owner)
+Weapon::Weapon(CharacterBase& _owner, const WeaponStats& _stats)
 	: m_weapModifiers(_stats) {
 	m_owner = &_owner;
+
+	UpdateWeaponStats();
+	m_fireDelayRemaining = 0.f;
 }
 
 Weapon::Weapon(float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed, CharacterBase& _owner)
 	: m_weapModifiers(_dmgMult, _fRateMult, _lifeTime, _projSpeed) {
 	m_owner = &_owner;
+
+	UpdateWeaponStats();
+	m_fireDelayRemaining = 0.f;
 }
 
 
@@ -37,28 +46,35 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	std::shared_ptr<Projectile> projectileCopy = std::make_shared<Projectile>(*ptrProjectile);
 	const float ownerRot = m_owner->GetSprite().GetRotation();
 	const DirectX::SimpleMath::Vector2 projSpeed(m_weapStats.projSpeed, m_weapStats.projSpeed);
+	// The velocity of the projectile based on the owners rotation so it fires in a straight line
+	const DirectX::SimpleMath::Vector2 rotVel(projSpeed.x * sinf(ownerRot), projSpeed.y * -cosf(ownerRot));
 
 	// Set the owner mode of the projectile
 	projectileCopy->SetModeOwner(*m_ptrPlayMode);
-	// Set the projectiles movement speed
-	projectileCopy->SetMoveSpeed(projSpeed);
+	// Set the projectiles stats
+	projectileCopy->SetStats(m_weapStats);
 	// Set the projectiles position to passed argument
 	projectileCopy->GetSprite().SetPos(_pos);
-
-	// The velocity of the projectile based on the owners rotation so it fires in a straight line
-	const DirectX::SimpleMath::Vector2 rotVel(projSpeed.x * sinf(ownerRot), projSpeed.y * -cosf(ownerRot));
-	projectileCopy->SetActive(true);
 	// Set the velocity
 	projectileCopy->GetSprite().SetVelocity(rotVel);
+
 	projectileCopy->GetSprite().SetScale(m_projectileScale);
+
+	projectileCopy->SetActive(true);
 
 	// Store the object in the game object container
 	m_ptrPlayMode->AddObj(projectileCopy);
 	// Reset the delay
 	OnUse();
 
-	// destroy copy reference, it's no longer 
+	// destroy copy reference, it's no longer needed
 	projectileCopy = nullptr;
+}
+
+void Weapon::SetProjTextureName(const std::string & _projName) {
+	m_projTxtrName = _projName;
+
+	ptrProjectile = new Projectile(_projName);
 }
 
 void Weapon::UpdateWeaponStats() {
@@ -80,12 +96,12 @@ void Weapon::OnUse() {
 
 Weapon::WeaponStats::WeaponStats()
 	: damageMult(1.f), fireRateMult(1.f),
-	lifeTimeMult(1.f)
+	lifeTimeMult(1.f), projSpeedMult(1.f)
 {}
 
 Weapon::WeaponStats::WeaponStats(const WeaponStats & _stats)
 	: damageMult(_stats.damageMult), fireRateMult(_stats.fireRateMult),
-	lifeTimeMult(_stats.lifeTimeMult)
+	lifeTimeMult(_stats.lifeTimeMult), projSpeedMult(_stats.projSpeedMult)
 {}
 
 Weapon::WeaponStats::WeaponStats(float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed)

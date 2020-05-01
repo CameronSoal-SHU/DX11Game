@@ -39,13 +39,12 @@ public:
 private:
 	// D3D reference
 	D3D& m_d3d;
+	TextureCache& m_txtrCache;
 	// Sprite batch for sprite data (deletes itself when out of scope)
 	std::unique_ptr<DirectX::SpriteBatch> m_ptrSprBatch = nullptr;
 
 	ModeManager m_modeManager;
 	MenuManager m_menuManager;
-
-	float m_screenDimScaleY;
 	
 	// Pre load all assets into the texture cache for easy use in game/menus
 	void PreLoadAssets();
@@ -53,5 +52,6 @@ private:
 	void LoadFontAssets();
 	void LoadUIAssets();
 	void LoadPlayerAssets();
+	void LoadEnemyAssets();
 	void LoadItemAssets();
 };

@@ -76,6 +76,15 @@
     <Filter Include="Game Objects\Characters\Source Files">
       <UniqueIdentifier>{c2b58c06-cc83-4b2e-b5a3-afa5cbbdf9b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Objects\Items\Weapons">
+      <UniqueIdentifier>{43e25a79-7500-4389-ac6d-d7305543acc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Items\Weapons\Header Files">
+      <UniqueIdentifier>{1ac72548-9430-4284-abbf-2549e68c4bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Objects\Items\Weapons\Source Files">
+      <UniqueIdentifier>{d86ee8c3-7cda-43ca-a781-e64e34cc382b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -132,13 +141,7 @@
     <ClCompile Include="MainMenu.cpp">
       <Filter>Game Modes\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EnergyBall.cpp">
-      <Filter>Game Objects\Items\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Projectile.cpp">
-      <Filter>Game Objects\Items\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon.cpp">
       <Filter>Game Objects\Items\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Item.cpp">
@@ -161,6 +164,12 @@
     </ClCompile>
     <ClCompile Include="PlayerUI.cpp">
       <Filter>Menu and UI\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Game Objects\Items\Weapons\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Unarmed.cpp">
+      <Filter>Game Objects\Items\Weapons\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,13 +236,7 @@
     <ClInclude Include="MainMenu.h">
       <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnergyBall.h">
-      <Filter>Game Objects\Items\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Item.h">
-      <Filter>Game Objects\Items\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon.h">
       <Filter>Game Objects\Items\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
@@ -262,6 +265,12 @@
     </ClInclude>
     <ClInclude Include="PlayerUI.h">
       <Filter>Menu and UI\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Unarmed.h">
+      <Filter>Game Objects\Items\Weapons\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Game Objects\Items\Weapons\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

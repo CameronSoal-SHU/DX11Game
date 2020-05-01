@@ -11,12 +11,20 @@ PlayMode::PlayMode()
 	: m_menuManager(MainGame::Get().GetMenuManager()), m_playerUI(*this) {
 	m_gameObjs.reserve(1000);
 
+	// Set up the player object
 	std::shared_ptr<Player> player = std::make_shared<Player>();
 	player->SetParentMode(*this);
 	player->SetActive(true);
 	player->SetupWeapons();
 	AddObj(player);
 
+	std::shared_ptr<Enemy> enemyTest = std::make_shared<Enemy>();
+	enemyTest->SetParentMode(*this);
+	enemyTest->SetActive(true);
+	enemyTest->SetLookAtPlayer(true);
+	AddObj(enemyTest);
+
+	// Set up item shop menu
 	m_ptrItemShop = std::make_shared<ItemShopMode>(MainGame::Get().GetD3D());
 	MainGame::Get().GetModeManager().AddMode(m_ptrItemShop);
 
@@ -50,7 +58,9 @@ void PlayMode::Update(float _deltaTime) {
 		m_gameObjs.at(i)->Update(_deltaTime);
 	}
 
-	// Update player UI
+	FindObj(typeid(Enemy), true)->GetSprite().SetVelocity(FindObj(typeid(Player), true)->GetSprite().GetVelocity());
+
+	// Update player UI last so it's always ontop
 	m_playerUI.Update(_deltaTime);
 }
 

@@ -51,39 +51,46 @@ namespace GameConsts {
 
 // Collection of all texture directories for use across entire project
 namespace TxtrDirs {
+	// Blank and transparent image for null objects
+	const std::string NULL_TXTR_PATH		= "item_null.dds";
+
 	// Scrolling space groundground and stars
 	const std::string SPACE_BG_PATH			= "Backgrounds/BackgroundLayers/space_background_0.dds";
 	const std::string SPACE_BG_STARS_PATH	= "Backgrounds/BackgroundLayers/space_background_1.dds";
-	const std::string SHOP_BG_PATH			= "Backgrounds/item_shop_bg.dds";	// Item shop background
+	const std::string SHOP_BG_PATH			= "Backgrounds/item_shop_bg.dds";		// Item shop background
 
-	const std::string PLAYER_PATH			= "Ship/ship_test.dds";				// Player ship sprite
-	const std::string THRUST_PATH			= "Ship/thrust.dds";				// Ship thrust animated sprite
+	const std::string PLAYER_PATH			= "Ship/Player/player_ship.dds";		// Player ship sprite
+	const std::string ENEMY_RED_SHIP_PATH	= "Ship/Enemy/enemy_red_ship.dds";		// Red enemy ship sprite
+	const std::string THRUST_PATH			= "Ship/thrust.dds";					// Ship thrust animated sprite
 
-	//const std::string ITEM_HOTBAR_PATH		= "UI/item_hotbar.dds";				// Player UI item hotbar
-	const std::string ITEM_HOTBAR_BG_PATH	= "UI/item_hotbar_bg.dds";			// Player UI item hotbar background
-	const std::string ITEM_HOTBAR_SLOT_PATH = "UI/item_hotbar_slot.dds";		// Player UI item hotbar slot
-	const std::string HEALTH_BAR_BG_PATH	= "UI/health_bar_bg.dds";			// Player UI healthbar background
-	const std::string HEALTH_BAR_FG_PATH	= "UI/health_bar_fg.dds";			// Player UI healthbar foreground
+	const std::string ITEM_HOTBAR_BG_PATH	= "UI/item_hotbar_bg.dds";				// Player UI item hotbar background
+	const std::string ITEM_HOTBAR_SLOT_PATH = "UI/item_hotbar_slot.dds";			// Player UI item hotbar slot
+	const std::string HEALTH_BAR_BG_PATH	= "UI/health_bar_bg.dds";				// Player UI healthbar background
+	const std::string HEALTH_BAR_FG_PATH	= "UI/health_bar_fg.dds";				// Player UI healthbar foreground
 
-	const std::string ENERGY_BALL_PATH		= "Projectiles/energy_ball.dds";	// Energy ball Projectile
+	const std::string ENERGY_BALL_PATH		= "Projectiles/energy_ball.dds";		// Energy ball Projectile
+	const std::string ENERGY_BALL_RED_PATH	= "Projectiles/energy_ball_red.dds";	// Energy ball Projectile
 }
 
 // Collection of all texture nicknames in TextureCache for use across entire project
 namespace TxtrNames {
+	const std::string NULL_TXTR_NAME		= "item_null";
+
 	const std::string SPACE_BG_NAME		    = "scrolling_space_bg";
 	const std::string SPACE_BG_STARS_NAME   = "scrolling_stars_bg";
 	const std::string SHOP_BG_NAME			= "item_shop_bg";
 
 	const std::string PLAYER_NAME			= "player_ship";
+	const std::string ENEMY_RED_NAME		= "enemy_red_ship";
 	const std::string THRUST_NAME			= "ship_thrust";
 
-	//const std::string ITEM_HOTBAR_NAME		= "ui_item_hotbar";
-	const std::string ITEM_HOTBAR_BG_MAME   = "ui_item_hotbar_bg";			// Player UI item hotbar background
-	const std::string ITEM_HOTBAR_SLOT_NAME = "ui_item_hotbar_slot";		// Player UI item hotbar slot
+	const std::string ITEM_HOTBAR_BG_MAME   = "ui_item_hotbar_bg";			
+	const std::string ITEM_HOTBAR_SLOT_NAME = "ui_item_hotbar_slot";		
 	const std::string HEALTH_BAR_BG_NAME	= "ui_health_bar_bg";
 	const std::string HEALTH_BAR_FG_NAME	= "ui_health_bar_fg";
 
 	const std::string ENERGY_BALL_NAME		= "proj_energy_ball";
+	const std::string ENERGY_BALL_RED_NAME	= "proj_energy_ball_red";
 }
 
 // Collection of all texture frames in TextureCache for use across entire project
@@ -103,5 +110,8 @@ namespace TxtrFrames {
 	};
 	const std::vector<TextureCache::Data::Sprite> ENERGY_BALL_FRAMES {
 		{{0,0}, NOT_STRETCHED, {0,0,783,775}}
+	};
+	const std::vector<TextureCache::Data::Sprite> NULL_FRAMES {
+		{{0,0}, NOT_STRETCHED, {0,0,0,0}}
 	};
 }

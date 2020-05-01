@@ -18,12 +18,14 @@ public:
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 
 	void SetDamage(float _damage);
-	void SetStats(const CharacterBase::Stats& _stats) { m_projStats = _stats; }
+	void SetStats(const CharacterBase::Stats& _stats);
 
 	void SetModeOwner(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
 
 	~Projectile();
 protected:
+	void UpdateProjStats(); 
+
 	D3D& m_d3d;
 	PlayMode* m_ptrPlayMode;
 	CharacterBase::Stats m_projStats;	// A copy of the weapon stats to be used

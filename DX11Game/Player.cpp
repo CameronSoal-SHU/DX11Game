@@ -18,6 +18,7 @@ Player::Player()
 	m_characterStats.lifeTime = 1.f;
 	m_moveSpeed = DirectX::SimpleMath::Vector2(300.f, 300.f);
 
+	// Set up player textures
 	LoadShipTexture(d3d);
 	LoadThrustTexture(d3d);
 
@@ -41,9 +42,11 @@ void Player::Update(float _deltaTime) {
 	m_thrust.SetPos(m_sprite.GetPos());
 	m_thrust.SetRotation(m_sprite.GetRotation());
 
+	// Does the player have any weapons equipped to update?
 	if (m_weapons.size() != 0) {
-		for (Weapon* item : m_weapons) {
-			item->Update(_deltaTime);
+		// Update all of the players weapons
+		for (size_t i(0); i < m_weapons.size(); ++i) {
+			m_weapons.at(i)->Update(_deltaTime);
 		}
 	}
 
@@ -68,17 +71,25 @@ void Player::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
 }
 
 void Player::SetupWeapons() {
-	EnergyBall* energyBallWeapPrim = new EnergyBall(*this);
-	EnergyBall* energyBallWeapSec = new EnergyBall(*this);
+	// Set up the primary and secondary weapons, linked to the player object
+	//EnergyBall* energyBallWeapPrim = new EnergyBall(*this);
+	Weapon::WeaponStats energyBallStats{ 1.1f, 7.5f, 1.f, 1.f };
 
-	energyBallWeapPrim->SetModeOwner(*m_ptrPlayMode);
-	energyBallWeapSec->SetModeOwner(*m_ptrPlayMode);
+	Weapon* energyBallWeap = new Weapon(*this, energyBallStats);
+	Unarmed* unarmedSec = new Unarmed(*this);
 
-	energyBallWeapPrim->SetProjectileScale({ 0.05f, 0.05f });
-	energyBallWeapSec->SetProjectileScale({ 0.05f, 0.05f });
 
-	m_weapons.push_back(energyBallWeapPrim);
-	m_weapons.push_back(energyBallWeapSec);
+	//energyBallWeapPrim->SetModeOwner(*m_ptrPlayMode);
+	energyBallWeap->SetModeOwner(*m_ptrPlayMode);
+	unarmedSec->SetModeOwner(*m_ptrPlayMode);
+
+	//energyBallWeapPrim->SetProjectileScale({ 0.05f, 0.05f });
+	energyBallWeap->SetItemName("Plasma Cannon");
+	energyBallWeap->SetProjTextureName(TxtrNames::ENERGY_BALL_NAME);
+	energyBallWeap->SetProjectileScale({ 0.05f, 0.05f });
+
+	m_weapons.push_back(energyBallWeap);
+	m_weapons.push_back(unarmedSec);
 }
 
 void Player::GetPlayerInput(float _deltaTime) {
@@ -86,25 +97,27 @@ void Player::GetPlayerInput(float _deltaTime) {
 	DirectX::SimpleMath::Vector2& spriteVel = m_sprite.GetVelocity();
 	const GamePadInput::ControllerData ctrlData = MainGame::gamePad.GetGamePadData(0);
 
-	if (MainGame::Get().gamePad.IsEnabled(ctrlData.port == -1 ? 0 : ctrlData.port)) {
-		// Set velocity to stick direction (invert Y-axis)
-		m_sprite.SetVelocity(DirectX::SimpleMath::Vector2(
-			ctrlData.leftStick.x,	// X-axis movement
-			-ctrlData.leftStick.y	// Y-axis movement
-		) * m_moveSpeed);
+	if (ctrlData.port != -1) {
+		if (MainGame::Get().gamePad.IsEnabled(ctrlData.port)) {
+			// Set velocity to stick direction (invert Y-axis)
+			m_sprite.SetVelocity(DirectX::SimpleMath::Vector2(
+				ctrlData.leftStick.x,	// X-axis movement
+				-ctrlData.leftStick.y	// Y-axis movement
+			) * m_moveSpeed);
 
-		const float rightStickRotation = atan2f(ctrlData.rightStick.x,
-			ctrlData.rightStick.y);
+			const float rightStickRotation = atan2f(ctrlData.rightStick.x,
+				ctrlData.rightStick.y);
 
-		if (ctrlData.rightStick.Length() >= ctrlData.stickDeadZone.Length()) {
-			m_sprite.SetRotation(rightStickRotation);
-		}
+			if (ctrlData.rightStick.Length() >= ctrlData.stickDeadZone.Length()) {
+				m_sprite.SetRotation(rightStickRotation);
+			}
 
-		if (ctrlData.leftTrigger) {
-			FirePrimary();
-		}
-		if (ctrlData.rightTrigger) {
-			FireSecondary();
+			if (ctrlData.leftTrigger) {
+				FireWeapon(Weapon::item_type::PRIMARY);
+			}
+			if (ctrlData.rightTrigger) {
+				FireWeapon(Weapon::item_type::SECONDARY);
+			}
 		}
 	}
 	else {
@@ -123,10 +136,10 @@ void Player::GetPlayerInput(float _deltaTime) {
 		}
 
 		if (MainGame::mouseKeyboardInput.GetMouseDown(Input::MouseButton::LMB)) {
-			FirePrimary();
+			FireWeapon(Weapon::item_type::PRIMARY);
 		}
 		if (MainGame::mouseKeyboardInput.GetMouseDown(Input::MouseButton::RMB)) {
-			FireSecondary();
+			FireWeapon(Weapon::item_type::SECONDARY);
 		}
 
 		// Angle in radians between the sprites position and the mouse position
@@ -162,46 +175,17 @@ void Player::LoadThrustTexture(D3D & _d3d) {
 	m_thrust.GetAnim().Play(true);
 }
 
-void Player::FirePrimary() {
-	Weapon& primaryWeap = *m_weapons.at(0);
+void Player::FireWeapon(const Weapon::item_type& _weaponType) {
+	Weapon& weapon = *m_weapons.at(_weaponType);
 
-	if (primaryWeap.CanUse()) {
-		const float playerRot = m_sprite.GetRotation();
-		const DirectX::SimpleMath::Vector2 offsetPos(m_sprite.GetScreenDimRadius().x * cosf(playerRot), 
-			m_sprite.GetScreenDimRadius().y * sinf(playerRot));
-
-		primaryWeap.FireProjectile(m_sprite.GetPos() - offsetPos);
-	}
-}
-
-void Player::FireSecondary() {
-	Weapon& primaryWeap = *m_weapons.at(1);
-
-	if (primaryWeap.CanUse()) {
+	if (weapon.CanUse()) {
 		const float playerRot = m_sprite.GetRotation();
 		const DirectX::SimpleMath::Vector2 offsetPos(m_sprite.GetScreenDimRadius().x * cosf(playerRot),
 			m_sprite.GetScreenDimRadius().y * sinf(playerRot));
 
-		primaryWeap.FireProjectile(m_sprite.GetPos() + offsetPos);
+		// Primary weapon should offset the projectile spawn point to the left of the player, 
+		// secondary weapon should be to the right
+		weapon.FireProjectile(m_sprite.GetPos() + ((_weaponType == Weapon::item_type::PRIMARY) ? -offsetPos : offsetPos));
 	}
 }
 
-//void Player::FirePrimary() {
-//	// Make a copy of the primary item
-//	std::shared_ptr<> primaryProj = std::make_shared<ProjectileTEMP>(*m_weaponsTEMP.at(0));
-//	const float playerRot = m_sprite.GetRotation();
-//
-//	primaryProj->SetParentMode(*m_ptrPlayMode);
-//
-//	primaryProj->GetSprite().SetPos(m_sprite.GetPos());
-//	primaryProj->SetSpeed({ 1000, 1000 });
-//
-//	const DirectX::SimpleMath::Vector2 rotVel(primaryProj->GetSpeed().x * sin(playerRot),
-//		primaryProj->GetSpeed().y * -cos(playerRot));
-//
-//	primaryProj->SetActive(true);
-//	primaryProj->GetSprite().SetVelocity(rotVel);
-//
-//	// Push new object onto GameObject Stack
-//	m_ptrPlayMode->AddObj(primaryProj);
-//}

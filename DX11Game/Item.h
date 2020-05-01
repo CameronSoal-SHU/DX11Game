@@ -12,7 +12,7 @@ class PlayMode;
 class Item : public GameObject
 {
 public:
-	enum item_type { PRIMARY = 0, SECONDARY = 1, UTILITY = 2 };
+	enum item_type { PRIMARY = 0, SECONDARY = 1 };
 
 	Item();
 	~Item();

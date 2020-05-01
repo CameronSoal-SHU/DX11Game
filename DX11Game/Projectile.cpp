@@ -26,5 +26,15 @@ void Projectile::SetDamage(float _damage) {
 	m_projDamage = _damage;
 }
 
+void Projectile::SetStats(const CharacterBase::Stats & _stats) {
+	m_projStats = _stats;
+	UpdateProjStats();
+}
+
 Projectile::~Projectile()
 {}
+
+void Projectile::UpdateProjStats() {
+	m_projDamage = m_projStats.damage;
+	m_moveSpeed = DirectX::SimpleMath::Vector2(m_projStats.projSpeed, m_projStats.projSpeed);
+}

@@ -22,7 +22,7 @@ public:
 	};
 
 	Weapon(CharacterBase& _owner);
-	Weapon(const WeaponStats& _stats, CharacterBase& _owner);
+	Weapon(CharacterBase& _owner, const WeaponStats& _stats);
 	Weapon(float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed, CharacterBase& _owner);
 	~Weapon();
 
@@ -33,6 +33,9 @@ public:
 
 	DirectX::SimpleMath::Vector2 GetProjectileScale() const { return m_projectileScale; }
 	void SetProjectileScale(const DirectX::SimpleMath::Vector2& _scale) { m_projectileScale = _scale; }
+
+	std::string GetProjTextureName() const { return m_projTxtrName; }
+	void SetProjTextureName(const std::string& _projName);
 
 	// Set the weapon stats based on the owners base stats
 	void UpdateWeaponStats();

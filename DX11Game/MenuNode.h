@@ -73,6 +73,7 @@ public:
 
 	void GetImageDest(RECT& _dst, const TextureCache::Data::Sprite* _ptrSpr,
 		const DirectX::SimpleMath::Vector2& _offset, const DirectX::SimpleMath::Vector2& _scale);
+
 	static void GetImageDest(RECT& _dst, const DirectX::SimpleMath::Vector2& _nodePos, const DirectX::SimpleMath::Vector2& _nodeDim,
 		const TextureCache::Data::Sprite* _ptrSpr, const DirectX::SimpleMath::Vector2& _offset, const DirectX::SimpleMath::Vector2& _scale);
 protected:
