@@ -38,6 +38,9 @@ public:
 	// Find the first object in container that matches the typeid and active status
 	// Shared pointer is used to more easily handle allocation/deallocation of memory
 	std::shared_ptr<GameObject> FindObj(const std::type_info& _type, bool _isActive);
+	// Find all objects in container that matches the typeid and active status
+	// Shared pointer is used to more easily handle allocation/deallocation of memory
+	std::vector<std::shared_ptr<GameObject>> FindObjs(const std::type_info& _type, bool _isActive);
 private:
 	void GetPlayerInput(float _deltaTime);
 

@@ -61,7 +61,8 @@ struct Sweep {
 class Collider {
 public:
 	Collider();
-	Collider(Sprite& _sprite);
+	Collider(const Collider& _collider);
+	Collider(const Sprite& _sprite);
 	Collider(const Point& _pos, const Point& _half);
 	Collider(const DirectX::SimpleMath::Vector2& _pos, const DirectX::SimpleMath::Vector2& _half);
 
@@ -71,7 +72,10 @@ public:
 	Point GetHixboxRadius() const;
 	void SetHitboxRadius(const DirectX::SimpleMath::Vector2& _radius);
 
-	void Update(Sprite& _sprite);
+	std::string GetTag() const { return m_colliderTag; }
+	void SetTag(const std::string& _tag) { m_colliderTag = _tag; }
+
+	void Update(const Sprite& _sprite);
 
 	// Find the overlap on X and Y axis, find axis with smallest overlap 
 	// to create intersection point on the edge of the box if possible
@@ -88,4 +92,6 @@ public:
 private:
 	Point m_position;		// Central point of box collider
 	Point m_half;			// Half box size for each axis (Radius)
+
+	std::string m_colliderTag;
 };

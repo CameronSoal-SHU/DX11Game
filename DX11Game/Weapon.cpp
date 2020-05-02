@@ -44,6 +44,8 @@ void Weapon::Render(float _deltaTime, DirectX::SpriteBatch & _sprBatch) {
 void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	// Make a copy of the projectile to be used
 	std::shared_ptr<Projectile> projectileCopy = std::make_shared<Projectile>(*ptrProjectile);
+	projectileCopy->GetSprite().SetTextureData(ptrProjectile->GetSprite().GetTextureData());
+
 	const float ownerRot = m_owner->GetSprite().GetRotation();
 	const DirectX::SimpleMath::Vector2 projSpeed(m_weapStats.projSpeed, m_weapStats.projSpeed);
 	// The velocity of the projectile based on the owners rotation so it fires in a straight line
@@ -62,13 +64,15 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 
 	projectileCopy->SetActive(true);
 
+	projectileCopy->GetCollider().SetHitboxRadius(projectileCopy->GetSprite().GetScreenDimRadius());
+
 	// Store the object in the game object container
 	m_ptrPlayMode->AddObj(projectileCopy);
 	// Reset the delay
 	OnUse();
 
-	// destroy copy reference, it's no longer needed
-	projectileCopy = nullptr;
+	//// destroy copy reference, it's no longer needed
+	//projectileCopy = nullptr;
 }
 
 void Weapon::SetProjTextureName(const std::string & _projName) {

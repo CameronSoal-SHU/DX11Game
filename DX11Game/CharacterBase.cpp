@@ -4,8 +4,8 @@
 
 
 CharacterBase::CharacterBase()
-	: GameObject(MainGame::Get().GetD3D())
-{}
+	: GameObject(MainGame::Get().GetD3D()) {
+}
 
 
 CharacterBase::~CharacterBase() {

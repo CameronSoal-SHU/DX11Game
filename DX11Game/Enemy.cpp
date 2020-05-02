@@ -10,12 +10,21 @@ Enemy::Enemy()
 	LoadShipTexture(d3d);
 	LoadThrustTexture(d3d);
 
+	m_healthHandler.SetMaxHealth(100);
+	m_healthHandler.SetCurHealth(100);
+
 	m_sprite.SetScale({0.15f, 0.15f});
 	m_sprite.SetOrigin(m_sprite.GetDimRadius());
+
+	m_collider = Collider(m_sprite);
+	m_collider.SetTag("ENEMY");
 }
 
 void Enemy::Update(float _deltaTime) {
 	CharacterBase::Update(_deltaTime);
+	m_collider.Update(m_sprite);
+	DBOUT("Enemy Collider Pos: " << m_collider.GetPosition().x << ',' << m_collider.GetPosition().y);
+
 	if (m_lookAtPlayer) {
 		RotateTowardsPlayer();
 	}
@@ -25,6 +34,10 @@ void Enemy::Update(float _deltaTime) {
 
 	m_thrust.SetPos(m_sprite.GetPos());
 	m_thrust.SetRotation(m_sprite.GetRotation());
+
+	if (m_healthHandler.IsDead()) {
+		m_ptrPlayMode->RemoveObj(this->to_shared_ptr());
+	}
 }
 
 void Enemy::Render(float _deltaTime, DirectX::SpriteBatch & _sprBatch) {

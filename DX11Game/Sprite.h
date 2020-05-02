@@ -16,6 +16,7 @@ public:
 
 	RECTF GetTextureRect();
 	const TextureCache::Data& GetTextureData() const;
+	void SetTextureData(const TextureCache::Data& _data);
 	ID3D11ShaderResourceView& GetTexture();
 
 	DirectX::SimpleMath::Vector2 GetDimensions() const;
@@ -33,6 +34,7 @@ public:
 	void SetOrigin(const DirectX::SimpleMath::Vector2& _origin);
 
 	DirectX::SimpleMath::Vector2 GetPos() const;
+	DirectX::SimpleMath::Vector2 GetPosOrigin() const;
 	void SetPos(const DirectX::SimpleMath::Vector2& _pos);
 
 	DirectX::SimpleMath::Vector2 GetScale() const;

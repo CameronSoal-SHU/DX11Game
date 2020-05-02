@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "CharacterBase.h"
+#include "Collision2D.h"
 
 // Forward declaration
 class PlayMode;
@@ -22,13 +23,19 @@ public:
 
 	void SetModeOwner(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
 
+	void SetHitBox(const Collider& _collider) { m_collider = _collider; }
+
 	~Projectile();
 protected:
-	void UpdateProjStats(); 
-
 	D3D& m_d3d;
 	PlayMode* m_ptrPlayMode;
+
+	//Collider m_hitBox;
+
 	CharacterBase::Stats m_projStats;	// A copy of the weapon stats to be used
 	float m_projDamage;					// How much damage this projectile does
+
+	void UpdateProjStats();
+	bool CheckForCollision();
 };
 

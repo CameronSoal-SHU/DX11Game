@@ -13,7 +13,7 @@ public:
 	void Update(float _deltaTime) override;
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 	// Link object to owning mode
-	void SetParentMode(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
+	//void SetParentMode(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
 
 	// std::vector <std::shared_ptr<ProjectileTEMP>> GetWeapons() const { return m_weaponsTEMP; }
 	void SetupWeapons();
@@ -27,6 +27,8 @@ private:
 
 	void LoadShipTexture(D3D& _d3d);
 	void LoadThrustTexture(D3D& _d3d);
+
+	void CheckForCollision();
 
 	void FireWeapon(const Weapon::item_type& _weaponType);
 };

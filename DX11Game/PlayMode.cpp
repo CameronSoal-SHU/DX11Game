@@ -18,11 +18,21 @@ PlayMode::PlayMode()
 	player->SetupWeapons();
 	AddObj(player);
 
+	/// TEMP ///
+	// Create a couple enemies to test collision
 	std::shared_ptr<Enemy> enemyTest = std::make_shared<Enemy>();
 	enemyTest->SetParentMode(*this);
 	enemyTest->SetActive(true);
 	enemyTest->SetLookAtPlayer(true);
 	AddObj(enemyTest);
+
+	std::shared_ptr<Enemy> enemyTest2 = std::make_shared<Enemy>();
+	enemyTest2->SetParentMode(*this);
+	enemyTest2->SetActive(true);
+	enemyTest2->SetLookAtPlayer(true);
+	enemyTest2->GetSprite().SetPos({ 200,100 });
+	AddObj(enemyTest2);
+	///////////////////////////////////////////////////////////////
 
 	// Set up item shop menu
 	m_ptrItemShop = std::make_shared<ItemShopMode>(MainGame::Get().GetD3D());
@@ -58,7 +68,12 @@ void PlayMode::Update(float _deltaTime) {
 		m_gameObjs.at(i)->Update(_deltaTime);
 	}
 
-	FindObj(typeid(Enemy), true)->GetSprite().SetVelocity(FindObj(typeid(Player), true)->GetSprite().GetVelocity());
+	/// TEMP ////////////////////////////////////////////////////////////////////////////////////
+	GameObject& enemy = *FindObj(typeid(Enemy), true);
+	if (&enemy) {
+		enemy.GetSprite().SetVelocity(FindObj(typeid(Player), true)->GetSprite().GetVelocity());
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Update player UI last so it's always ontop
 	m_playerUI.Update(_deltaTime);
@@ -101,6 +116,18 @@ std::shared_ptr<GameObject> PlayMode::FindObj(const std::type_info & _type, bool
 
 	// Return the object if anything was found
 	return (i < m_gameObjs.size() ? m_gameObjs.at(i) : nullptr);
+}
+
+std::vector<std::shared_ptr<GameObject>> PlayMode::FindObjs(const std::type_info & _type, bool _isActive)
+{
+	std::vector<std::shared_ptr<GameObject>> foundObjs;
+
+	for (size_t i(0); i < m_gameObjs.size(); ++i) {
+		if (typeid(*m_gameObjs.at(i)) == _type && m_gameObjs.at(i)->IsActive() == _isActive)
+			foundObjs.push_back(m_gameObjs.at(i));
+	}
+
+	return foundObjs;
 }
 
 void PlayMode::GetPlayerInput(float _deltaTime) {

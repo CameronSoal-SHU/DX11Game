@@ -1,6 +1,7 @@
 #pragma once
 #include "CharacterBase.h"
 #include "HealthHandler.h"
+#include "Weapon.h"
 
 class PlayMode;
 
@@ -13,14 +14,16 @@ public:
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 
 	// Link object to owning mode
-	void SetParentMode(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
+	//void SetParentMode(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
 
 	void SetLookAtPlayer(bool _lookAtPlayer) { m_lookAtPlayer = _lookAtPlayer; }
 	~Enemy();
 protected:
-	PlayMode* m_ptrPlayMode = nullptr;		// Mode owner of object
+	//PlayMode* m_ptrPlayMode = nullptr;		// Mode owner of object
 
 	Sprite m_thrust;
+
+	Weapon* m_weapon;
 
 	bool m_lookAtPlayer = false;
 

@@ -22,8 +22,11 @@ Player::Player()
 	LoadShipTexture(d3d);
 	LoadThrustTexture(d3d);
 
-	m_collider = Collider(m_sprite.GetPos() + m_sprite.GetOrigin(), 
-		{ m_sprite.GetScreenDimRadius().x / 2.f, m_sprite.GetScreenDimRadius().y });
+	/*m_collider = Collider(m_sprite.GetPosOrigin(), 
+		{ m_sprite.GetScreenDimRadius().x / 2.f, m_sprite.GetScreenDimRadius().y });*/
+
+	m_collider = Collider(m_sprite);
+	m_collider.SetTag("PLAYER");
 
 	MainGame::gamePad.SetDeadZone(0, { 0.15f, 0.15f });
 }
@@ -37,7 +40,11 @@ Player::~Player() {
 
 void Player::Update(float _deltaTime) {
 	CharacterBase::Update(_deltaTime);
+	m_collider.Update(m_sprite);
+	CheckForCollision();
 	m_thrust.GetAnim().Update(_deltaTime);
+
+	DBOUT("Player pos: " << m_sprite.GetPos().x << ',' << m_sprite.GetPos().y);
 
 	m_thrust.SetPos(m_sprite.GetPos());
 	m_thrust.SetRotation(m_sprite.GetRotation());
@@ -173,6 +180,18 @@ void Player::LoadThrustTexture(D3D & _d3d) {
 	m_thrust.SetOrigin({ textureCentre, -11.f });
 	m_thrust.SetRotation(m_sprite.GetRotation());
 	m_thrust.GetAnim().Play(true);
+}
+
+void Player::CheckForCollision() {
+	std::vector<std::shared_ptr<GameObject>> enemies = m_ptrPlayMode->FindObjs(typeid(Enemy), true);
+
+	for (size_t i(0); i < enemies.size(); ++i) {
+		Hit hit = m_collider.IntersectAABB(enemies.at(i)->GetCollider());
+
+		if (hit.Collided()) {
+			DBOUT("COLLISION");
+		}
+	}
 }
 
 void Player::FireWeapon(const Weapon::item_type& _weaponType) {

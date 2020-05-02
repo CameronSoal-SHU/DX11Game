@@ -9,9 +9,15 @@ Collider::Collider()
 	: m_position({ 0.f, 0.f }), m_half({ 0.f, 0.f }) 
 {}
 
+// Create a copy of an existing collider
+Collider::Collider(const Collider& _collider)
+	: m_position(_collider.m_position), m_half(_collider.m_half) {
+	DBOUT("Collider Copied!");
+}
+
 // Use sprite information to generate collider box
-Collider::Collider(Sprite& _sprite)
-	: Collider(_sprite.GetPos(), ((_sprite.GetScreenDimensions()) / 2.f))
+Collider::Collider(const Sprite& _sprite)
+	: Collider(_sprite.GetPos(), _sprite.GetScreenDimRadius())
 {}
 
 // Use position and radius to generate collider box with Collision datatypes
@@ -20,9 +26,9 @@ Collider::Collider(const Point& _pos, const Point& _half)
 {}
 
 // Use position and radius to generate collider box with DirectX datatypes
-Collider::Collider(const DirectX::SimpleMath::Vector2 & _pos, const DirectX::SimpleMath::Vector2 & _half)
-	: m_position(_pos), m_half(_half) 
-{}
+Collider::Collider(const DirectX::SimpleMath::Vector2& _pos, const DirectX::SimpleMath::Vector2& _half)
+	: m_position(_pos), m_half(_half) {
+}
 
 Point Collider::GetPosition() const {
 	return m_position;
@@ -42,7 +48,7 @@ void Collider::SetHitboxRadius(const DirectX::SimpleMath::Vector2 & _radius) {
 	m_half = _radius;
 }
 
-void Collider::Update(Sprite& _sprite) {
+void Collider::Update(const Sprite& _sprite) {
 	SetPosition(_sprite.GetPos());
 }
 

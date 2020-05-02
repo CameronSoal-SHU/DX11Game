@@ -27,6 +27,10 @@ const TextureCache::Data & Sprite::GetTextureData() const {
 	return *m_ptrTextureData;
 }
 
+void Sprite::SetTextureData(const TextureCache::Data & _data) {
+	m_ptrTextureData = &_data;
+}
+
 ID3D11ShaderResourceView& Sprite::GetTexture() {
 	assert(m_ptrTexture);
 	return *m_ptrTexture;
@@ -87,6 +91,10 @@ void Sprite::SetOrigin(const DirectX::SimpleMath::Vector2 & _origin) {
 
 DirectX::SimpleMath::Vector2 Sprite::GetPos() const {
 	return m_position;
+}
+
+DirectX::SimpleMath::Vector2 Sprite::GetPosOrigin() const {
+	return m_position + m_origin;
 }
 
 void Sprite::SetPos(const DirectX::SimpleMath::Vector2 & _pos) {
