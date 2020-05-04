@@ -2,14 +2,17 @@
 #include "GameConstants.h"
 #include "MainGame.h"
 #include "GameSettings.h"
-#include "ItemShopMode.h"
 #include <algorithm>
 
 const std::string PlayMode::MODE_NAME = "PLAY";
 
 PlayMode::PlayMode()
-	: m_menuManager(MainGame::Get().GetMenuManager()), m_playerUI(*this) {
+	: m_menuManager(MainGame::Get().GetMenuManager()) {
 	m_gameObjs.reserve(1000);
+
+	// Set up item shop menu
+	std::shared_ptr<ItemShopMode> m_ptrItemShop = std::make_shared<ItemShopMode>(MainGame::Get().GetD3D());
+	MainGame::Get().GetModeManager().AddMode(m_ptrItemShop);
 
 	// Set up the player object
 	std::shared_ptr<Player> player = std::make_shared<Player>();
@@ -18,25 +21,23 @@ PlayMode::PlayMode()
 	player->SetupWeapons();
 	AddObj(player);
 
+	ItemShopMode::Get().SetPlayerRef(*player);	// Link player to item shop
+
 	/// TEMP ///
 	// Create a couple enemies to test collision
-	std::shared_ptr<Enemy> enemyTest = std::make_shared<Enemy>();
+	std::shared_ptr<EnemyRedShip> enemyTest = std::make_shared<EnemyRedShip>();
 	enemyTest->SetParentMode(*this);
 	enemyTest->SetActive(true);
 	enemyTest->SetLookAtPlayer(true);
 	AddObj(enemyTest);
 
-	std::shared_ptr<Enemy> enemyTest2 = std::make_shared<Enemy>();
+	std::shared_ptr<EnemyRedShip> enemyTest2 = std::make_shared<EnemyRedShip>();
 	enemyTest2->SetParentMode(*this);
 	enemyTest2->SetActive(true);
 	enemyTest2->SetLookAtPlayer(true);
 	enemyTest2->GetSprite().SetPos({ 200,100 });
 	AddObj(enemyTest2);
 	///////////////////////////////////////////////////////////////
-
-	// Set up item shop menu
-	m_ptrItemShop = std::make_shared<ItemShopMode>(MainGame::Get().GetD3D());
-	MainGame::Get().GetModeManager().AddMode(m_ptrItemShop);
 
 	Start();
 }
@@ -67,13 +68,6 @@ void PlayMode::Update(float _deltaTime) {
 	for (size_t i(0); i < m_gameObjs.size(); ++i) {
 		m_gameObjs.at(i)->Update(_deltaTime);
 	}
-
-	/// TEMP ////////////////////////////////////////////////////////////////////////////////////
-	GameObject& enemy = *FindObj(typeid(Enemy), true);
-	if (&enemy) {
-		enemy.GetSprite().SetVelocity(FindObj(typeid(Player), true)->GetSprite().GetVelocity());
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Update player UI last so it's always ontop
 	m_playerUI.Update(_deltaTime);
@@ -134,7 +128,7 @@ void PlayMode::GetPlayerInput(float _deltaTime) {
 	if (MainGame::mouseKeyboardInput.IsPressed(VK_TAB)) {
 		if (m_canSwitchMode) {
 			m_canSwitchMode = false;
-			MainGame::Get().GetModeManager().ChangeMode(ItemShopMode::MODE_NAME);
+			MainGame::Get().GetModeManager().ChangeMode(ItemShopMode::Get().GetModeName());
 		}
 	}
 	else {

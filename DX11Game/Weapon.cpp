@@ -1,35 +1,40 @@
 #include "Weapon.h"
+#include "MainGame.h"
 #include "PlayMode.h"
 
 
-Weapon::Weapon(CharacterBase& _owner)
-	: Item(), m_weapModifiers() {
-	m_owner = &_owner;
+Weapon::Weapon(CharacterBase* _owner)
+	: GameObject(MainGame::Get().GetD3D()),
+	m_d3d(MainGame::Get().GetD3D()), m_weapModifiers() {
+	m_owner = _owner;
 
 	UpdateWeaponStats();
 	m_fireDelayRemaining = 0.f;
 }
 
-Weapon::Weapon(CharacterBase& _owner, const WeaponStats& _stats)
-	: m_weapModifiers(_stats) {
-	m_owner = &_owner;
+Weapon::Weapon(CharacterBase* _owner, const WeaponModifiers& _stats)
+	: GameObject(MainGame::Get().GetD3D()),
+	m_d3d(MainGame::Get().GetD3D()), m_weapModifiers(_stats) {
+	m_owner = _owner;
 
 	UpdateWeaponStats();
 	m_fireDelayRemaining = 0.f;
 }
 
-Weapon::Weapon(float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed, CharacterBase& _owner)
-	: m_weapModifiers(_dmgMult, _fRateMult, _lifeTime, _projSpeed) {
-	m_owner = &_owner;
+Weapon::Weapon(CharacterBase* _owner, float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed)
+	: GameObject(MainGame::Get().GetD3D()),
+	m_d3d(MainGame::Get().GetD3D()),
+	m_weapModifiers(_dmgMult, _fRateMult, _lifeTime, _projSpeed) {
+	m_owner = _owner;
 
 	UpdateWeaponStats();
 	m_fireDelayRemaining = 0.f;
 }
 
-
+// Clean up weapon stats to avoid memory leakage
 Weapon::~Weapon() {
-	delete ptrProjectile;
-	ptrProjectile = nullptr;
+	delete m_ptrProjectile;
+	m_ptrProjectile = nullptr;
 }
 
 void Weapon::Update(float _deltaTime) {
@@ -38,13 +43,13 @@ void Weapon::Update(float _deltaTime) {
 }
 
 void Weapon::Render(float _deltaTime, DirectX::SpriteBatch & _sprBatch) {
-	Item::Render(_deltaTime, _sprBatch);
+	GameObject::Render(_deltaTime, _sprBatch);
 }
 
 void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	// Make a copy of the projectile to be used
-	std::shared_ptr<Projectile> projectileCopy = std::make_shared<Projectile>(*ptrProjectile);
-	projectileCopy->GetSprite().SetTextureData(ptrProjectile->GetSprite().GetTextureData());
+	std::shared_ptr<Projectile> projectileCopy = std::make_shared<Projectile>(*m_ptrProjectile);
+	projectileCopy->GetSprite().SetTextureData(m_ptrProjectile->GetSprite().GetTextureData());
 
 	const float ownerRot = m_owner->GetSprite().GetRotation();
 	const DirectX::SimpleMath::Vector2 projSpeed(m_weapStats.projSpeed, m_weapStats.projSpeed);
@@ -75,10 +80,15 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	//projectileCopy = nullptr;
 }
 
-void Weapon::SetProjTextureName(const std::string & _projName) {
+void Weapon::SetProjTextureName(const std::string& _projName) {
 	m_projTxtrName = _projName;
 
-	ptrProjectile = new Projectile(_projName);
+	m_ptrProjectile = new Projectile(_projName);
+}
+
+void Weapon::SetWeaponModifiers(const WeaponModifiers & _weapMod) {
+	m_weapModifiers = _weapMod;
+	UpdateWeaponStats();
 }
 
 void Weapon::UpdateWeaponStats() {
@@ -98,16 +108,16 @@ void Weapon::OnUse() {
 	ResetFireRate();
 }
 
-Weapon::WeaponStats::WeaponStats()
+Weapon::WeaponModifiers::WeaponModifiers()
 	: damageMult(1.f), fireRateMult(1.f),
 	lifeTimeMult(1.f), projSpeedMult(1.f)
 {}
 
-Weapon::WeaponStats::WeaponStats(const WeaponStats & _stats)
+Weapon::WeaponModifiers::WeaponModifiers(const WeaponModifiers & _stats)
 	: damageMult(_stats.damageMult), fireRateMult(_stats.fireRateMult),
 	lifeTimeMult(_stats.lifeTimeMult), projSpeedMult(_stats.projSpeedMult)
 {}
 
-Weapon::WeaponStats::WeaponStats(float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed)
+Weapon::WeaponModifiers::WeaponModifiers(float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed)
 	: damageMult(_dmgMult), fireRateMult(_fRateMult), lifeTimeMult(_lifeTime), projSpeedMult(_projSpeed)
 {}

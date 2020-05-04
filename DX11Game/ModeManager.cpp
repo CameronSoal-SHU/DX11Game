@@ -43,12 +43,6 @@ void ModeManager::Render(float _dTime, DirectX::SpriteBatch & _sprBatch) {
 	}
 }
 
-void ModeManager::ProcessKey(char _key) {
-	if (CurIndexValid()) {
-		m_modes.at(m_curModeIdx)->ProcessKey(_key);
-	}
-}
-
 void ModeManager::AddMode(std::shared_ptr<ModeBase> _modePtr) {
 	// Ensure passed arg is valid
 	assert(_modePtr);

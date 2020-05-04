@@ -15,7 +15,7 @@ Projectile::Projectile(const std::string& _txtrName)
 void Projectile::Update(float _deltaTime) {
 	m_sprite.Update(_deltaTime);
 	m_collider.Update(m_sprite);
-	//m_collider.SetHitboxRadius(m_sprite.GetScreenDimRadius());
+
 	if (!CheckForCollision()) {
 		m_projStats.lifeTime -= _deltaTime;
 
@@ -48,7 +48,7 @@ void Projectile::UpdateProjStats() {
 
 bool Projectile::CheckForCollision() {
 	// Get every enemy in-game currently
-	std::vector<std::shared_ptr<GameObject>> enemies = m_ptrPlayMode->FindObjs(typeid(Enemy), true);
+	std::vector<std::shared_ptr<GameObject>> enemies = m_ptrPlayMode->FindObjs(typeid(EnemyRedShip), true);
 	bool collision = false;
 
 	// Check each one for a collision

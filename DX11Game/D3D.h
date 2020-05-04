@@ -23,6 +23,8 @@ public:
 	parameters are new width and height of window
 	*/
 	void OnResize_Default();
+	// See m_ptrOnResize
+	void OnResize(int _screenWidth, int _screenHeight, D3D& _d3d);
 
 	/* 
 	Main Release function to be called on Shutdown
@@ -31,7 +33,7 @@ public:
 	void ReleaseD3D(bool _extraInfo = EXTRA_INFO);
 
 	// Get the Windows current aspect ratio (letterbox, square, etc.)
-	float GetAspectRatio();
+	float GetAspectRatio() const;
 
 	// Handles rendering on screen
 	void BeginRender(const DirectX::SimpleMath::Vector4& _colour);
@@ -41,9 +43,6 @@ public:
 	ID3D11DeviceContext& GetDeviceCtx();
 	// Has the D3D Device been assigned?
 	bool GetDeviceReady() const;
-
-	// See m_ptrOnResize
-	void OnResize(int _screenWidth, int _screenHeight, D3D& _d3d);
 
 	TextureCache& GetTextureCache();
 

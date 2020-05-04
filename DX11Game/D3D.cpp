@@ -93,7 +93,7 @@ void D3D::ReleaseD3D(bool _extraInfo) {
 	ReleaseCOM(m_ptrD3DDevice);
 }
 
-float D3D::GetAspectRatio() {
+float D3D::GetAspectRatio() const {
 	int width, height;
 	WindowUtil::Get().GetClientExtends(width, height);
 

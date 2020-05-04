@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "SpriteFont.h"
 #include "MenuManager.h"
+#include "MainGame.h"
 
 MenuPage::MenuPage()
 	: MenuNode(MenuNode::Type::ROOT)
@@ -43,6 +44,8 @@ void MenuButton::Render(const ExtraData & _renData,
 	// Button position
 	const TextureCache::Data& txtrData = _renData.textureCache.GetData(buttons[NORMAL].textureName);
 	const TextureCache::Data::Sprite* sprite = nullptr;
+	// Scaling the interactable area to the games current screen size scale
+	const DirectX::SimpleMath::Vector2 gameDimScale = { MainGame::Get().GetScreenDimScaleX(), MainGame::Get().GetScreenDimScaleY() };
 
 	if (!txtrData.frames.empty() && (int)txtrData.frames.size() > buttons[NORMAL].spriteID)
 		sprite = &txtrData.GetSprite(buttons[NORMAL].spriteID);
@@ -50,36 +53,46 @@ void MenuButton::Render(const ExtraData & _renData,
 	RECT dst;
 	GetImageDest(dst, sprite, _offset, _scale);
 
-	// Check what the mouse is doing
-	DirectX::SimpleMath::Vector2 mPos = _renData.input.GetMousePos(true);
+	// Check where the mouse is and what it's doing
+	DirectX::SimpleMath::Vector2 mPos = _renData.input.GetMousePos(true) * gameDimScale;
 	bool overlapping = (mPos.x >= dst.left && mPos.x <= dst.right && mPos.y >= dst.top && mPos.y <= dst.bottom);
 
-	if (overlapping) {
-		if (_renData.input.GetMouseDown(Input::LMB)) {
-			// Mouse click event
-			_renData.textureCache.Render(_renData.spriteBatch, buttons[PRESSED].textureName, 
-				dst, buttons[PRESSED].spriteID, buttons[PRESSED].colour);
+	if (m_enabled) {
+		if (overlapping) {
+			if (_renData.input.GetMouseDown(Input::LMB)) {
+				// Mouse click event
+				_renData.textureCache.Render(_renData.spriteBatch, buttons[PRESSED].textureName,
+					dst, buttons[PRESSED].spriteID, buttons[PRESSED].colour);
 
-			m_wasDown = true;
+				m_wasDown = true;
+			}
+			else {
+				// Mouse hovering event
+				_renData.textureCache.Render(_renData.spriteBatch, buttons[HOVER].textureName,
+					dst, buttons[HOVER].spriteID, buttons[HOVER].colour);
+
+				if (m_wasDown)
+					_renData.menuManager.TriggerEvent(*this, MenuNode::Event::CLICK);
+
+				m_wasDown = false;
+			}
 		}
 		else {
-			// Mouse hovering event
-			_renData.textureCache.Render(_renData.spriteBatch, buttons[HOVER].textureName, 
-				dst, buttons[HOVER].spriteID, buttons[HOVER].colour);
-
-			if (m_wasDown)
-				_renData.menuManager.TriggerEvent(*this, MenuNode::Event::CLICK);
+			// Normal event
+			_renData.textureCache.Render(_renData.spriteBatch, buttons[NORMAL].textureName,
+				dst, buttons[NORMAL].spriteID, buttons[NORMAL].colour);
 
 			m_wasDown = false;
 		}
 	}
 	else {
-		// Normal event
-		_renData.textureCache.Render(_renData.spriteBatch, buttons[NORMAL].textureName, 
-			dst, buttons[NORMAL].spriteID, buttons[NORMAL].colour);
+		// Button is disabled and cannot be interacted with
+		_renData.textureCache.Render(_renData.spriteBatch, buttons[DISABLED].textureName,
+			dst, buttons[DISABLED].spriteID, buttons[DISABLED].colour);
 
 		m_wasDown = false;
 	}
+	
 
 	MenuNode::Render(_renData, DirectX::SimpleMath::Vector2((float)dst.left, (float)dst.top), _scale);
 }

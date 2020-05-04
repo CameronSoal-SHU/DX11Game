@@ -144,9 +144,6 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Game Objects\Items\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>Game Objects\Items\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CharacterBase.cpp">
       <Filter>Game Objects\Characters\Source Files</Filter>
     </ClCompile>
@@ -168,7 +165,13 @@
     <ClCompile Include="Weapon.cpp">
       <Filter>Game Objects\Items\Weapons\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Unarmed.cpp">
+    <ClCompile Include="EnemyRedShip.cpp">
+      <Filter>Game Objects\Characters\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnerManager.cpp">
+      <Filter>Game Modes\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponData.cpp">
       <Filter>Game Objects\Items\Weapons\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,9 +239,6 @@
     <ClInclude Include="MainMenu.h">
       <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Game Objects\Items\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>Game Objects\Items\Header Files</Filter>
     </ClInclude>
@@ -266,10 +266,16 @@
     <ClInclude Include="PlayerUI.h">
       <Filter>Menu and UI\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Unarmed.h">
+    <ClInclude Include="Weapon.h">
       <Filter>Game Objects\Items\Weapons\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon.h">
+    <ClInclude Include="EnemyRedShip.h">
+      <Filter>Game Objects\Characters\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnerManager.h">
+      <Filter>Game Modes\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponData.h">
       <Filter>Game Objects\Items\Weapons\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

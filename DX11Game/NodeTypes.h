@@ -35,18 +35,22 @@ public:
 		int spriteID = 0;
 		std::string textureName;
 		DirectX::SimpleMath::Vector4 colour{ 1,1,1,1 };
-	} buttons[3];
+	} buttons[4];
 
-	enum { PRESSED = 0, NORMAL = 1, HOVER = 2 };
+	enum { PRESSED = 0, NORMAL = 1, HOVER = 2, DISABLED = 3 };
 
 	MenuButton();
 
 	void Render(const ExtraData& _renData,
 		const DirectX::SimpleMath::Vector2& _offset, const DirectX::SimpleMath::Vector2& _scale) override;
 
+	void SetEnabled(bool _enabled) { m_enabled = _enabled; }
+	bool IsEnabled() const { return m_enabled; }
+
 	std::string m_text;
 private:
 	bool m_wasDown = false;
+	bool m_enabled = true;	// Can the button be interacted with?
 };
 
 // Single or Multi-lined Text

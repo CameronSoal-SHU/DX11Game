@@ -19,7 +19,7 @@ MainGame::MainGame(D3D& _d3d)
 	PreLoadAssets();
 
 	m_modeManager.AddMode(std::make_shared<PlayMode>());
-	m_modeManager.ChangeMode(PlayMode::MODE_NAME);
+	m_modeManager.ChangeMode(PlayMode::Get().GetModeName());
 }
 
 void MainGame::Update(float _deltaTime) {
@@ -82,6 +82,9 @@ void MainGame::LoadUIAssets() {
 	// UI Item Hotbar
 	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_BG_PATH, TxtrNames::ITEM_HOTBAR_BG_MAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
 	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ITEM_HOTBAR_SLOT_PATH, TxtrNames::ITEM_HOTBAR_SLOT_NAME, APPEND_PATH, &TxtrFrames::ITEM_HOTBAR_FRAMES);
+
+	// Item Shop Containers
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::SHOP_CONTAINER_PATH, TxtrNames::SHOP_CONTAINER_NAME, APPEND_PATH, &TxtrFrames::SHOP_CONTAINER_FRAMES);
 }
 
 void MainGame::LoadPlayerAssets() {

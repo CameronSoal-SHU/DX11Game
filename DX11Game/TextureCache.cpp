@@ -57,7 +57,7 @@ ID3D11ShaderResourceView* TextureCache::LoadTexture(ID3D11Device* _ptrDevice, co
 	return ptrTexture;
 }
 
-TextureCache::Data& TextureCache::GetData(const std::string& _textureName) {
+const TextureCache::Data& TextureCache::GetData(const std::string& _textureName) {
 	return m_textureCache.at(_textureName);
 }
 

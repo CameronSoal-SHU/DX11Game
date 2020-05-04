@@ -65,6 +65,7 @@ namespace TxtrDirs {
 
 	const std::string ITEM_HOTBAR_BG_PATH	= "UI/item_hotbar_bg.dds";				// Player UI item hotbar background
 	const std::string ITEM_HOTBAR_SLOT_PATH = "UI/item_hotbar_slot.dds";			// Player UI item hotbar slot
+	const std::string SHOP_CONTAINER_PATH	= "UI/item_shop_container.dds";			// Item shop item container
 	const std::string HEALTH_BAR_BG_PATH	= "UI/health_bar_bg.dds";				// Player UI healthbar background
 	const std::string HEALTH_BAR_FG_PATH	= "UI/health_bar_fg.dds";				// Player UI healthbar foreground
 
@@ -85,7 +86,8 @@ namespace TxtrNames {
 	const std::string THRUST_NAME			= "ship_thrust";
 
 	const std::string ITEM_HOTBAR_BG_MAME   = "ui_item_hotbar_bg";			
-	const std::string ITEM_HOTBAR_SLOT_NAME = "ui_item_hotbar_slot";		
+	const std::string ITEM_HOTBAR_SLOT_NAME = "ui_item_hotbar_slot";	
+	const std::string SHOP_CONTAINER_NAME	= "item_shop_container";
 	const std::string HEALTH_BAR_BG_NAME	= "ui_health_bar_bg";
 	const std::string HEALTH_BAR_FG_NAME	= "ui_health_bar_fg";
 
@@ -109,9 +111,13 @@ namespace TxtrFrames {
 		{{0,0}, NOT_STRETCHED, {0,0,32,32}},
 	};
 	const std::vector<TextureCache::Data::Sprite> ENERGY_BALL_FRAMES {
-		{{0,0}, NOT_STRETCHED, {0,0,783,775}}
+		{{0,0}, NOT_STRETCHED, {0,0,765,763}}
 	};
 	const std::vector<TextureCache::Data::Sprite> NULL_FRAMES {
 		{{0,0}, NOT_STRETCHED, {0,0,0,0}}
+	};
+
+	const std::vector<TextureCache::Data::Sprite> SHOP_CONTAINER_FRAMES{
+		{{0,0}, NOT_STRETCHED, {0,0,1920,640}}
 	};
 }

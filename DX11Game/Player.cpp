@@ -7,19 +7,11 @@
 
 
 Player::Player()
-	: CharacterBase(),
-	m_thrust(MainGame::Get().GetD3D()) {
+	: CharacterBase() {
 	D3D& d3d = MainGame::Get().GetD3D();
 
-	/// TEMP ///
-	m_characterStats.damage = 10.f;
-	m_characterStats.fireRate = 1.f;
-	m_characterStats.projSpeed = 1000.f;
-	m_characterStats.lifeTime = 1.f;
-	m_moveSpeed = DirectX::SimpleMath::Vector2(300.f, 300.f);
-
 	// Set up player textures
-	LoadShipTexture(d3d);
+	LoadShipTexture(d3d, TxtrNames::PLAYER_NAME);
 	LoadThrustTexture(d3d);
 
 	/*m_collider = Collider(m_sprite.GetPosOrigin(), 
@@ -29,6 +21,8 @@ Player::Player()
 	m_collider.SetTag("PLAYER");
 
 	MainGame::gamePad.SetDeadZone(0, { 0.15f, 0.15f });
+
+	Init();
 }
 
 Player::~Player() {
@@ -36,6 +30,15 @@ Player::~Player() {
 		delete m_weapons.at(i);
 
 	m_weapons.clear();
+}
+
+void Player::Init() {
+	/// TEMP ///
+	m_characterStats.damage = 10.f;
+	m_characterStats.fireRate = 1.f;
+	m_characterStats.projSpeed = 1000.f;
+	m_characterStats.lifeTime = 1.f;
+	m_moveSpeed = DirectX::SimpleMath::Vector2(300.f, 300.f);
 }
 
 void Player::Update(float _deltaTime) {
@@ -79,23 +82,13 @@ void Player::Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) {
 
 void Player::SetupWeapons() {
 	// Set up the primary and secondary weapons, linked to the player object
-	//EnergyBall* energyBallWeapPrim = new EnergyBall(*this);
-	Weapon::WeaponStats energyBallStats{ 1.1f, 7.5f, 1.f, 1.f };
+	EnergyBallWeapon* eBallWeap = new EnergyBallWeapon(this);
+	Unarmed* unarmedSec = new Unarmed(this);
 
-	Weapon* energyBallWeap = new Weapon(*this, energyBallStats);
-	Unarmed* unarmedSec = new Unarmed(*this);
-
-
-	//energyBallWeapPrim->SetModeOwner(*m_ptrPlayMode);
-	energyBallWeap->SetModeOwner(*m_ptrPlayMode);
+	eBallWeap->SetModeOwner(*m_ptrPlayMode);
 	unarmedSec->SetModeOwner(*m_ptrPlayMode);
 
-	//energyBallWeapPrim->SetProjectileScale({ 0.05f, 0.05f });
-	energyBallWeap->SetItemName("Plasma Cannon");
-	energyBallWeap->SetProjTextureName(TxtrNames::ENERGY_BALL_NAME);
-	energyBallWeap->SetProjectileScale({ 0.05f, 0.05f });
-
-	m_weapons.push_back(energyBallWeap);
+	m_weapons.push_back(eBallWeap);
 	m_weapons.push_back(unarmedSec);
 }
 
@@ -120,10 +113,10 @@ void Player::GetPlayerInput(float _deltaTime) {
 			}
 
 			if (ctrlData.leftTrigger) {
-				FireWeapon(Weapon::item_type::PRIMARY);
+				FireWeapon(Weapon::weap_type::PRIMARY);
 			}
 			if (ctrlData.rightTrigger) {
-				FireWeapon(Weapon::item_type::SECONDARY);
+				FireWeapon(Weapon::weap_type::SECONDARY);
 			}
 		}
 	}
@@ -143,10 +136,10 @@ void Player::GetPlayerInput(float _deltaTime) {
 		}
 
 		if (MainGame::mouseKeyboardInput.GetMouseDown(Input::MouseButton::LMB)) {
-			FireWeapon(Weapon::item_type::PRIMARY);
+			FireWeapon(Weapon::weap_type::PRIMARY);
 		}
 		if (MainGame::mouseKeyboardInput.GetMouseDown(Input::MouseButton::RMB)) {
-			FireWeapon(Weapon::item_type::SECONDARY);
+			FireWeapon(Weapon::weap_type::SECONDARY);
 		}
 
 		// Angle in radians between the sprites position and the mouse position
@@ -161,25 +154,11 @@ void Player::GetPlayerInput(float _deltaTime) {
 	}
 }
 
-void Player::LoadShipTexture(D3D& _d3d) {
-	// Set player texture to ship
-	m_sprite.SetTexture(TxtrNames::PLAYER_NAME, *_d3d.GetTextureCache().GetData(TxtrNames::PLAYER_NAME).ptrTexture);
-
-	m_sprite.SetScale({ 0.15f, 0.15f });
-	m_sprite.SetOrigin(m_sprite.GetDimRadius());	// Set origin to centre of texture
-}
-
-void Player::LoadThrustTexture(D3D & _d3d) {
-	// Texture for ship thrust
-	m_thrust.SetTexture(TxtrNames::THRUST_NAME, *_d3d.GetTextureCache().GetData(TxtrNames::THRUST_NAME).ptrTexture);
-	m_thrust.GetAnim().Init(0, 3, 15, LOOP);
-	m_thrust.SetScale({ 4.f,4.f });
-
-	const float textureCentre = m_thrust.GetDimRadius().x / m_thrust.GetTextureData().frames.size();
-
-	m_thrust.SetOrigin({ textureCentre, -11.f });
-	m_thrust.SetRotation(m_sprite.GetRotation());
-	m_thrust.GetAnim().Play(true);
+void Player::LoadShipTexture(D3D& _d3d, const std::string& _txtrName)
+{
+	CharacterBase::LoadShipTexture(_d3d, _txtrName);	// Call base method
+	m_sprite.SetScale({ 0.15f, 0.15f });				// Adjust player ships scale to a more reasonable size
+	m_sprite.SetOrigin(m_sprite.GetDimRadius());		// Set the origin to the centre of the players texture
 }
 
 void Player::CheckForCollision() {
@@ -194,7 +173,7 @@ void Player::CheckForCollision() {
 	}
 }
 
-void Player::FireWeapon(const Weapon::item_type& _weaponType) {
+void Player::FireWeapon(const Weapon::weap_type& _weaponType) {
 	Weapon& weapon = *m_weapons.at(_weaponType);
 
 	if (weapon.CanUse()) {
@@ -204,7 +183,7 @@ void Player::FireWeapon(const Weapon::item_type& _weaponType) {
 
 		// Primary weapon should offset the projectile spawn point to the left of the player, 
 		// secondary weapon should be to the right
-		weapon.FireProjectile(m_sprite.GetPos() + ((_weaponType == Weapon::item_type::PRIMARY) ? -offsetPos : offsetPos));
+		weapon.FireProjectile(m_sprite.GetPos() + ((_weaponType == Weapon::weap_type::PRIMARY) ? -offsetPos : offsetPos));
 	}
 }
 

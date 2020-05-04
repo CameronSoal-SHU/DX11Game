@@ -63,7 +63,6 @@ public:
 		DirectX::SimpleMath::Vector2 dimensions;
 		std::vector<Sprite> frames;
 
-		Data() {}
 		/*
 		<param "_fName"> File name for texture </param>
 		<param "_ptrTxtr"> Pointer to texture resource </param>
@@ -98,14 +97,14 @@ public:
 	static std::string GetAssetPath() { return m_assetPath; }
 
 	// Retrieve texture via name (FAST)
-	Data& GetData(const std::string& _textureName);
+	const Data& GetData(const std::string& _textureName);
 	// Retrieve texture via handle (SLOW)
 	const Data& GetData(ID3D11ShaderResourceView* _ptrTexture);
 
 	void Render(DirectX::SpriteBatch& _sprBatch, const std::string& _txtrName, const RECT& _dest, const int _sprID,
 		const DirectX::SimpleMath::Vector4& _colour = DirectX::SimpleMath::Vector4(1, 1, 1, 1), float _angle = 0.f, float _depth = 0.f);
 private:
-	DirectX::SimpleMath::Vector2 GetDimensions(ID3D11ShaderResourceView* ptrTexture);
+	DirectX::SimpleMath::Vector2 GetDimensions(ID3D11ShaderResourceView* _ptrTexture);
 
 	// Map to store texture name and data
 	typedef std::unordered_map<std::string, Data> TextureDataMap;

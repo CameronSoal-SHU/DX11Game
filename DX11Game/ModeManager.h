@@ -15,9 +15,6 @@ public:
 
 	void Update(float _dTime);
 	void Render(float _dTime, DirectX::SpriteBatch& _sprBatch);
-
-	// Sends key to the current GameMode
-	void ProcessKey(char _key);
 	// Dynamically add a new GameMode
 	void AddMode(std::shared_ptr<ModeBase> _modePtr);
 	// Free up all GameMode instances, can be explicitly called, or called in destructor

@@ -3,9 +3,6 @@
 #include "MenuManager.h"
 #include "GameClock.h"
 
-class MainGame;
-class PlayMode;
-
 class PlayerUI : public Singleton<PlayerUI>
 {
 public:
@@ -15,9 +12,9 @@ public:
 		HealthBar();
 		void Update(float _deltaTime);
 
-		MenuImage* healthBarBG;			// Health bar background
-		MenuImage* healthBarFG;			// Health bar foreground
-		MenuText*  healthBarDisplay;	// Health bar health remaining display
+		MenuImage* ptrHealthBarBG;			// Health bar background
+		MenuImage* ptrHealthBarFG;			// Health bar foreground
+		MenuText*  ptrHealthBarDisplay;		// Health bar health remaining display
 	};
 
 	struct InGameClock {
@@ -25,7 +22,7 @@ public:
 		void Update(float _deltaTime);
 
 		GameClock clock;
-		MenuText* clockDisplay;
+		MenuText* ptrClockDisplay;
 	};
 
 	// Used to display on-screen FPS
@@ -33,7 +30,7 @@ public:
 		FPSDisplay();
 		void Update(float _deltaTime);
 
-		MenuText* frameCountDisplay;
+		MenuText* ptrFrameRateDisplay;
 
 		float fpsUpdateDelay = 0.f;
 		float delayRemaining = 0.f;
@@ -57,24 +54,23 @@ public:
 		void Update(float _deltaTime);
 		void UpdateHotBarItems();			// Update item slots to be whatever the player is using at that frame
 
-		MenuImage* hotBarBG;
+		MenuImage* ptrHotBarBG;
 		std::vector<HotBarSlot> hotBarSlots;
 	};
 
-	PlayerUI(PlayMode& _playMode);
+	PlayerUI();
 	~PlayerUI();
 
 	void Update(float _deltaTime);
 private:
-	MenuManager& m_menuManager;		// Holds the menu manager reference
-	PlayMode&	 m_playMode;		// Holds the playMode reference
+	MenuManager& m_menuMgr;			// Holds the menu manager reference
 	D3D&		 m_d3d;				// Holds reference to MainGames d3d
 
-	MenuNode*	 m_rootUINode;		// Holds root menu node for player UI
+	MenuNode*	 m_ptrUIRoot;		// Holds root menu node for player UI
 
-	FPSDisplay*  m_fpsDisplay;		// On-screen Frames per second
-	HealthBar*   m_healthBar;		// Players health bar
-	InGameClock* m_gameClock;		// In-game clock of current play session
-	HotBar*		 m_itemHotBar;		// Item hot bar to show player items
+	FPSDisplay*  m_ptrFPSDisplay;	// On-screen Frames per second
+	HealthBar*   m_ptrHealthBar;	// Players health bar
+	InGameClock* m_ptrGameClock;	// In-game clock of current play session
+	HotBar*		 m_ptrItemHotBar;	// Item hot bar to show player items
 };
 

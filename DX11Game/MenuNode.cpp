@@ -63,7 +63,7 @@ MenuNode * MenuNode::GetRoot() {
 	return m_ptrParentNode->GetRoot();	// Recursively go back up node tree until root is found
 }
 
-MenuNode * MenuNode::FindNode(const std::string & _name, MenuNode * _ptrIgnore) {
+MenuNode* MenuNode::FindNode(const std::string & _name, MenuNode * _ptrIgnore) {
 	if (this != _ptrIgnore && m_nodeName == _name) {
 		return this;
 	}
@@ -92,8 +92,8 @@ void MenuNode::SetParent(MenuNode & _parent) {
 	m_ptrParentNode->m_childNodes.push_back(this);
 }
 
-void MenuNode::GetImageDest(RECT & _dst, const TextureCache::Data::Sprite * _ptrSpr,
-	const DirectX::SimpleMath::Vector2 & _offset, const DirectX::SimpleMath::Vector2 & _scale) {
+void MenuNode::GetImageDest(RECT& _dst, const TextureCache::Data::Sprite* _ptrSpr,
+	const DirectX::SimpleMath::Vector2& _offset, const DirectX::SimpleMath::Vector2& _scale) {
 	// If there's no sprite, the destination size is predetermined
 	DirectX::SimpleMath::Vector2 dim((float)m_width, (float)m_height);
 
@@ -127,9 +127,9 @@ void MenuNode::GetImageDest(RECT & _dst, const TextureCache::Data::Sprite * _ptr
 	_dst.bottom = (LONG)round(_dst.top + dim.y * _scale.y);
 }
 
-void MenuNode::GetImageDest(RECT & _dst, const DirectX::SimpleMath::Vector2 & _nodePos, 
-	const DirectX::SimpleMath::Vector2 & _nodeDim, const TextureCache::Data::Sprite * _ptrSpr, 
-	const DirectX::SimpleMath::Vector2 & _offset, const DirectX::SimpleMath::Vector2 & _scale) {
+void MenuNode::GetImageDest(RECT& _dst, const DirectX::SimpleMath::Vector2& _nodePos, 
+	const DirectX::SimpleMath::Vector2& _nodeDim, const TextureCache::Data::Sprite* _ptrSpr, 
+	const DirectX::SimpleMath::Vector2& _offset, const DirectX::SimpleMath::Vector2& _scale) {
 	// If there is no sprite, then destination size is predetermined
 	DirectX::SimpleMath::Vector2 dim(_nodeDim);
 

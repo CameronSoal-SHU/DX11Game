@@ -1,15 +1,14 @@
 #pragma once
 #include "CharacterBase.h"
-#include "Unarmed.h"
-
-class PlayMode;
+#include "WeaponData.h"
 
 class Player : public CharacterBase
 {
 public:
 	Player();
 	~Player();
-
+	
+	void Init() override;
 	void Update(float _deltaTime) override;
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 	// Link object to owning mode
@@ -21,14 +20,13 @@ public:
 private:
 	std::vector<Weapon*> m_weapons;
 
-	Sprite m_thrust;
+	//Sprite m_thrust;
 
 	void GetPlayerInput(float _deltaTime);
 
-	void LoadShipTexture(D3D& _d3d);
-	void LoadThrustTexture(D3D& _d3d);
+	void LoadShipTexture(D3D& _d3d, const std::string& _txtrName) override;
 
 	void CheckForCollision();
 
-	void FireWeapon(const Weapon::item_type& _weaponType);
+	void FireWeapon(const Weapon::weap_type& _weaponType);
 };

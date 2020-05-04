@@ -18,9 +18,10 @@ public:
 		return *m_ptrSingleton;
 	}
 private:
-	static T* m_ptrSingleton;
-	Singleton(Singleton const&)		 = delete;
-	void operator=(Singleton const&) = delete;
+	inline static T* m_ptrSingleton  = 0;
+
+	Singleton(const Singleton&)		 = delete;
+	void operator=(const Singleton&) = delete;
 };
 
-template<typename T> T* Singleton<T>::m_ptrSingleton = 0;
+//template<typename T> T* Singleton<T>::m_ptrSingleton = 0;

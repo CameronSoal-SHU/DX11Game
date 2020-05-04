@@ -22,6 +22,8 @@ public:
 	CharacterBase();
 	~CharacterBase();
 
+	virtual void Init() = 0;
+
 	void Update(float _deltaTime) override;
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 
@@ -36,7 +38,12 @@ protected:
 
 	Collider m_hitBox;
 
+	Sprite m_thrust;						// Sprite to hold the thrust animation
+
 	HealthHandler m_healthHandler;
 	Stats m_characterStats;					// Stats to be used by items/weapons
+
+	void virtual LoadShipTexture(D3D& _d3d, const std::string& _txtrName);
+	void LoadThrustTexture(D3D& _d3d);		// Load the thrust texture for each ship
 };
 

@@ -4,17 +4,17 @@
 #include "GameConstants.h"
 
 
-PlayerUI::PlayerUI(PlayMode& _playMode)
-	: m_menuManager(MainGame::Get().GetMenuManager()), 
-	m_d3d(MainGame::Get().GetD3D()), m_playMode(_playMode) {
+PlayerUI::PlayerUI()
+	: m_menuMgr(MainGame::Get().GetMenuManager()), 
+	m_d3d(MainGame::Get().GetD3D()) {
 	// Create root node for player UI
-	m_rootUINode = &m_menuManager.AddMenu("menu_player_UI", Settings::GAME_RES);
+	m_ptrUIRoot = &m_menuMgr.AddMenu("menu_player_UI", Settings::GAME_RES);
 
-	m_healthBar = new HealthBar();
-	m_gameClock = new InGameClock();
-	m_fpsDisplay = new FPSDisplay();
-	m_itemHotBar = new HotBar();
-	m_itemHotBar->Init();
+	m_ptrHealthBar = new HealthBar();
+	m_ptrGameClock = new InGameClock();
+	m_ptrFPSDisplay = new FPSDisplay();
+	m_ptrItemHotBar = new HotBar();
+	m_ptrItemHotBar->Init();
 }
 
 void PlayerUI::Update(float _deltaTime) {
@@ -22,114 +22,114 @@ void PlayerUI::Update(float _deltaTime) {
 	#pragma omp parallel sections
 	{
 		#pragma omp section
-		{ m_healthBar->Update(_deltaTime); }
+		{ m_ptrHealthBar->Update(_deltaTime); }
 		#pragma omp section
-		{ m_fpsDisplay->Update(_deltaTime); }
+		{ m_ptrFPSDisplay->Update(_deltaTime); }
 		#pragma omp section
-		{ m_gameClock->Update(_deltaTime); }
+		{ m_ptrGameClock->Update(_deltaTime); }
 		#pragma omp section
-		{ m_itemHotBar->Update(_deltaTime); }
+		{ m_ptrItemHotBar->Update(_deltaTime); }
 	}
 }
 
 PlayerUI::~PlayerUI() {
-	delete m_healthBar;
-	delete m_gameClock;
-	delete m_fpsDisplay;
-	delete m_itemHotBar;
+	delete m_ptrHealthBar;
+	delete m_ptrGameClock;
+	delete m_ptrFPSDisplay;
+	delete m_ptrItemHotBar;
 
-	m_healthBar  = nullptr;
-	m_gameClock  = nullptr;
-	m_fpsDisplay = nullptr;
-	m_itemHotBar = nullptr;
+	m_ptrHealthBar  = nullptr;
+	m_ptrGameClock  = nullptr;
+	m_ptrFPSDisplay = nullptr;
+	m_ptrItemHotBar = nullptr;
 }
 
 PlayerUI::HealthBar::HealthBar() {
 	// MenuManager reference from PlayerUI
-	MenuManager& menuMgr = PlayerUI::Get().m_menuManager;
+	MenuManager& menuMgr = PlayerUI::Get().m_menuMgr;
 
 	// Initialise nodes
-	healthBarBG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
-	healthBarFG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
-	healthBarDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
+	ptrHealthBarBG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
+	ptrHealthBarFG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
+	ptrHealthBarDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
 
 	// Node name and texture name referencing
-	healthBarBG->m_nodeName = "ui_health_bar_bg";
-	healthBarBG->m_textureName = TxtrNames::HEALTH_BAR_BG_NAME;
+	ptrHealthBarBG->m_nodeName = "ui_health_bar_bg";
+	ptrHealthBarBG->m_textureName = TxtrNames::HEALTH_BAR_BG_NAME;
+	ptrHealthBarBG->m_frameID = 0;
 
 	// Sizing
-	healthBarBG->m_width = 440;
-	healthBarBG->m_height = 32;
+	ptrHealthBarBG->m_width = 440;
+	ptrHealthBarBG->m_height = 32;
 
-	healthBarBG->m_frameID = 0;
 	// Set the parent to the UI root node
-	healthBarBG->SetParent(*PlayerUI::Get().m_rootUINode);
+	ptrHealthBarBG->SetParent(*PlayerUI::Get().m_ptrUIRoot);
 
 	// Node name and texture name referencing
-	healthBarFG->m_nodeName = "ui_health_bar_fg";
-	healthBarFG->m_textureName = TxtrNames::HEALTH_BAR_FG_NAME;
+	ptrHealthBarFG->m_nodeName = "ui_health_bar_fg";
+	ptrHealthBarFG->m_textureName = TxtrNames::HEALTH_BAR_FG_NAME;
 
 	// Positioning and sizing (relative to parent node)
-	healthBarFG->m_x = 5;
-	healthBarFG->m_y = 5;
-	healthBarFG->m_width = 430;
-	healthBarFG->m_height = 22;
+	ptrHealthBarFG->m_x = 5;
+	ptrHealthBarFG->m_y = 5;
+	ptrHealthBarFG->m_width = 430;
+	ptrHealthBarFG->m_height = 22;
 
-	healthBarFG->m_frameID = 0;
+	ptrHealthBarFG->m_frameID = 0;
 
-	healthBarFG->SetParent(*healthBarBG);
+	ptrHealthBarFG->SetParent(*ptrHealthBarBG);
 
 	// Node name referencing
-	healthBarDisplay->m_nodeName = "ui_health_bar_txt";
+	ptrHealthBarDisplay->m_nodeName = "ui_health_bar_txt";
 
 	// Set up font used and debug text
 	// The text will be changed each frame, so this text should NOT display
-	healthBarDisplay->m_font = "bauhaus";
-	healthBarDisplay->m_text = "HP: NOT UPDATING";
-	healthBarDisplay->m_pitch = 43;
+	ptrHealthBarDisplay->m_font = "bauhaus";
+	ptrHealthBarDisplay->m_text = "HP: NOT UPDATING";
+	ptrHealthBarDisplay->m_pitch = 43;
 
 	// Positioning and sizing (relative to parent node)
-	healthBarDisplay->m_x = 0;
-	healthBarDisplay->m_y = -64;
-	healthBarDisplay->m_width = 512;
-	healthBarDisplay->m_height = 64;
+	ptrHealthBarDisplay->m_x = 0;
+	ptrHealthBarDisplay->m_y = -64;
+	ptrHealthBarDisplay->m_width = 512;
+	ptrHealthBarDisplay->m_height = 64;
 
-	healthBarDisplay->SetParent(*healthBarBG);
+	ptrHealthBarDisplay->SetParent(*ptrHealthBarBG);
 }
 
 
 void PlayerUI::HealthBar::Update(float _deltaTime) {
 	// Retrieve the players Health Handler from PlayMode
-	HealthHandler& playerHealth = std::dynamic_pointer_cast<Player>(PlayerUI::Get().m_playMode.FindObj(typeid(Player), true))->GetHealthHandler();
+	HealthHandler& playerHealth = std::dynamic_pointer_cast<Player>(PlayMode::Get().FindObj(typeid(Player), true))->GetHealthHandler();
 	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
 	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
 
 	// Scale health bar positioning with screen
-	healthBarBG->m_x = 25 * screenScaleX;
-	healthBarBG->m_y = (Settings::GAME_RES.y - (healthBarBG->m_height / screenScaleX) - 25) * screenScaleY;
+	ptrHealthBarBG->m_x = 25 * screenScaleX;
+	ptrHealthBarBG->m_y = (Settings::GAME_RES.y - (ptrHealthBarBG->m_height / screenScaleX) - 25) * screenScaleY;
 
 	// Set health bar foreground width to match the players remaining health ratio
-	healthBarFG->m_width = (430 * (playerHealth.GetHealthRatio()));
+	ptrHealthBarFG->m_width = (430 * (playerHealth.GetHealthRatio()));
 	// Update health bar display to show current player health stats
-	healthBarDisplay->m_text = "HP: " + std::to_string((int)playerHealth.GetCurHealth()) + '/' + std::to_string((int)playerHealth.GetMaxHealth());
+	ptrHealthBarDisplay->m_text = "HP: " + std::to_string((int)playerHealth.GetCurHealth()) + '/' + std::to_string((int)playerHealth.GetMaxHealth());
 }
 
 PlayerUI::InGameClock::InGameClock() {
 	// MenuManager reference from PlayerUI
-	MenuManager& menuMgr = PlayerUI::Get().m_menuManager;
+	MenuManager& menuMgr = PlayerUI::Get().m_menuMgr;
 
-	clockDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
-	clockDisplay->m_nodeName = "ui_clock_display";
+	ptrClockDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
+	ptrClockDisplay->m_nodeName = "ui_clock_display";
 
-	clockDisplay->m_width = 512;
-	clockDisplay->m_height = 64;
+	ptrClockDisplay->m_width = 512;
+	ptrClockDisplay->m_height = 64;
 
 	// Set up font used and debug message on failed updates
-	clockDisplay->m_text = "CLOCK NOT UPDATING";
-	clockDisplay->m_font = "bauhaus";
-	clockDisplay->m_pitch = 43;
+	ptrClockDisplay->m_text = "CLOCK NOT UPDATING";
+	ptrClockDisplay->m_font = "bauhaus";
+	ptrClockDisplay->m_pitch = 43;
 
-	clockDisplay->SetParent(*PlayerUI::Get().m_rootUINode);
+	ptrClockDisplay->SetParent(*PlayerUI::Get().m_ptrUIRoot);
 }
 
 void PlayerUI::InGameClock::Update(float _deltaTime) {
@@ -137,34 +137,34 @@ void PlayerUI::InGameClock::Update(float _deltaTime) {
 	clock.Update(_deltaTime);
 
 	// Update the clock display text to show the clock time
-	clockDisplay->m_text = clock.GetMinutesFormatted() + ':' + clock.GetSecondsFormatted(2);
+	ptrClockDisplay->m_text = clock.GetMinutesFormatted() + ':' + clock.GetSecondsFormatted(2);
 
 	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
 	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
 
 	// Scale clocks position on screen to current screen dimensions
-	clockDisplay->m_x = screenScaleX * .01f;
-	clockDisplay->m_y = screenScaleY * .01f;
+	ptrClockDisplay->m_x = screenScaleX * .01f;
+	ptrClockDisplay->m_y = screenScaleY * .01f;
 }
 
 PlayerUI::FPSDisplay::FPSDisplay()
 	: fpsUpdateDelay(1.f), delayRemaining(0.f) {
 	// MenuManager reference from PlayerUI
-	MenuManager& menuMgr = PlayerUI::Get().m_menuManager;
+	MenuManager& menuMgr = PlayerUI::Get().m_menuMgr;
 
-	frameCountDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
-	frameCountDisplay->m_nodeName = "ui_fps_display";
+	ptrFrameRateDisplay = dynamic_cast<MenuText*>(&menuMgr.CreateNode(MenuNode::Type::TEXT));
+	ptrFrameRateDisplay->m_nodeName = "ui_fps_display";
 
-	frameCountDisplay->m_width = 200;
-	frameCountDisplay->m_height = 64;
+	ptrFrameRateDisplay->m_width = 200;
+	ptrFrameRateDisplay->m_height = 64;
 
 	// Set up font used and debug message on failed updates
-	frameCountDisplay->m_text = "FPS: FAILED UPDATE";
-	frameCountDisplay->m_font = "bauhaus";
-	frameCountDisplay->m_pitch = 43;
+	ptrFrameRateDisplay->m_text = "FPS: FAILED UPDATE";
+	ptrFrameRateDisplay->m_font = "bauhaus";
+	ptrFrameRateDisplay->m_pitch = 43;
 
 	// Set parent to root menu node
-	frameCountDisplay->SetParent(*PlayerUI::Get().m_rootUINode);
+	ptrFrameRateDisplay->SetParent(*PlayerUI::Get().m_ptrUIRoot);
 }
 
 void PlayerUI::FPSDisplay::Update(float _deltaTime) {
@@ -178,28 +178,28 @@ void PlayerUI::FPSDisplay::Update(float _deltaTime) {
 		delayRemaining = fpsUpdateDelay;
 
 		const std::string fpsCount = "FPS: " + std::to_string((int)(1 / _deltaTime));
-		frameCountDisplay->m_text = fpsCount;
+		ptrFrameRateDisplay->m_text = fpsCount;
 	}
 
 	// Sizing and positioning on screen
-	frameCountDisplay->m_x = 1700 * screenScaleX;
-	frameCountDisplay->m_y = .01f * screenScaleY;
+	ptrFrameRateDisplay->m_x = 1700 * screenScaleX;
+	ptrFrameRateDisplay->m_y = .01f * screenScaleY;
 }
 
 PlayerUI::HotBar::HotBar() {
 	// MenuManager reference from PlayerUI
-	MenuManager& menuMgr = PlayerUI::Get().m_menuManager;
+	MenuManager& menuMgr = PlayerUI::Get().m_menuMgr;
 
-	hotBarBG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
+	ptrHotBarBG = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
 	//***** HOT BAR BACKGROUND *****//
-	hotBarBG->m_nodeName = "ui_hot_bar_base";
-	hotBarBG->m_textureName = TxtrNames::ITEM_HOTBAR_BG_MAME;
-	hotBarBG->m_frameID = 0;
+	ptrHotBarBG->m_nodeName = "ui_hot_bar_base";
+	ptrHotBarBG->m_textureName = TxtrNames::ITEM_HOTBAR_BG_MAME;
+	ptrHotBarBG->m_frameID = 0;
 
-	hotBarBG->m_width = 192;
-	hotBarBG->m_height = 96;
+	ptrHotBarBG->m_width = 192;
+	ptrHotBarBG->m_height = 96;
 
-	hotBarBG->SetParent(*PlayerUI::Get().m_rootUINode);
+	ptrHotBarBG->SetParent(*PlayerUI::Get().m_ptrUIRoot);
 
 	hotBarSlots.reserve(SLOT_COUNT);
 }
@@ -216,8 +216,8 @@ void PlayerUI::HotBar::Update(float _deltaTime) {
 	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
 
 	// Ensure UI element position remains the same on resize
-	hotBarBG->m_x = (Settings::GAME_RES.x - (hotBarBG->m_width / screenScaleX) - 25) * screenScaleX;
-	hotBarBG->m_y = (Settings::GAME_RES.y - (hotBarBG->m_height / screenScaleX) - 25) * screenScaleY;
+	ptrHotBarBG->m_x = (Settings::GAME_RES.x - (ptrHotBarBG->m_width / screenScaleX) - 25) * screenScaleX;
+	ptrHotBarBG->m_y = (Settings::GAME_RES.y - (ptrHotBarBG->m_height / screenScaleX) - 25) * screenScaleY;
 
 	for (int i(0); i < SLOT_COUNT; ++i) {
 		MenuText& hotBarSlotCtrl = *hotBarSlots.at(i).ptrHotBarCtrl;
@@ -234,6 +234,7 @@ void PlayerUI::HotBar::Update(float _deltaTime) {
 		default:
 			break;
 		}
+
 		hotBarSlotCtrl.m_x = 32.f * (1.f / hotBarSlotCtrl.m_text.size());
 	}
 
@@ -243,7 +244,7 @@ void PlayerUI::HotBar::Update(float _deltaTime) {
 }
 
 void PlayerUI::HotBar::UpdateHotBarItems() {
-	const Player& playerGO = *std::dynamic_pointer_cast<Player>(PlayerUI::Get().m_playMode.FindObj(typeid(Player), true));
+	const Player& playerGO = *std::dynamic_pointer_cast<Player>(PlayMode::Get().FindObj(typeid(Player), true));
 
 	// Has a player game object been found?
 	if (&playerGO) {
@@ -257,7 +258,7 @@ void PlayerUI::HotBar::UpdateHotBarItems() {
 
 PlayerUI::HotBar::HotBarSlot::HotBarSlot(int _slotNum) {
 	// MenuManager reference from PlayerUI
-	MenuManager& menuMgr = PlayerUI::Get().m_menuManager;
+	MenuManager& menuMgr = PlayerUI::Get().m_menuMgr;
 	const std::string strSlotNum = std::to_string(_slotNum);
 
 	ptrHotBarSlotSpr = dynamic_cast<MenuImage*>(&menuMgr.CreateNode(MenuNode::Type::IMAGE));
@@ -273,7 +274,7 @@ PlayerUI::HotBar::HotBarSlot::HotBarSlot(int _slotNum) {
 	ptrHotBarSlotSpr->m_width = ptrHotBarSlotSpr->m_height = 96;
 	ptrHotBarSlotSpr->m_x = (ptrHotBarSlotSpr->m_width * _slotNum);
 
-	ptrHotBarSlotSpr->SetParent(*PlayerUI::Get().m_itemHotBar->hotBarBG);
+	ptrHotBarSlotSpr->SetParent(*PlayerUI::Get().m_ptrItemHotBar->ptrHotBarBG);
 	//******************************//
 	//**** HOT BAR KEY BINDING *****//
 	ptrHotBarCtrl->m_nodeName = "ui_hot_bar_ctrl_" + strSlotNum;
@@ -299,8 +300,8 @@ PlayerUI::HotBar::HotBarSlot::HotBarSlot(int _slotNum) {
 
 	/* Sizing */
 	ptrHotBarItemSpr->m_width = ptrHotBarItemSpr->m_height = 96;
-	ptrHotBarItemSpr->m_x = -7.5f;
-	ptrHotBarItemSpr->m_y = -5.f;
+	ptrHotBarItemSpr->m_x = 0;
+	ptrHotBarItemSpr->m_y = 0;
 
 	/* Set parent to corresponding hot bar slot */
 	ptrHotBarItemSpr->SetParent(*ptrHotBarSlotSpr);

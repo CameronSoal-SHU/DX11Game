@@ -159,11 +159,12 @@
     <ClCompile Include="D3D.cpp" />
     <ClCompile Include="D3DUtil.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyRedShip.cpp" />
+    <ClCompile Include="WeaponData.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameClock.cpp" />
     <ClCompile Include="GamePadInput.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemShopMode.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
@@ -176,9 +177,9 @@
     <ClCompile Include="PlayerUI.cpp" />
     <ClCompile Include="PlayMode.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="SpawnerManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TextureCache.cpp" />
-    <ClCompile Include="Unarmed.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="WindowUtil.cpp" />
   </ItemGroup>
@@ -189,6 +190,8 @@
     <ClInclude Include="D3D.h" />
     <ClInclude Include="D3DUtil.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyRedShip.h" />
+    <ClInclude Include="WeaponData.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GameClock.h" />
     <ClInclude Include="GameConstants.h" />
@@ -197,7 +200,6 @@
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="HealthHandler.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Item.h" />
     <ClInclude Include="ItemShopMode.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MainMenu.h" />
@@ -211,9 +213,9 @@
     <ClInclude Include="PlayMode.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SpawnerManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextureCache.h" />
-    <ClInclude Include="Unarmed.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="WindowUtil.h" />
   </ItemGroup>

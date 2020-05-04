@@ -5,8 +5,6 @@
 class MainMenu : public ModeBase
 {
 public:
-	static const std::string MODE_NAME;
-
 	MainMenu();
 	~MainMenu();
 
@@ -17,5 +15,7 @@ public:
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 
 	std::string GetModeName() const override { return MODE_NAME; };
+private:
+	static const std::string MODE_NAME;
 };
 

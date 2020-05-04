@@ -99,9 +99,8 @@ work for everything, but it's useful most of the time.
 */
 const float VERY_SMALL = 0.0001f;
 
-inline bool Equals(float a, float b)
-{
-	return (fabs(a - b) < VERY_SMALL) ? true : false;
+inline bool Equals(float a, float b) {
+	return (fabs(a - b) < VERY_SMALL);
 }
 
 //knowing the time always comes in handy

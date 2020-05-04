@@ -20,8 +20,11 @@ public:
 	}
 	bool InitMainWindow(int _width, int _height, HINSTANCE _instanceHandle, 
 		const std::string& _appName, WNDPROC _msgHandler, bool _centred = CENTRED);
+
+	// Public accessors for D3D reference
 	D3D& GetD3D();
 	void SetD3D(D3D& _d3d);
+
 	// Wrap game in 1 function call if using basic functions
 	int Run(void(*_ptrUpdate)(float), void(*_ptrRender)(float));
 	// If using class member functions, call these instead

@@ -11,9 +11,6 @@
 class MainGame : public Singleton<MainGame>
 {
 public:
-	enum class GameState { PLAY };
-	GameState m_gameState = GameState::PLAY;
-
 	MainGame(D3D& _d3d);
 
 	D3D& GetD3D() { return m_d3d; };
