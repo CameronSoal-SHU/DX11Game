@@ -67,6 +67,8 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 
 	projectileCopy->GetSprite().SetScale(m_projScale);
 
+	projectileCopy->GetSprite().SetRotation(ownerRot);
+
 	projectileCopy->SetActive(true);
 
 	projectileCopy->GetCollider().SetHitboxRadius(projectileCopy->GetSprite().GetScreenRadius());
@@ -75,9 +77,6 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	m_ptrPlayMode->AddObj(projectileCopy);
 	// Reset the delay
 	OnUse();
-
-	//// destroy copy reference, it's no longer needed
-	//projectileCopy = nullptr;
 }
 
 void Weapon::SetProjTextureName(const std::string& _projName) {

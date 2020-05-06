@@ -61,6 +61,7 @@ namespace TxtrDirs {
 
 	const std::string PLAYER_PATH			= "Ship/Player/player_ship.dds";		// Player ship sprite
 	const std::string ENEMY_RED_SHIP_PATH	= "Ship/Enemy/enemy_red_ship.dds";		// Red enemy ship sprite
+	const std::string ENEMY_GREEN_SHIP_PATH	= "Ship/Enemy/enemy_green_ship.dds";	// Green enemy ship sprite
 	const std::string THRUST_PATH			= "Ship/thrust.dds";					// Ship thrust animated sprite
 
 	const std::string ITEM_HOTBAR_BG_PATH	= "UI/item_hotbar_bg.dds";				// Player UI item hotbar background
@@ -70,7 +71,8 @@ namespace TxtrDirs {
 	const std::string HEALTH_BAR_FG_PATH	= "UI/health_bar_fg.dds";				// Player UI healthbar foreground
 
 	const std::string ENERGY_BALL_PATH		= "Projectiles/energy_ball.dds";		// Energy ball Projectile
-	const std::string ENERGY_BALL_RED_PATH	= "Projectiles/energy_ball_red.dds";	// Energy ball Projectile
+	const std::string ENERGY_BALL_RED_PATH	= "Projectiles/energy_ball_red.dds";	// Red Energy ball Projectile
+	const std::string MISSLE_PATH			= "Projectiles/missile.dds";			// Missile Projectile
 }
 
 // Collection of all texture nicknames in TextureCache for use across entire project
@@ -83,6 +85,7 @@ namespace TxtrNames {
 
 	const std::string PLAYER_NAME			= "player_ship";
 	const std::string ENEMY_RED_NAME		= "enemy_red_ship";
+	const std::string ENEMY_GREEN_NAME		= "enemy_green_ship";
 	const std::string THRUST_NAME			= "ship_thrust";
 
 	const std::string ITEM_HOTBAR_BG_MAME   = "ui_item_hotbar_bg";			
@@ -93,6 +96,7 @@ namespace TxtrNames {
 
 	const std::string ENERGY_BALL_NAME		= "proj_energy_ball";
 	const std::string ENERGY_BALL_RED_NAME	= "proj_energy_ball_red";
+	const std::string MISSILE_NAME			= "proj_missile";
 }
 
 // Collection of all texture frames in TextureCache for use across entire project
@@ -117,7 +121,14 @@ namespace TxtrFrames {
 		{{0,0}, NOT_STRETCHED, {0,0,0,0}}
 	};
 
-	const std::vector<TextureCache::Data::Sprite> SHOP_CONTAINER_FRAMES{
+	const std::vector<TextureCache::Data::Sprite> SHOP_CONTAINER_FRAMES {
 		{{0,0}, NOT_STRETCHED, {0,0,1920,640}}
+	};
+
+	const std::vector<TextureCache::Data::Sprite> MISSILE_FRAMES{
+		{{0,0}, NOT_STRETCHED, { 0,  0, 53, 48} },
+		{{0,0}, NOT_STRETCHED, { 54, 0, 107, 48} },
+		{{0,0}, NOT_STRETCHED, { 108, 0, 161, 48} },
+		{{0,0}, NOT_STRETCHED, { 162, 0, 220, 48} }
 	};
 }

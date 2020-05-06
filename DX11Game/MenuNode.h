@@ -1,5 +1,7 @@
 #pragma once
 #include "Input.h"
+#include "GamePadInput.h"
+
 #include "TextureCache.h"
 
 // Forward Declarations

@@ -7,7 +7,7 @@
 const std::string PlayMode::MODE_NAME = "PLAY";
 
 PlayMode::PlayMode()
-	: m_menuManager(MainGame::Get().GetMenuManager()) {
+	: m_menuManager(MainGame::Get().GetMenuManager()), m_spawnManager(*this) {
 	m_gameObjs.reserve(1000);
 
 	// Set up item shop menu
@@ -22,22 +22,6 @@ PlayMode::PlayMode()
 	AddObj(player);
 
 	ItemShopMode::Get().SetPlayerRef(*player);	// Link player to item shop
-
-	/// TEMP ///
-	// Create a couple enemies to test collision
-	std::shared_ptr<EnemyRedShip> enemyTest = std::make_shared<EnemyRedShip>();
-	enemyTest->SetParentMode(*this);
-	enemyTest->SetActive(true);
-	enemyTest->SetLookAtPlayer(true);
-	AddObj(enemyTest);
-
-	std::shared_ptr<EnemyRedShip> enemyTest2 = std::make_shared<EnemyRedShip>();
-	enemyTest2->SetParentMode(*this);
-	enemyTest2->SetActive(true);
-	enemyTest2->SetLookAtPlayer(true);
-	enemyTest2->GetSprite().SetPos({ 200,100 });
-	AddObj(enemyTest2);
-	///////////////////////////////////////////////////////////////
 
 	Start();
 }
@@ -64,6 +48,8 @@ void PlayMode::Start() {
 void PlayMode::Update(float _deltaTime) {
 	GetPlayerInput(_deltaTime);
 	ScrollBackground(_deltaTime);
+
+	m_spawnManager.Update(_deltaTime);
 
 	// Call all game objects update methods
 	for (size_t i(0); i < m_gameObjs.size(); ++i) {

@@ -165,17 +165,14 @@
     <ClCompile Include="Weapon.cpp">
       <Filter>Game Objects\Items\Weapons\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyRedShip.cpp">
-      <Filter>Game Objects\Characters\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SpawnerManager.cpp">
       <Filter>Game Modes\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponData.cpp">
-      <Filter>Game Objects\Items\Weapons\Source Files</Filter>
+    <ClCompile Include="EnemyTypes.cpp">
+      <Filter>Game Objects\Characters\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AudioHandler.cpp">
-      <Filter>DirectX\Source Files</Filter>
+    <ClCompile Include="WeaponTypes.cpp">
+      <Filter>Game Objects\Items\Weapons\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -272,17 +269,14 @@
     <ClInclude Include="Weapon.h">
       <Filter>Game Objects\Items\Weapons\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyRedShip.h">
-      <Filter>Game Objects\Characters\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SpawnerManager.h">
       <Filter>Game Modes\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponData.h">
-      <Filter>Game Objects\Items\Weapons\Header Files</Filter>
+    <ClInclude Include="EnemyTypes.h">
+      <Filter>Game Objects\Characters\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AudioHandler.h">
-      <Filter>DirectX\Header Files</Filter>
+    <ClInclude Include="WeaponTypes.h">
+      <Filter>Game Objects\Items\Weapons\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

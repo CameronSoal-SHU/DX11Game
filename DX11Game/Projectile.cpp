@@ -50,16 +50,23 @@ void Projectile::UpdateProjStats() {
 
 bool Projectile::CheckForCollision() {
 	// Get every enemy in-game currently
-	std::vector<std::shared_ptr<GameObject>> enemies = m_ptrPlayMode->FindObjs(typeid(EnemyRedShip), true);
+	std::vector<std::shared_ptr<GameObject>> redShipEnemies = m_ptrPlayMode->FindObjs(typeid(EnemyRedShip), true);
+	std::vector<std::shared_ptr<GameObject>> greenShipEnemies = m_ptrPlayMode->FindObjs(typeid(EnemyGreenShip), true);
+
+	std::vector<std::shared_ptr<GameObject>> allEnemies;
+	allEnemies.reserve(redShipEnemies.size() + greenShipEnemies.size());
+	allEnemies.insert(allEnemies.begin(), redShipEnemies.begin(), redShipEnemies.end());
+	allEnemies.insert(allEnemies.begin(), greenShipEnemies.begin(), greenShipEnemies.end());
+
 	bool collision = false;
 
 	// Check each one for a collision
-	for (int i(0); i < (int)enemies.size(); ++i) {
-		Hit hit = m_collider.IntersectAABB(enemies.at(i)->GetCollider());
+	for (int i(0); i < (int)allEnemies.size(); ++i) {
+		Hit hit = m_collider.IntersectAABB(allEnemies.at(i)->GetCollider());
 
 		if (hit.Collided()) {
 			collision = true;
-			Enemy& collidedEnemy = *std::dynamic_pointer_cast<Enemy>(enemies.at(i));
+			Enemy& collidedEnemy = *std::dynamic_pointer_cast<Enemy>(allEnemies.at(i));
 
 			collidedEnemy.GetHealthHandler().TakeDamage(m_projDamage);
 			m_ptrPlayMode->RemoveObj(this->to_shared_ptr());

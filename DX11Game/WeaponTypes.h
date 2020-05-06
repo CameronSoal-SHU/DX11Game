@@ -24,11 +24,23 @@ public:
 	~EnergyBallWeapon();
 private:
 	WeaponModifiers m_energyBallMods { 
-		1.1f, // Damage Multiplier
-		7.5f, // Firerate Multiplier
-		.33f,  // Lifetime Multiplier
-		1.f   // Projectile Speed Multiplier
+		1.1f,	// Damage Multiplier
+		7.5f,	// Firerate Multiplier
+		.33f,	// Lifetime Multiplier
+		1.f		// Projectile Speed Multiplier
 	};
 };
 
-
+class MissileWeapon : public Weapon
+{
+public:
+	MissileWeapon(CharacterBase* _owner = nullptr);
+	~MissileWeapon();
+private:
+	WeaponModifiers m_missileMods {
+		3.5f,	// Damage Multiplier
+		1.f,	// Firerate Multiplier
+		1.5f,	// Lifetime Multiplier
+		.45f	// Projectile Speed Multiplier
+	};
+};

@@ -91,13 +91,13 @@ void ItemShopMode::EquipWeaponUIEvent(MenuNode& _node, MenuNode::Event _e) {
 	Weapon& displayWeap = *ItemShopMode::Get().m_ptrWeapPreview->GetDisplayedWeap();
 
 	// Create a new instance of the weapon
-	Weapon* weaponCopy = new Weapon(displayWeap);
-	weaponCopy->SetModeOwner(PlayMode::Get());
-	weaponCopy->SetProjTextureName(displayWeap.GetProjTextureName());
+	Weapon* ptrWeaponCopy = new Weapon(displayWeap);
+	ptrWeaponCopy->SetModeOwner(PlayMode::Get());
+	ptrWeaponCopy->SetProjTextureName(displayWeap.GetProjTextureName());
+	ptrWeaponCopy->ResetFireRate();
 
 	// Set the players weapon at the appropriate slot
-	m_ptrPlayer->SetWeapon(displayWeap.GetWeapType(), weaponCopy);
-
+	m_ptrPlayer->SetWeapon(displayWeap.GetWeapType(), ptrWeaponCopy);
 	// Reset the preview on weapon purchase
 	m_ptrWeapPreview->ResetPreview();
 }
@@ -163,13 +163,14 @@ void ItemShopMode::ItemCatagory::Update(int _containerID) {
 	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
 	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
 
+	// Positioning and scale to scale with screen size
 	m_ptrItemContainer->m_x = 100 * screenScaleX;
 	m_ptrItemContainer->m_y = (100 + (460 * _containerID)) * screenScaleY;
 	m_ptrItemContainer->m_width = 1080 * screenScaleX;
 	m_ptrItemContainer->m_height = 360 * screenScaleY;
 
 	for (size_t i(0); i < m_buyables.size(); ++i) {
-		m_buyables.at(i)->Update();
+		m_buyables.at(i)->Update(i);
 	}
 }
 
@@ -184,13 +185,16 @@ void ItemShopMode::ItemCatagory::SetupContainer(MenuManager& _menuMgr, int _cont
 }
 
 void ItemShopMode::ItemCatagory::SetupHeader(MenuManager& _menuMgr, int _containerID) {
+	// Create header text node
 	m_ptrItemCtrHeader = dynamic_cast<MenuText*>(&_menuMgr.CreateNode(MenuNode::Type::TEXT));
-
 	m_ptrItemCtrHeader->m_nodeName = "ui_item_catagory_" + std::to_string(_containerID);
+
+	// Text and font assignment
 	m_ptrItemCtrHeader->m_text = (_containerID == 0) ? "PRIMARY WEAPONS" : "SECONDARY WEAPONS";
 	m_ptrItemCtrHeader->m_font = "bauhaus";
 	m_ptrItemCtrHeader->m_pitch = 43;
 
+	// Positioning and scale
 	m_ptrItemCtrHeader->m_width = 512;
 	m_ptrItemCtrHeader->m_height = 256;
 	m_ptrItemCtrHeader->m_y = (-65.f + (8 * _containerID));
@@ -199,7 +203,9 @@ void ItemShopMode::ItemCatagory::SetupHeader(MenuManager& _menuMgr, int _contain
 }
 
 void ItemShopMode::ItemCatagory::SetupItems(int _containerID) {
+	// Put some items in the item shop
 	m_buyables.push_back(new Buyable(*m_ptrItemContainer, _containerID, new EnergyBallWeapon()));
+	m_buyables.push_back(new Buyable(*m_ptrItemContainer, _containerID, new MissileWeapon()));
 }
 
 Weapon* ItemShopMode::ItemCatagory::GetLinkedWeapon(MenuNode* _node)
@@ -210,8 +216,10 @@ Weapon* ItemShopMode::ItemCatagory::GetLinkedWeapon(MenuNode* _node)
 	Weapon* foundWeapon = nullptr;
 
 	do {
+		// Find the given node in the buyable node container
 		if (m_buyables.at(i)->itemButton->m_nodeID == _node->m_nodeID) {
-			foundWeapon = m_buyables.at(i)->linkedWeapon;
+			// Retrieve the attached weapon from the match
+			foundWeapon = m_buyables.at(i)->linkedWeapon;	
 		}
 
 		++i;
@@ -266,13 +274,15 @@ ItemShopMode::ItemCatagory::Buyable::~Buyable() {
 	linkedWeapon = nullptr;
 }
 
-void ItemShopMode::ItemCatagory::Buyable::Update() {
+void ItemShopMode::ItemCatagory::Buyable::Update(int _itemNum) {
 	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
 	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
 
 	// Make sure the item display image maintains it's size with screen size
 	itemButton->m_width = 360 *  screenScaleX;
 	itemButton->m_height = 360 * screenScaleY;
+
+	itemButton->m_x = itemButton->m_width * _itemNum;
 }
 
 ItemShopMode::WeapPreview::WeapPreview() {
@@ -300,10 +310,10 @@ void ItemShopMode::WeapPreview::Update() {
 	m_ptrPreviewHeader->m_y = -55.f * (screenScaleY);
 
 	// Scale each weapon stat preview to screen size
-	#pragma omp parallel for
+#pragma omp parallel for
 	for (int i(0); i < STAT_COUNT; ++i) {
 		MenuText*& weapStat = m_ptrPreviewStats[i];
-		
+
 		weapStat->m_height = 64.f * screenScaleY;
 		weapStat->m_x = 15.f * screenScaleX;
 		weapStat->m_y = (50.f * (i + 1)) * screenScaleY;
@@ -315,15 +325,23 @@ void ItemShopMode::WeapPreview::Update() {
 	if (m_ptrDisplayWeapon) {
 		m_ptrEquipButton->m_width = 240 * screenScaleX;
 		m_ptrEquipButton->m_height = 120 * screenScaleY;
+
+		m_ptrEquipText->m_width = 128 * screenScaleX;
 	}
 	else {
 		m_ptrEquipButton->m_width = 0;
 		m_ptrEquipButton->m_height = 0;
+
+		m_ptrEquipText->m_width = 0;
 	}
 
+	// Scale buttons size and positioning with screen scale
 	m_ptrEquipButton->m_x = (m_ptrPreviewContainer->m_width - m_ptrEquipButton->m_width) / 2.f;
 	m_ptrEquipButton->m_y = (m_ptrPreviewContainer->m_height - (200.f * screenScaleY));
 
+	// Centre the equip text inside the button
+	m_ptrEquipText->m_x = m_ptrEquipButton->m_width / 4.5f;
+	m_ptrEquipText->m_y = m_ptrEquipButton->m_height / 4.f;
 }
 
 void ItemShopMode::WeapPreview::DisplayStats(Weapon* _weap) {
@@ -382,7 +400,6 @@ void ItemShopMode::WeapPreview::SetupPreviewHeader(MenuManager& _menuMgr) {
 }
 
 void ItemShopMode::WeapPreview::SetupPreviewStats(MenuManager& _menuMgr) {
-	#pragma omp parallel for
 	for (int i(0); i < STAT_COUNT; ++i) {
 		MenuText*& statDisplay = m_ptrPreviewStats[i];
 
@@ -431,6 +448,9 @@ void ItemShopMode::WeapPreview::SetupEquipButton(MenuManager& _menuMgr) {
 	m_ptrEquipButton->m_nodeName = "ui_weapon_equip";
 	m_ptrEquipButton->SetParent(*m_ptrPreviewContainer);
 
+	m_ptrEquipText->m_nodeName = "ui_weapon_equip_text";
+	m_ptrEquipText->SetParent(*m_ptrEquipButton);
+
 	// No mouse interaction
 	m_ptrEquipButton->buttons[MenuButton::NORMAL].spriteID = 0;
 	m_ptrEquipButton->buttons[MenuButton::NORMAL].textureName = TxtrNames::SHOP_CONTAINER_NAME;
@@ -454,4 +474,12 @@ void ItemShopMode::WeapPreview::SetupEquipButton(MenuManager& _menuMgr) {
 	// Link an event handler to the button
 	MenuManager::Handler hEvent{ [this](MenuNode& _node, MenuNode::Event _e) { ItemShopMode::Get().EquipWeaponUIEvent(_node, _e); } };
 	_menuMgr.AddEventHandler("menu_item_shop_UI", m_ptrEquipButton->m_nodeName, MenuNode::Event::CLICK, hEvent);
+
+	// Text info
+	m_ptrEquipText->m_text = "EQUIP";
+	m_ptrEquipText->m_font = "bauhaus";
+	m_ptrEquipText->m_pitch = 43;
+
+	// Set height of text
+	m_ptrEquipText->m_height = 128;
 }

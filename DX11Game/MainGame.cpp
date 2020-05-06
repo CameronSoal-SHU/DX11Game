@@ -96,6 +96,7 @@ void MainGame::LoadPlayerAssets() {
 void MainGame::LoadEnemyAssets() {
 	// Red Enemy Ship
 	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENEMY_RED_SHIP_PATH, TxtrNames::ENEMY_RED_NAME, APPEND_PATH);
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENEMY_GREEN_SHIP_PATH, TxtrNames::ENEMY_GREEN_NAME, APPEND_PATH);
 }
 
 void MainGame::LoadItemAssets() {
@@ -105,4 +106,7 @@ void MainGame::LoadItemAssets() {
 	// Energy ball item
 	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENERGY_BALL_PATH, TxtrNames::ENERGY_BALL_NAME, APPEND_PATH, &TxtrFrames::ENERGY_BALL_FRAMES);
 	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::ENERGY_BALL_RED_PATH, TxtrNames::ENERGY_BALL_RED_NAME, APPEND_PATH, &TxtrFrames::ENERGY_BALL_FRAMES);
+
+	// Missile item
+	m_txtrCache.LoadTexture(&m_d3d.GetDevice(), TxtrDirs::MISSLE_PATH, TxtrNames::MISSILE_NAME, APPEND_PATH, &TxtrFrames::MISSILE_FRAMES);
 }

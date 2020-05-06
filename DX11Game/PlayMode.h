@@ -1,5 +1,5 @@
 #pragma once
-#include "EnemyRedShip.h"
+#include "SpawnerManager.h"
 #include "GameSettings.h"
 #include "PlayerUI.h"
 #include "ItemShopMode.h"
@@ -47,6 +47,8 @@ private:
 	float m_scrollSpeed = 50.f;
 
 	RECTF m_playArea;
+
+	SpawnerManager m_spawnManager;
 
 	std::vector<std::shared_ptr<GameObject>> m_gameObjs;
 

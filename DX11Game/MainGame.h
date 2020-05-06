@@ -2,7 +2,7 @@
 #include "PlayMode.h"
 #include "ItemShopMode.h"
 
-#include "GamePadInput.h"
+//#include "GamePadInput.h"
 #include "Singleton.h"
 #include "ModeManager.h"
 #include "MenuManager.h"

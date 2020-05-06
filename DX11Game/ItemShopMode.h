@@ -18,7 +18,7 @@ public:
 			Buyable(MenuImage& _parent, int _containerID, Weapon* _weap);
 			~Buyable();
 
-			void Update();
+			void Update(int _itemNum);
 
 			MenuButton* itemButton;
 			Weapon* linkedWeapon;

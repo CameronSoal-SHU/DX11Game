@@ -1,4 +1,4 @@
-#include "WeaponData.h"
+#include "WeaponTypes.h"
 #include "GameConstants.h"
 
 
@@ -18,11 +18,27 @@ EnergyBallWeapon::EnergyBallWeapon(CharacterBase* _owner)
 	SetWeaponModifiers(m_energyBallMods);
 
 	SetWeapName("Plasma Cannon");
-	SetWeapDesc("Fires a volley of plasma projectiles\nat a fast rate,\nat the cost of damage and range.");
+	SetWeapDesc("\nFires a volley of plasma projectiles\nat a fast rate,\nat the cost of damage and range.");
 	m_type = PRIMARY;
 }
 
 
 EnergyBallWeapon::~EnergyBallWeapon() {
+	Weapon::~Weapon();
+}
+
+MissileWeapon::MissileWeapon(CharacterBase* _owner) 
+	: Weapon(_owner) {
+	SetProjTextureName(TxtrNames::MISSILE_NAME);
+	SetProjectileScale({ 1.f, 1.f });
+	SetWeaponModifiers(m_missileMods);
+
+	SetWeapName("Missile Launcher");
+	SetWeapDesc("\nFires a slow moving,\nHigh damaging missile.");
+
+	m_type = PRIMARY;
+}
+
+MissileWeapon::~MissileWeapon() {
 	Weapon::~Weapon();
 }

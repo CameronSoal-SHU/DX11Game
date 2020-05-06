@@ -1,6 +1,6 @@
 #pragma once
 #include "CharacterBase.h"
-#include "WeaponData.h"
+#include "WeaponTypes.h"
 
 class Player : public CharacterBase
 {
