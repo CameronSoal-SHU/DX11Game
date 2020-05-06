@@ -4,9 +4,8 @@
 
 namespace DirectX { class SpriteFont; }
 
-class Font
+struct Font
 {
-public:
 	void Release();
 	bool Load();
 

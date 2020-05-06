@@ -17,7 +17,7 @@ void EnemyRedShip::Init() {
 	m_healthHandler.SetCurHealth(100);
 
 	m_sprite.SetScale({ 0.15f, 0.15f });
-	m_sprite.SetOrigin(m_sprite.GetDimRadius());
+	m_sprite.SetOrigin(m_sprite.GetRadius());
 
 	m_collider = Collider(m_sprite);
 	m_collider.SetTag("ENEMY");

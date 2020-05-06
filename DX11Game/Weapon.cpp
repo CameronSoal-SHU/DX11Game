@@ -6,7 +6,7 @@
 Weapon::Weapon(CharacterBase* _owner)
 	: GameObject(MainGame::Get().GetD3D()),
 	m_d3d(MainGame::Get().GetD3D()), m_weapModifiers() {
-	m_owner = _owner;
+	m_ptrOwner = _owner;
 
 	UpdateWeaponStats();
 	m_fireDelayRemaining = 0.f;
@@ -15,7 +15,7 @@ Weapon::Weapon(CharacterBase* _owner)
 Weapon::Weapon(CharacterBase* _owner, const WeaponModifiers& _stats)
 	: GameObject(MainGame::Get().GetD3D()),
 	m_d3d(MainGame::Get().GetD3D()), m_weapModifiers(_stats) {
-	m_owner = _owner;
+	m_ptrOwner = _owner;
 
 	UpdateWeaponStats();
 	m_fireDelayRemaining = 0.f;
@@ -25,7 +25,7 @@ Weapon::Weapon(CharacterBase* _owner, float _dmgMult, float _fRateMult, float _l
 	: GameObject(MainGame::Get().GetD3D()),
 	m_d3d(MainGame::Get().GetD3D()),
 	m_weapModifiers(_dmgMult, _fRateMult, _lifeTime, _projSpeed) {
-	m_owner = _owner;
+	m_ptrOwner = _owner;
 
 	UpdateWeaponStats();
 	m_fireDelayRemaining = 0.f;
@@ -51,7 +51,7 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	std::shared_ptr<Projectile> projectileCopy = std::make_shared<Projectile>(*m_ptrProjectile);
 	projectileCopy->GetSprite().SetTextureData(m_ptrProjectile->GetSprite().GetTextureData());
 
-	const float ownerRot = m_owner->GetSprite().GetRotation();
+	const float ownerRot = m_ptrOwner->GetSprite().GetRotation();
 	const DirectX::SimpleMath::Vector2 projSpeed(m_weapStats.projSpeed, m_weapStats.projSpeed);
 	// The velocity of the projectile based on the owners rotation so it fires in a straight line
 	const DirectX::SimpleMath::Vector2 rotVel(projSpeed.x * sinf(ownerRot), projSpeed.y * -cosf(ownerRot));
@@ -65,11 +65,11 @@ void Weapon::FireProjectile(const DirectX::SimpleMath::Vector2& _pos) {
 	// Set the velocity
 	projectileCopy->GetSprite().SetVelocity(rotVel);
 
-	projectileCopy->GetSprite().SetScale(m_projectileScale);
+	projectileCopy->GetSprite().SetScale(m_projScale);
 
 	projectileCopy->SetActive(true);
 
-	projectileCopy->GetCollider().SetHitboxRadius(projectileCopy->GetSprite().GetScreenDimRadius());
+	projectileCopy->GetCollider().SetHitboxRadius(projectileCopy->GetSprite().GetScreenRadius());
 
 	// Store the object in the game object container
 	m_ptrPlayMode->AddObj(projectileCopy);
@@ -92,8 +92,8 @@ void Weapon::SetWeaponModifiers(const WeaponModifiers & _weapMod) {
 }
 
 void Weapon::UpdateWeaponStats() {
-	if (m_owner != nullptr) {
-		const CharacterBase::Stats& ownerStats = m_owner->GetStats();
+	if (m_ptrOwner != nullptr) {
+		const CharacterBase::Stats& ownerStats = m_ptrOwner->GetStats();
 
 		m_weapStats.damage = ownerStats.damage * m_weapModifiers.damageMult;
 		m_weapStats.fireRate = ownerStats.fireRate * m_weapModifiers.fireRateMult;

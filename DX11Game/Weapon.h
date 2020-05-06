@@ -1,7 +1,6 @@
 #pragma once
 #include "Projectile.h"
 
-class PlayMode;
 
 // Weapon class is an extension of the item class
 // And can be stored in the players/enemies item slots to be used
@@ -28,19 +27,17 @@ public:
 	Weapon(CharacterBase* _owner, float _dmgMult, float _fRateMult, float _lifeTime, float _projSpeed);
 	~Weapon();
 
-	// Set the weapons modifiers and update the weapons stats
-	void SetWeaponModifiers(const WeaponModifiers& _weapMod);
-
 	void Update(float _deltaTime) override;
 	void Render(float _deltaTime, DirectX::SpriteBatch& _sprBatch) override;
 
-	// Set the weapon stats based on the owners base stats
-	void UpdateWeaponStats();
+	// Set the weapons modifiers and update the weapons stats
+	void SetWeaponModifiers(const WeaponModifiers& _weapMod);
+
+	// Reset the fire rate delay after every shot
 	void ResetFireRate() { m_fireDelayRemaining = 1 / m_weapStats.fireRate; }
 
 	void FireProjectile(const DirectX::SimpleMath::Vector2& _pos);
-	void OnUse();
-	bool CanUse() { return m_fireDelayRemaining <= 0; }	// If the weapon's firerate delay is at or below 0, the weapon can fire again
+	bool CanFire() const { return m_fireDelayRemaining <= 0; }	// If the weapon's firerate delay is at or below 0, the weapon can fire again
 
 	std::string GetWeapName() const { return m_weapName; }
 	void SetWeapName(const std::string& _name) { m_weapName = _name; }
@@ -50,42 +47,50 @@ public:
 	void SetWeapType(weap_type _type) { m_type = _type; }
 	void SetWeapType(int _type) { m_type = static_cast<weap_type>(_type); }
 
+	Projectile* GetProjectile() const { return m_ptrProjectile; }
+	void SetProjectile(Projectile& _proj) { m_ptrProjectile = &_proj; }
+
 	std::string GetProjTextureName() const { return m_projTxtrName; }
 	void SetProjTextureName(const std::string& _projName);
 
-	// Public accessor for the weapons modifiers
-	WeaponModifiers GetWeapMods() const { return m_weapModifiers; }
-
 	// Public accessors for projectile scale
-	DirectX::SimpleMath::Vector2 GetProjectileScale() const { return m_projectileScale; }
-	void SetProjectileScale(const DirectX::SimpleMath::Vector2& _scale) { m_projectileScale = _scale; }
+	DirectX::SimpleMath::Vector2 GetProjectileScale() const { return m_projScale; }
+	void SetProjectileScale(const DirectX::SimpleMath::Vector2& _scale) { m_projScale = _scale; }
 
 	std::string GetWeapDesc() const { return m_weapDesc; }
 	void SetWeapDesc(const std::string& _desc) { m_weapDesc = _desc; }
 
-	CharacterBase& GetOwner() const { return *m_owner; }
-	void SetOwner(CharacterBase& _newOwner) { m_owner = &_newOwner; }
+	CharacterBase& GetOwner() const { return *m_ptrOwner; }
+	void SetOwner(CharacterBase& _newOwner) { m_ptrOwner = &_newOwner; UpdateWeaponStats(); }
 
 	void SetModeOwner(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; }
 
-	bool IsCurrentlyOwned() const { return m_owner != nullptr; }
+	bool IsCurrentlyOwned() const { return m_ptrOwner != nullptr; }
+
+	// Public accessor for the weapons modifiers
+	const WeaponModifiers& GetWeapMods() const { return m_weapModifiers; }
 protected:
-	weap_type m_type;					// Does this weapon belong in the primary or secondary slot?
+	weap_type m_type;					 // Does this weapon belong in the primary or secondary slot?
 
-	CharacterBase::Stats m_weapStats;	// Holds weapon's stats after modifiers have been applied
-	float m_fireDelayRemaining;			// How long is left of the total delay before it can be used again
+	CharacterBase::Stats m_weapStats;	 // Holds weapon's stats after modifiers have been applied
+	float m_fireDelayRemaining;			 // How long is left of the total delay before it can be used again
 
-	Projectile* m_ptrProjectile;		// A link to the base Projectile class that this weapon will fire
+	Projectile* m_ptrProjectile;		 // A link to the base Projectile class that this weapon will fire
 private:
 	D3D& m_d3d;
-	PlayMode* m_ptrPlayMode = nullptr;	// Mode owner of object;
-	CharacterBase* m_owner = nullptr;	// What Character currently owns this item? (nullptr when owned by no one)
+	PlayMode* m_ptrPlayMode = nullptr;	 // Mode owner of object;
+	CharacterBase* m_ptrOwner = nullptr; // What Character currently owns this item? (nullptr when owned by no one)
 
-	std::string m_weapName;				// Name of the weapon
-	std::string m_weapDesc;				// A nice item description
-	WeaponModifiers m_weapModifiers;	// Holds weapon's stat modifiers (These are applied to the weapon stats based on the owners stats)
+	std::string m_weapName;				 // Name of the weapon
+	std::string m_weapDesc;				 // A nice item description
+	WeaponModifiers m_weapModifiers;	 // Holds weapon's stat modifiers (These are applied to the weapon stats based on the owners stats)
 
-	std::string m_projTxtrName;			// Projectile texture name in TextureCache
-	DirectX::SimpleMath::Vector2 m_projectileScale;
+	std::string m_projTxtrName;					// Projectile texture name in TextureCache
+	DirectX::SimpleMath::Vector2 m_projScale;	// Projectile scaling
+
+	// Set the weapon stats based on the owners base stats
+	void UpdateWeaponStats();
+
+	void OnUse();
 };
 

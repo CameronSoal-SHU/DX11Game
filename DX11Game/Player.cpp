@@ -27,27 +27,29 @@ Player::Player()
 
 Player::~Player() {
 	for (size_t i(0); i < m_weapons.size(); ++i)
-		delete m_weapons.at(i);
+		if (m_weapons.at(i))
+			delete m_weapons.at(i);
 
 	m_weapons.clear();
 }
 
 void Player::Init() {
 	/// TEMP ///
-	m_characterStats.damage = 10.f;
-	m_characterStats.fireRate = 1.f;
-	m_characterStats.projSpeed = 1000.f;
-	m_characterStats.lifeTime = 1.f;
+	m_charStats.damage = 10.f;
+	m_charStats.fireRate = 1.f;
+	m_charStats.projSpeed = 1000.f;
+	m_charStats.lifeTime = 1.f;
 	m_moveSpeed = DirectX::SimpleMath::Vector2(300.f, 300.f);
 }
 
 void Player::Update(float _deltaTime) {
+	GetPlayerInput(_deltaTime);
 	CharacterBase::Update(_deltaTime);
 	m_collider.Update(m_sprite);
 	CheckForCollision();
 	m_thrust.GetAnim().Update(_deltaTime);
 
-	DBOUT("Player pos: " << m_sprite.GetPos().x << ',' << m_sprite.GetPos().y);
+	//DBOUT("Player pos: " << m_sprite.GetPos().x << ',' << m_sprite.GetPos().y);
 
 	m_thrust.SetPos(m_sprite.GetPos());
 	m_thrust.SetRotation(m_sprite.GetRotation());
@@ -59,8 +61,6 @@ void Player::Update(float _deltaTime) {
 			m_weapons.at(i)->Update(_deltaTime);
 		}
 	}
-
-	GetPlayerInput(_deltaTime);
 
 	//Hit hit = m_collider.IntersectAABB(m_ptrPlayMode->GetBox().GetCollider());
 	//if (hit.Collided()) {	// Was there a collision?
@@ -92,9 +92,17 @@ void Player::SetupWeapons() {
 	m_weapons.push_back(unarmedSec);
 }
 
+void Player::SetWeapon(Weapon::weap_type _type, Weapon* _weap) {
+	delete m_weapons.at(_type);
+	m_weapons.at(_type) = nullptr;
+
+	m_weapons.at(_type) = _weap;
+	m_weapons.at(_type)->SetOwner(*this);
+}
+
 void Player::GetPlayerInput(float _deltaTime) {
 	m_sprite.SetVelocity({ 0.f, 0.f });
-	DirectX::SimpleMath::Vector2& spriteVel = m_sprite.GetVelocity();
+	DirectX::SimpleMath::Vector2 spriteVel = m_sprite.GetVelocity();
 	const GamePadInput::ControllerData ctrlData = MainGame::gamePad.GetGamePadData(0);
 
 	if (ctrlData.port != -1) {
@@ -158,7 +166,7 @@ void Player::LoadShipTexture(D3D& _d3d, const std::string& _txtrName)
 {
 	CharacterBase::LoadShipTexture(_d3d, _txtrName);	// Call base method
 	m_sprite.SetScale({ 0.15f, 0.15f });				// Adjust player ships scale to a more reasonable size
-	m_sprite.SetOrigin(m_sprite.GetDimRadius());		// Set the origin to the centre of the players texture
+	m_sprite.SetOrigin(m_sprite.GetRadius());		// Set the origin to the centre of the players texture
 }
 
 void Player::CheckForCollision() {
@@ -173,13 +181,13 @@ void Player::CheckForCollision() {
 	}
 }
 
-void Player::FireWeapon(const Weapon::weap_type& _weaponType) {
+void Player::FireWeapon(Weapon::weap_type _weaponType) {
 	Weapon& weapon = *m_weapons.at(_weaponType);
 
-	if (weapon.CanUse()) {
+	if (weapon.CanFire()) {
 		const float playerRot = m_sprite.GetRotation();
-		const DirectX::SimpleMath::Vector2 offsetPos(m_sprite.GetScreenDimRadius().x * cosf(playerRot),
-			m_sprite.GetScreenDimRadius().y * sinf(playerRot));
+		const DirectX::SimpleMath::Vector2 offsetPos(m_sprite.GetScreenRadius().x * cosf(playerRot),
+			m_sprite.GetScreenRadius().y * sinf(playerRot));
 
 		// Primary weapon should offset the projectile spawn point to the left of the player, 
 		// secondary weapon should be to the right

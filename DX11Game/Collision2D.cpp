@@ -17,7 +17,7 @@ Collider::Collider(const Collider& _collider)
 
 // Use sprite information to generate collider box
 Collider::Collider(const Sprite& _sprite)
-	: Collider(_sprite.GetPos(), _sprite.GetScreenDimRadius())
+	: Collider(_sprite.GetPos(), _sprite.GetScreenRadius())
 {}
 
 // Use position and radius to generate collider box with Collision datatypes

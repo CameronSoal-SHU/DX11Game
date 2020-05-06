@@ -101,5 +101,4 @@ private:
 	void CreateSampler(ID3D11SamplerState*& _ptrSampler);
 };
 
-
 #endif

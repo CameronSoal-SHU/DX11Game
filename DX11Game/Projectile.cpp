@@ -2,15 +2,20 @@
 #include "MainGame.h"
 #include "PlayMode.h"
 
-
 Projectile::Projectile(const std::string& _txtrName)
 	: GameObject(MainGame::Get().GetD3D()), m_d3d(MainGame::Get().GetD3D()), m_projDamage(1) {
 	m_sprite.SetTexture(_txtrName, *m_d3d.GetTextureCache().GetData(_txtrName).ptrTexture);
-	m_sprite.SetOrigin(m_sprite.GetDimRadius());
+	m_sprite.SetOrigin(m_sprite.GetRadius());
 
 	// Give projectile a hitbox
 	m_collider = Collider(m_sprite);
 }
+
+//Projectile::Projectile(const Projectile& _proj) 
+//	: GameObject(MainGame::Get().GetD3D()), m_d3d(MainGame::Get().GetD3D()),
+//	m_projDamage(_proj.GetDamage()), m_projStats(_proj.GetStats()) {
+//	m_sprite = _proj.GetSprite();
+//}
 
 void Projectile::Update(float _deltaTime) {
 	m_sprite.Update(_deltaTime);
@@ -38,9 +43,6 @@ void Projectile::SetStats(const CharacterBase::Stats & _stats) {
 	UpdateProjStats();
 }
 
-Projectile::~Projectile()
-{}
-
 void Projectile::UpdateProjStats() {
 	m_projDamage = m_projStats.damage;
 	m_moveSpeed = DirectX::SimpleMath::Vector2(m_projStats.projSpeed, m_projStats.projSpeed);
@@ -52,7 +54,6 @@ bool Projectile::CheckForCollision() {
 	bool collision = false;
 
 	// Check each one for a collision
-#pragma omp parallel for
 	for (int i(0); i < (int)enemies.size(); ++i) {
 		Hit hit = m_collider.IntersectAABB(enemies.at(i)->GetCollider());
 

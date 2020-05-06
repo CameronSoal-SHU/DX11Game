@@ -13,8 +13,6 @@ public:
 	std::string GetMinutesFormatted() const;
 	float GetSeconds() const { return m_seconds; }
 	std::string GetSecondsFormatted(int _precision) const;
-
-	~GameClock();
 private:
 	int m_minutes;
 	float m_seconds;

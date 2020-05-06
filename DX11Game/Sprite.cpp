@@ -40,7 +40,7 @@ DirectX::SimpleMath::Vector2 Sprite::GetDimensions() const {
 	return m_ptrTextureData->dimensions;
 }
 
-DirectX::SimpleMath::Vector2 Sprite::GetDimRadius() const {
+DirectX::SimpleMath::Vector2 Sprite::GetRadius() const {
 	return m_ptrTextureData->dimensions / 2.f;
 }
 
@@ -49,7 +49,7 @@ DirectX::SimpleMath::Vector2 Sprite::GetScreenDimensions() const {
 	return (m_scale * m_ptrTextureData->dimensions);
 }
 
-DirectX::SimpleMath::Vector2 Sprite::GetScreenDimRadius() const {
+DirectX::SimpleMath::Vector2 Sprite::GetScreenRadius() const {
 	assert(m_ptrTextureData);
 	return ((m_scale * m_ptrTextureData->dimensions) * 0.5f);
 }

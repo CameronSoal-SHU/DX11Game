@@ -15,15 +15,18 @@ public:
 	void Draw(DirectX::SpriteBatch& _sprBatch);
 
 	RECTF GetTextureRect();
+	void SetTextureRect(const RECTF& _textureRect);
+	void SetTextureRect(const RECT& _textureRect);
+
 	const TextureCache::Data& GetTextureData() const;
 	void SetTextureData(const TextureCache::Data& _data);
 	ID3D11ShaderResourceView& GetTexture();
 
 	DirectX::SimpleMath::Vector2 GetDimensions() const;
-	DirectX::SimpleMath::Vector2 GetDimRadius() const;
+	DirectX::SimpleMath::Vector2 GetRadius() const;
 	// Returns the dimensions of a sprite scaled to screen size
 	DirectX::SimpleMath::Vector2 GetScreenDimensions() const;
-	DirectX::SimpleMath::Vector2 GetScreenDimRadius() const;
+	DirectX::SimpleMath::Vector2 GetScreenRadius() const;
 
 	// SLOW method
 	void SetTexture(ID3D11ShaderResourceView& _txtrFilePath, const RECTF& _textureRect = RECTF{ 0,0,0,0 });
@@ -55,8 +58,6 @@ public:
 	std::string GetTextureName() const { return m_txtrCacheName; }
 
 	Animator& GetAnim();
-	void SetTextureRect(const RECT& _textureRect);
-	void SetTextureRect(const RECTF& _textureRect);
 
 	void SetFrame(int _idx);
 	// Are any of the velocity components not 0?

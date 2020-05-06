@@ -32,11 +32,13 @@ public:
 	// Find all objects in container that matches the typeid and active status
 	// Shared pointer is used to more easily handle allocation/deallocation of memory
 	std::vector<std::shared_ptr<GameObject>> FindObjs(const std::type_info& _type, bool _isActive);
+
+	RECTF GetPlayArea() const { return m_playArea; }
 private:
 	static const std::string MODE_NAME;
 
 	MenuManager& m_menuManager;		// Holds menu manager reference
-	MenuNode* m_ptrUIRoot;				// Holds the menu page for the UI root
+	MenuNode* m_ptrUIRoot;			// Holds the menu page for the UI root
 
 	PlayerUI m_playerUI;			// Players UI
 
@@ -44,10 +46,13 @@ private:
 	std::vector<Sprite> m_parallaxBGLayers;
 	float m_scrollSpeed = 50.f;
 
+	RECTF m_playArea;
+
 	std::vector<std::shared_ptr<GameObject>> m_gameObjs;
 
 	void GetPlayerInput(float _deltaTime);
 
 	void SetupBackground();
+	void SetupPlayArea();
 	void ScrollBackground(float _deltaTime);
 };

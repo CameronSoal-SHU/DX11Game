@@ -17,8 +17,8 @@ ItemShopMode::ItemShopMode(D3D& _d3d)
 
 ItemShopMode::~ItemShopMode() {
 	for (int i(0); i < 2; ++i) {
-		delete m_ptrItemCatagories[i];
-		m_ptrItemCatagories[i] = nullptr;
+		delete m_itemCatagories[i];
+		m_itemCatagories[i] = nullptr;
 	}
 
 	delete m_ptrWeapPreview;
@@ -27,6 +27,8 @@ ItemShopMode::~ItemShopMode() {
 
 void ItemShopMode::Enter() {
 	MainGame::Get().GetMenuManager().ShowMenu("menu_item_shop_UI");
+	// Reset the item preview every time the menu is opened
+	m_ptrWeapPreview->ResetPreview();
 }
 
 bool ItemShopMode::Exit()
@@ -45,7 +47,7 @@ void ItemShopMode::Update(float _deltaTime) {
 	m_backgroundSpr.Update(_deltaTime);
 
 	for (int i(0); i < 2; ++i) {
-		m_ptrItemCatagories[i]->Update((int)i);
+		m_itemCatagories[i]->Update((int)i);
 	}
 
 	m_ptrWeapPreview->Update();
@@ -70,18 +72,34 @@ void ItemShopMode::GetPlayerInput() {
 	}
 }
 
-void ItemShopMode::HandleUIEvent(MenuNode& _node, MenuNode::Event _e) {
+void ItemShopMode::DisplayPreviewUIEvent(MenuNode& _node, MenuNode::Event _e) {
 	// DBOUT(_node.m_nodeName << ", BUTTON CLICKED!");
 	Weapon* weapon = nullptr;
 	int i(0);
 
 	// Find the weapon linked to the button node
 	while (i < 2 && !weapon) {
-		weapon = m_ptrItemCatagories[i]->GetLinkedWeapon(&_node);
+		weapon = m_itemCatagories[i]->GetLinkedWeapon(&_node);
 		++i;
 	}
 	
 	m_ptrWeapPreview->DisplayStats(weapon);
+}
+
+void ItemShopMode::EquipWeaponUIEvent(MenuNode& _node, MenuNode::Event _e) {
+	// Grab the currently displayed weapon
+	Weapon& displayWeap = *ItemShopMode::Get().m_ptrWeapPreview->GetDisplayedWeap();
+
+	// Create a new instance of the weapon
+	Weapon* weaponCopy = new Weapon(displayWeap);
+	weaponCopy->SetModeOwner(PlayMode::Get());
+	weaponCopy->SetProjTextureName(displayWeap.GetProjTextureName());
+
+	// Set the players weapon at the appropriate slot
+	m_ptrPlayer->SetWeapon(displayWeap.GetWeapType(), weaponCopy);
+
+	// Reset the preview on weapon purchase
+	m_ptrWeapPreview->ResetPreview();
 }
 
 void ItemShopMode::SetupBackground() {
@@ -93,7 +111,7 @@ void ItemShopMode::SetupBackground() {
 
 void ItemShopMode::SetupItemShopUI() {
 	for (int i(0); i < 2; ++i) {
-		m_ptrItemCatagories[i] = new ItemCatagory(i);
+		m_itemCatagories[i] = new ItemCatagory(i);
 	}
 
 	m_ptrWeapPreview = new WeapPreview();
@@ -104,10 +122,11 @@ void ItemShopMode::CheckPlayerWeapons() {
 	std::vector<Weapon*> playerWeapons = m_ptrPlayer->GetWeapons();
 
 	if (!playerWeapons.empty()) {
+		#pragma omp parallel for
 		for (int i(0); i < CATAGORY_COUNT; ++i) {
-			ItemCatagory& catagory = *m_ptrItemCatagories[i];
-
-			for (size_t j(0); j < catagory.GetBuyables().size(); ++j) {
+			ItemCatagory& catagory = *m_itemCatagories[i];
+			#pragma omp parallel for
+			for (int j(0); j < (int)catagory.GetBuyables().size(); ++j) {
 				ItemCatagory::Buyable& buyable = *catagory.GetBuyables().at(j);
 
 				// Does the player own a weapon by the same name?
@@ -164,7 +183,7 @@ void ItemShopMode::ItemCatagory::SetupContainer(MenuManager& _menuMgr, int _cont
 	m_ptrItemContainer->SetParent(*ItemShopMode::Get().m_ptrUIRoot);
 }
 
-void ItemShopMode::ItemCatagory::SetupHeader(MenuManager & _menuMgr, int _containerID) {
+void ItemShopMode::ItemCatagory::SetupHeader(MenuManager& _menuMgr, int _containerID) {
 	m_ptrItemCtrHeader = dynamic_cast<MenuText*>(&_menuMgr.CreateNode(MenuNode::Type::TEXT));
 
 	m_ptrItemCtrHeader->m_nodeName = "ui_item_catagory_" + std::to_string(_containerID);
@@ -210,7 +229,7 @@ ItemShopMode::ItemCatagory::Buyable::Buyable(MenuImage& _parent, int _containerI
 	
 	itemButton = dynamic_cast<MenuButton*>(&menuMgr.CreateNode(MenuNode::Type::BUTTON));
 	// Link an event handler to the button
-	MenuManager::Handler hEvent{ [this](MenuNode& _node, MenuNode::Event _e) { ItemShopMode::Get().HandleUIEvent(_node, _e); } };
+	MenuManager::Handler hEvent{ [this](MenuNode& _node, MenuNode::Event _e) { ItemShopMode::Get().DisplayPreviewUIEvent(_node, _e); } };
 
 	// Set unique node name
 	itemButton->m_nodeName = "ui_container_" + std::to_string(_containerID) + "_item_" + linkedWeapon->GetWeapName();
@@ -263,20 +282,24 @@ ItemShopMode::WeapPreview::WeapPreview() {
 	SetupPreviewContainer(menuMgr);
 	SetupPreviewHeader(menuMgr);
 	SetupPreviewStats(menuMgr);
+	SetupEquipButton(menuMgr);
 }
 
 void ItemShopMode::WeapPreview::Update() {
 	const float screenScaleX = MainGame::Get().GetScreenDimScaleX();
 	const float screenScaleY = MainGame::Get().GetScreenDimScaleY();
 
+	// Scale preview container to screen size
 	m_ptrPreviewContainer->m_x = 1280 * screenScaleX;
 	m_ptrPreviewContainer->m_y = 100 * screenScaleY;
 	m_ptrPreviewContainer->m_width = 540 * screenScaleX;
 	m_ptrPreviewContainer->m_height = 820 * screenScaleY;
 
+	// Scale header for preview container
 	m_ptrPreviewHeader->m_height = 78.f * screenScaleY;
 	m_ptrPreviewHeader->m_y = -55.f * (screenScaleY);
 
+	// Scale each weapon stat preview to screen size
 	#pragma omp parallel for
 	for (int i(0); i < STAT_COUNT; ++i) {
 		MenuText*& weapStat = m_ptrPreviewStats[i];
@@ -287,9 +310,24 @@ void ItemShopMode::WeapPreview::Update() {
 	}
 
 	m_ptrPreviewStats[WEAP_DESC]->m_height = 128.f * screenScaleY;
+
+	// Hide the equip button if no weapon is selected
+	if (m_ptrDisplayWeapon) {
+		m_ptrEquipButton->m_width = 240 * screenScaleX;
+		m_ptrEquipButton->m_height = 120 * screenScaleY;
+	}
+	else {
+		m_ptrEquipButton->m_width = 0;
+		m_ptrEquipButton->m_height = 0;
+	}
+
+	m_ptrEquipButton->m_x = (m_ptrPreviewContainer->m_width - m_ptrEquipButton->m_width) / 2.f;
+	m_ptrEquipButton->m_y = (m_ptrPreviewContainer->m_height - (200.f * screenScaleY));
+
 }
 
 void ItemShopMode::WeapPreview::DisplayStats(Weapon* _weap) {
+	m_ptrDisplayWeapon = _weap;	// Link weapon
 	const Weapon::WeaponModifiers& weapMods = _weap->GetWeapMods();
 
 	// Truncate floating-point values to 2 d.p
@@ -306,6 +344,16 @@ void ItemShopMode::WeapPreview::DisplayStats(Weapon* _weap) {
 	m_ptrPreviewStats[WEAP_LIFE_TIME]->m_text = "RANGE: " + lt.str();
 	m_ptrPreviewStats[WEAP_PROJ_SPEED]->m_text = "PROJ. SPEED: " + ps.str();
 	m_ptrPreviewStats[WEAP_DESC]->m_text = _weap->GetWeapDesc();
+}
+
+void ItemShopMode::WeapPreview::ResetPreview() {
+	#pragma omp parallel for
+	for (int i(0); i < STAT_COUNT; ++i) {
+		MenuText*& statDisplay = m_ptrPreviewStats[i];
+		statDisplay->m_text = "";
+	}
+
+	m_ptrDisplayWeapon = nullptr;
 }
 
 void ItemShopMode::WeapPreview::SetupPreviewContainer(MenuManager& _menuMgr) {
@@ -333,7 +381,8 @@ void ItemShopMode::WeapPreview::SetupPreviewHeader(MenuManager& _menuMgr) {
 	m_ptrPreviewHeader->m_y = -80.f;
 }
 
-void ItemShopMode::WeapPreview::SetupPreviewStats(MenuManager & _menuMgr) {
+void ItemShopMode::WeapPreview::SetupPreviewStats(MenuManager& _menuMgr) {
+	#pragma omp parallel for
 	for (int i(0); i < STAT_COUNT; ++i) {
 		MenuText*& statDisplay = m_ptrPreviewStats[i];
 
@@ -377,7 +426,32 @@ void ItemShopMode::WeapPreview::SetupPreviewStats(MenuManager & _menuMgr) {
 
 void ItemShopMode::WeapPreview::SetupEquipButton(MenuManager& _menuMgr) {
 	m_ptrEquipButton = dynamic_cast<MenuButton*>(&_menuMgr.CreateNode(MenuNode::Type::BUTTON));
+	m_ptrEquipText = dynamic_cast<MenuText*>(&_menuMgr.CreateNode(MenuNode::Type::TEXT));
 
 	m_ptrEquipButton->m_nodeName = "ui_weapon_equip";
 	m_ptrEquipButton->SetParent(*m_ptrPreviewContainer);
+
+	// No mouse interaction
+	m_ptrEquipButton->buttons[MenuButton::NORMAL].spriteID = 0;
+	m_ptrEquipButton->buttons[MenuButton::NORMAL].textureName = TxtrNames::SHOP_CONTAINER_NAME;
+	m_ptrEquipButton->buttons[MenuButton::NORMAL].colour = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
+
+	// Mouse is hovering over the button
+	m_ptrEquipButton->buttons[MenuButton::HOVER].spriteID = 0;
+	m_ptrEquipButton->buttons[MenuButton::HOVER].textureName = TxtrNames::SHOP_CONTAINER_NAME;
+	m_ptrEquipButton->buttons[MenuButton::HOVER].colour = DirectX::SimpleMath::Vector4(0.75f, 0.75f, 0.75f, 1);
+
+	// Mouse is clicking on the button
+	m_ptrEquipButton->buttons[MenuButton::PRESSED].spriteID = 0;
+	m_ptrEquipButton->buttons[MenuButton::PRESSED].textureName = TxtrNames::SHOP_CONTAINER_NAME;
+	m_ptrEquipButton->buttons[MenuButton::PRESSED].colour = DirectX::SimpleMath::Vector4(0.5f, 0.5f, 0.5f, 1);
+
+	// Button cannot be interacted with
+	m_ptrEquipButton->buttons[MenuButton::DISABLED].spriteID = 0;
+	m_ptrEquipButton->buttons[MenuButton::DISABLED].textureName = TxtrNames::SHOP_CONTAINER_NAME;
+	m_ptrEquipButton->buttons[MenuButton::DISABLED].colour = DirectX::SimpleMath::Vector4(0.1f, 0.1f, 0.1f, 1);
+
+	// Link an event handler to the button
+	MenuManager::Handler hEvent{ [this](MenuNode& _node, MenuNode::Event _e) { ItemShopMode::Get().EquipWeaponUIEvent(_node, _e); } };
+	_menuMgr.AddEventHandler("menu_item_shop_UI", m_ptrEquipButton->m_nodeName, MenuNode::Event::CLICK, hEvent);
 }

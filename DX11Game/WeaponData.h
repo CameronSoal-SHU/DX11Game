@@ -1,6 +1,5 @@
 #pragma once
 #include "Weapon.h"
-#include "Projectile.h"
 
 /*
 A weapon that does the incredible thing of literally nothing.
@@ -30,9 +29,6 @@ private:
 		.33f,  // Lifetime Multiplier
 		1.f   // Projectile Speed Multiplier
 	};
-
-	const std::string m_weapName = "Plasma Cannon";
-	const std::string m_weapDesc = "Fires a volley of plasma projectiles\nat a fast rate,\nat the cost of damage and range.";
 };
 
 

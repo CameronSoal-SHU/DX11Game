@@ -58,6 +58,7 @@ bool PlayMode::Exit() {
 
 void PlayMode::Start() {
 	SetupBackground();
+	SetupPlayArea();
 }
 
 void PlayMode::Update(float _deltaTime) {
@@ -152,6 +153,12 @@ void PlayMode::SetupBackground() {
 	for (auto it = m_parallaxBGLayers.begin(); it < m_parallaxBGLayers.end(); ++it) {
 		it->SetScale({ 3.5f, 3.5f });
 	}
+}
+
+void PlayMode::SetupPlayArea() {
+	m_playArea.left = m_playArea.top = 75;
+	m_playArea.right = Settings::GAME_RES.x - 75;
+	m_playArea.bottom = Settings::GAME_RES.y - 75;
 }
 
 void PlayMode::ScrollBackground(float _deltaTime) {

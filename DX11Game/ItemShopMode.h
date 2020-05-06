@@ -2,7 +2,6 @@
 #include "ModeBase.h"
 #include "MenuManager.h"
 #include "Player.h"
-#include "WeaponData.h"
 
 class ItemShopMode : public Singleton<ItemShopMode>, public ModeBase
 {
@@ -66,7 +65,10 @@ public:
 		void Update();
 
 		void DisplayStats(Weapon* _weap);	// Display a given weapons stats on-screen
+		void ResetPreview();				// Reset the preview to show nothing.
 
+		// Public accessor for currently displayed weapon
+		Weapon* GetDisplayedWeap() const { return m_ptrDisplayWeapon; }
 	private:
 		const static int STAT_COUNT = 7;
 
@@ -75,6 +77,8 @@ public:
 		MenuText* m_ptrPreviewStats[STAT_COUNT];	// This can be an array, because the information shown should never EVER change
 
 		MenuButton* m_ptrEquipButton;
+		MenuText* m_ptrEquipText;
+		Weapon* m_ptrDisplayWeapon;	// Which weapon is currently on display
 
 		void SetupPreviewContainer(MenuManager& _menuMgr);
 		void SetupPreviewHeader(MenuManager& _menuMgr);
@@ -107,7 +111,7 @@ private:
 	Player* m_ptrPlayer;			// Player reference from MainGame to get and modify stats
 	MenuNode* m_ptrUIRoot;			// Holds the menu page for the UI root
 
-	ItemCatagory* m_ptrItemCatagories[CATAGORY_COUNT];
+	ItemCatagory* m_itemCatagories[CATAGORY_COUNT];
 	WeapPreview* m_ptrWeapPreview;
 
 	Sprite m_backgroundSpr;
@@ -118,6 +122,7 @@ private:
 
 	void GetPlayerInput();
 
-	void HandleUIEvent(MenuNode& _node, MenuNode::Event _e);
-};
+	void DisplayPreviewUIEvent(MenuNode& _node, MenuNode::Event _e);
+	void EquipWeaponUIEvent(MenuNode& _node, MenuNode::Event _e);
+ };
 

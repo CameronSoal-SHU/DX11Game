@@ -1,5 +1,4 @@
 #pragma once
-#include "Singleton.h"
 #include "MenuManager.h"
 #include "GameClock.h"
 
@@ -32,6 +31,8 @@ public:
 
 		MenuText* ptrFrameRateDisplay;
 
+		// Delay the updating of the FPS count,
+		// as this does not need to be updated at every frame.
 		float fpsUpdateDelay = 0.f;
 		float delayRemaining = 0.f;
 	};

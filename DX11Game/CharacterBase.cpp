@@ -17,6 +17,7 @@ CharacterBase::~CharacterBase() {
 void CharacterBase::Update(float _deltaTime) {
 	// Update sprite every frame
 	m_sprite.Update(_deltaTime);
+	CheckPlayableBounds();
 }
 
 void CharacterBase::Render(float _deltaTime, DirectX::SpriteBatch & _sprBatch) {
@@ -33,9 +34,26 @@ void CharacterBase::LoadThrustTexture(D3D & _d3d) {
 	m_thrust.GetAnim().Init(0, 3, 15, LOOP);
 	m_thrust.SetScale({ 4.f,4.f });
 
-	const float textureCentre = m_thrust.GetDimRadius().x / m_thrust.GetTextureData().frames.size();
+	const float textureCentre = m_thrust.GetRadius().x / m_thrust.GetTextureData().frames.size();
 
 	m_thrust.SetOrigin({ textureCentre, -11.f });
 	m_thrust.SetRotation(m_sprite.GetRotation());
 	m_thrust.GetAnim().Play(true);
+}
+
+void CharacterBase::CheckPlayableBounds() {
+	const RECTF playArea = m_ptrPlayMode->GetPlayArea();
+
+	if (m_sprite.GetPos().y < playArea.top) {
+		m_sprite.SetPos({ m_sprite.GetPos().x, playArea.top });
+	}
+	else if (m_sprite.GetPos().y > playArea.bottom) {
+		m_sprite.SetPos({ m_sprite.GetPos().x, playArea.bottom });
+	}
+	if (m_sprite.GetPos().x < playArea.left) {
+		m_sprite.SetPos({ playArea.left, m_sprite.GetPos().y });
+	}
+	else if (m_sprite.GetPos().x > playArea.right) {
+		m_sprite.SetPos({ playArea.right, m_sprite.GetPos().y });
+	}
 }

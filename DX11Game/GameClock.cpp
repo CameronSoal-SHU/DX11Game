@@ -42,6 +42,3 @@ std::string GameClock::GetSecondsFormatted(int _precision) const {
 
 	return seconds;
 }
-
-GameClock::~GameClock()
-{}

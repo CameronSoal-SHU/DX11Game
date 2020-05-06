@@ -2,23 +2,23 @@
 #include "Input.h"
 #include "TextureCache.h"
 
-namespace DirectX { class SpriteBatch; }
-
+// Forward Declarations
 class MenuManager;
+namespace DirectX { class SpriteBatch; }
 
 // General info that Menu nodes need access to
 struct ExtraData {
-	float deltaTime;
-	DirectX::SpriteBatch& spriteBatch;
-	TextureCache& textureCache;
-	Input& input;
-	MenuManager& menuManager;
-
 	ExtraData(float _dTime, DirectX::SpriteBatch& _sprBatch,
 		TextureCache& _txtrCache, Input& _mouseKeyboard, MenuManager& _menuMgr)
 		: deltaTime(_dTime), spriteBatch(_sprBatch), textureCache(_txtrCache),
 		input(_mouseKeyboard), menuManager(_menuMgr)
 	{};
+
+	DirectX::SpriteBatch& spriteBatch;
+	TextureCache& textureCache;
+	Input& input;
+	MenuManager& menuManager;
+	float deltaTime;
 };
 
 class MenuNode

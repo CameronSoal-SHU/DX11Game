@@ -15,9 +15,10 @@ int sign(T _val) {
 }
 
 struct Point {
+	float x, y;
+
 	Point(float _x = 0.f, float _y = 0.f);
 	Point(const DirectX::SimpleMath::Vector2& _point);
-	float x, y;
 
 	Point& operator=(const DirectX::SimpleMath::Vector2& _newPoint) {
 		x = _newPoint.x;
@@ -66,6 +67,8 @@ public:
 	Collider(const Point& _pos, const Point& _half);
 	Collider(const DirectX::SimpleMath::Vector2& _pos, const DirectX::SimpleMath::Vector2& _half);
 
+	void Update(const Sprite& _sprite);
+
 	Point GetPosition() const;
 	void SetPosition(const DirectX::SimpleMath::Vector2& _pos);
 
@@ -74,8 +77,6 @@ public:
 
 	std::string GetTag() const { return m_colliderTag; }
 	void SetTag(const std::string& _tag) { m_colliderTag = _tag; }
-
-	void Update(const Sprite& _sprite);
 
 	// Find the overlap on X and Y axis, find axis with smallest overlap 
 	// to create intersection point on the edge of the box if possible

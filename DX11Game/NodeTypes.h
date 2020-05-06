@@ -2,11 +2,6 @@
 #include "MenuNode.h"
 #include "TextureCache.h"
 
-namespace DirectX { class SpriteFont; }
-
-class MenuManager;
-class Input;
-
 // Non graphical root object, one for each distinct menu screen
 class MenuPage : public MenuNode {
 public:

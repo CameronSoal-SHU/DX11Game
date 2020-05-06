@@ -17,8 +17,8 @@ EnergyBallWeapon::EnergyBallWeapon(CharacterBase* _owner)
 	SetProjectileScale({ 0.05f, 0.05f });
 	SetWeaponModifiers(m_energyBallMods);
 
-	SetWeapName(m_weapName);
-	SetWeapDesc(m_weapDesc);
+	SetWeapName("Plasma Cannon");
+	SetWeapDesc("Fires a volley of plasma projectiles\nat a fast rate,\nat the cost of damage and range.");
 	m_type = PRIMARY;
 }
 

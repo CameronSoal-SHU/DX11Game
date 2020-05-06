@@ -14,7 +14,6 @@ LRESULT CALLBACK MainWndProc(HWND _windowHandle, UINT _msg, WPARAM _wParam, LPAR
 	switch (_msg) {
 	case WM_CHAR:
 		switch (_wParam) {
-		case 27:
 		case 'q':
 		case 'Q':
 			PostQuitMessage(0);

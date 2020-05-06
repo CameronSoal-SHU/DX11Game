@@ -31,19 +31,19 @@ public:
 	void SetParentMode(PlayMode& _playMode) { m_ptrPlayMode = &_playMode; };
 
 	HealthHandler& GetHealthHandler() { return m_healthHandler; }
-	Stats GetStats() const { return m_characterStats; }
+	Stats& GetStats() { return m_charStats; }
 
 protected:
 	PlayMode* m_ptrPlayMode = nullptr;		// Mode owner of object
 
-	Collider m_hitBox;
-
 	Sprite m_thrust;						// Sprite to hold the thrust animation
 
 	HealthHandler m_healthHandler;
-	Stats m_characterStats;					// Stats to be used by items/weapons
+	Stats m_charStats;						// Stats to be used by items/weapons
 
 	void virtual LoadShipTexture(D3D& _d3d, const std::string& _txtrName);
 	void LoadThrustTexture(D3D& _d3d);		// Load the thrust texture for each ship
+
+	void CheckPlayableBounds();				// Has the character gone out-of-bounds?
 };
 

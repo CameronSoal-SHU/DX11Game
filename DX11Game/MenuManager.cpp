@@ -62,7 +62,7 @@ MenuPage & MenuManager::GetActiveMenuPage() {
 	return *m_ptrActiveMenu;
 }
 
-MenuNode & MenuManager::CreateNode(MenuNode::Type _type) {
+MenuNode& MenuManager::CreateNode(MenuNode::Type _type) {
 	MenuNode& node = MenuNode::CreateNode(_type);
 
 	node.m_nodeID = m_nodes.size();
@@ -71,7 +71,7 @@ MenuNode & MenuManager::CreateNode(MenuNode::Type _type) {
 	return node;
 }
 
-MenuNode & MenuManager::FindNode(const std::string & _menuName, const std::string & _nodeName) {
+MenuNode& MenuManager::FindNode(const std::string& _menuName, const std::string& _nodeName) {
 	std::vector<MenuNode*>::iterator it = std::find_if(m_nodes.begin(), m_nodes.end(),
 		[&_menuName](MenuNode* ptrNode) { 
 		return ptrNode->m_nodeType == MenuNode::Type::ROOT && ptrNode->m_nodeName == _menuName; 
@@ -86,8 +86,8 @@ MenuNode & MenuManager::FindNode(const std::string & _menuName, const std::strin
 	return *ptrNode;
 }
 
-void MenuManager::Render(float _dTime, DirectX::SpriteBatch & _sprBatch, 
-	TextureCache & _txtrCache, Input & _input) {
+void MenuManager::Render(float _dTime, DirectX::SpriteBatch& _sprBatch, 
+	TextureCache& _txtrCache, Input& _input) {
 	// Is there an active menu to display?
 	if (!m_ptrActiveMenu)
 		return;
